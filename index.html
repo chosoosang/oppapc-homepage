@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오빠피씨방</title>
+<link href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@400;700;900&family=Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   버전별 테마 변수 (새 버전 추가 시 여기만)
+══════════════════════════════════════ */
+[data-ver="사극"] {
+  --primary:   #c8a84b;
+  --primary-lt:#e8c96a;
+  --primary-dk:#8b6914;
+  --bg:        #0a0804;
+  --bg2:       #0f0c08;
+  --bg3:       #141009;
+  --ink:       #1a1208;
+  --cream:     #f5f0e8;
+  --gray:      #6b6057;
+  --accent:    #8b1a1a;
+  --font-title:'Hahmlet',serif;
+  --ver-label: "ver. 사극";
+}
+/* 다음 버전 예시 — 출시 시 활성화
+[data-ver="현대"] {
+  --primary:   #4a9eff;
+  --primary-lt:#7ab8ff;
+  --primary-dk:#1a6ed8;
+  --bg:        #0a0d14;
+  --bg2:       #0d1219;
+  --bg3:       #121820;
+  --ink:       #080c14;
+  --cream:     #e8eef8;
+  --gray:      #5a6580;
+  --accent:    #ff4a6e;
+  --font-title:'Noto Sans KR',sans-serif;
+  --ver-label: "ver. 현대";
+}
+*/
+
+/* ══════════════════════════════════════
+   기본 스타일
+══════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--cream);
+  font-family:'Noto Sans KR',sans-serif;
+  min-height:100vh;
+  transition:background .5s, color .5s;
+}
+
+/* ══════════════════════════════════════
+   헤더
+══════════════════════════════════════ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:0 40px;
+  height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(10,8,4,.97);
+  border-bottom:1px solid rgba(200,168,75,.12);
+  backdrop-filter:blur(10px);
+}
+.h-logo{
+  font-family:var(--font-title);
+  font-size:1.15rem;font-weight:900;
+  color:var(--primary);
+  text-decoration:none;letter-spacing:.1em;
+}
+.h-logo small{
+  display:block;font-size:.5rem;color:var(--gray);
+  letter-spacing:.2em;font-family:'Noto Sans KR',sans-serif;font-weight:300;
+}
+
+/* 버전 선택기 */
+.ver-selector{position:relative;}
+.ver-btn{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(200,168,75,.1);
+  border:1px solid rgba(200,168,75,.3);
+  color:var(--primary);
+  padding:6px 14px;
+  font-family:var(--font-title);
+  font-size:.78rem;letter-spacing:.08em;
+  cursor:pointer;transition:all .3s;
+}
+.ver-btn:hover{background:rgba(200,168,75,.18);}
+.ver-arrow{font-size:.6rem;transition:transform .3s;}
+.ver-selector.open .ver-arrow{transform:rotate(180deg);}
+.ver-dropdown{
+  position:absolute;top:calc(100% + 8px);right:0;
+  background:var(--bg2);
+  border:1px solid rgba(200,168,75,.25);
+  min-width:160px;
+  display:none;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+}
+.ver-selector.open .ver-dropdown{display:block;}
+.ver-option{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;font-size:.82rem;
+  color:var(--cream);cursor:pointer;
+  transition:background .2s;letter-spacing:.05em;
+  font-family:var(--font-title);
+}
+.ver-option:hover{background:rgba(200,168,75,.1);}
+.ver-option.active{color:var(--primary);}
+.ver-option.active::before{content:'✓';font-size:.7rem;}
+.ver-option:not(.active)::before{content:'';display:inline-block;width:.7rem;}
+.ver-option.locked{color:var(--gray);cursor:default;}
+.ver-option.locked .lock{font-size:.7rem;margin-left:auto;}
+
+/* ══════════════════════════════════════
+   탭 네비게이션
+══════════════════════════════════════ */
+.tab-nav{
+  position:fixed;top:60px;left:0;right:0;z-index:190;
+  display:flex;
+  background:rgba(10,8,4,.95);
+  border-bottom:1px solid rgba(200,168,75,.1);
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-btn{
+  flex-shrink:0;
+  background:transparent;border:none;
+  color:rgba(245,240,232,.5);
+  padding:0 24px;height:48px;
+  font-family:var(--font-title);
+  font-size:.8rem;letter-spacing:.1em;
+  cursor:pointer;
+  transition:all .3s;
+  position:relative;white-space:nowrap;
+}
+.tab-btn::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:2px;background:var(--primary);
+  transform:scaleX(0);transition:transform .3s;
+}
+.tab-btn.on{color:var(--primary);}
+.tab-btn.on::after{transform:scaleX(1);}
+.tab-btn:hover:not(.on){color:rgba(245,240,232,.8);}
+
+/* ══════════════════════════════════════
+   콘텐츠 영역
+══════════════════════════════════════ */
+.content{padding-top:108px;min-height:100vh;}
+.tab-panel{display:none;animation:fadeIn .4s ease;}
+.tab-panel.on{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══════════════════════════════════════
+   공통 컴포넌트
+══════════════════════════════════════ */
+.wrap{max-width:1180px;margin:0 auto;padding:64px 40px;}
+.sec-hdr{text-align:center;margin-bottom:56px;}
+.sec-tag{
+  display:inline-block;font-size:.66rem;letter-spacing:.35em;
+  color:var(--primary);margin-bottom:12px;
+  font-family:var(--font-title);font-weight:700;
+}
+.sec-tag::before{content:'── ';}
+.sec-tag::after{content:' ──';}
+h2{
+  font-family:var(--font-title);
+  font-size:clamp(1.8rem,4vw,2.6rem);
+  font-weight:900;color:var(--cream);line-height:1.3;
+}
+h2 em{font-style:normal;color:var(--primary);}
+.sec-desc{font-size:.85rem;color:var(--gray);margin-top:12px;line-height:1.9;}
+.divider{height:1px;background:linear-gradient(to right,transparent,rgba(200,168,75,.25),transparent);margin:40px 0;}
+.gold-line{width:60px;height:1px;background:var(--primary);margin:0 auto 24px;}
+
+/* ══════════════════════════════════════
+   히어로 (홈 탭)
+══════════════════════════════════════ */
+#panel-home{
+  background:radial-gradient(ellipse 70% 50% at 50% 40%,rgba(200,168,75,.07) 0%,transparent 70%);
+}
+.hero{
+  min-height:calc(100vh - 108px);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:60px 20px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(200,168,75,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(200,168,75,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse at center,black 20%,transparent 75%);
+}
+.hero-badge{
+  display:inline-block;border:1px solid var(--primary-dk);
+  color:var(--primary);font-size:.66rem;letter-spacing:.35em;
+  padding:7px 28px;margin-bottom:24px;
+  font-family:var(--font-title);font-weight:700;position:relative;z-index:1;
+}
+.hero-badge::before{content:'◆';position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:.4rem;color:var(--primary-dk);}
+.hero-badge::after{content:'◆';position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:.4rem;color:var(--primary-dk);}
+.hero-title{
+  font-family:var(--font-title);
+  font-size:clamp(3rem,9vw,6rem);
+  font-weight:900;line-height:1.05;
+  color:var(--cream);letter-spacing:.06em;position:relative;z-index:1;
+}
+.hero-ver{
+  display:block;position:relative;z-index:1;
+  padding:12px 56px;margin:8px auto 0;
+  font-family:var(--font-title);font-weight:900;
+  font-size:clamp(1.5rem,4vw,2.6rem);
+  color:var(--primary);letter-spacing:.22em;
+  text-shadow:0 0 28px rgba(200,168,75,.5);
+}
+.hero-ver::before,.hero-ver::after{
+  content:'';position:absolute;left:50%;transform:translateX(-50%);
+  width:180px;height:1px;
+  background:linear-gradient(to right,transparent,var(--primary-dk),var(--primary),var(--primary-dk),transparent);
+}
+.hero-ver::before{top:0;}.hero-ver::after{bottom:0;}
+.hero-sub{
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(.88rem,1.8vw,1.05rem);
+  color:var(--gray);margin:24px 0 40px;
+  letter-spacing:.06em;position:relative;z-index:1;
+}
+.hero-stats{
+  display:flex;gap:40px;justify-content:center;flex-wrap:wrap;
+  margin-bottom:44px;position:relative;z-index:1;
+}
+.stat-num{font-family:var(--font-title);font-size:1.8rem;font-weight:900;color:var(--primary);display:block;}
+.stat-lbl{font-size:.66rem;color:var(--gray);letter-spacing:.15em;margin-top:2px;}
+.btn-gold{
+  display:inline-block;background:var(--primary);color:var(--bg);
+  padding:14px 38px;font-family:var(--font-title);font-weight:700;
+  font-size:.86rem;letter-spacing:.12em;text-decoration:none;
+  border:none;cursor:pointer;transition:background .3s;position:relative;z-index:1;
+}
+.btn-gold:hover{background:var(--primary-lt);}
+.hero-loc{margin-top:16px;font-size:.72rem;color:var(--gray);letter-spacing:.12em;position:relative;z-index:1;}
+.hero-loc strong{color:var(--primary);}
+
+/* 홈 탭 섹션 미리보기 */
+.preview-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:2px;
+  margin-bottom:24px;
+}
+.prev-card{
+  background:var(--bg2);padding:28px 24px;border:1px solid rgba(200,168,75,.07);
+  cursor:pointer;transition:all .3s;
+}
+.prev-card:hover{background:var(--bg3);border-color:rgba(200,168,75,.3);}
+.prev-icon{font-size:1.6rem;margin-bottom:12px;display:block;}
+.prev-title{font-family:var(--font-title);font-size:.95rem;color:var(--cream);margin-bottom:6px;}
+.prev-desc{font-size:.76rem;color:var(--gray);line-height:1.7;}
+.prev-link{font-size:.72rem;color:var(--primary);margin-top:10px;display:block;letter-spacing:.08em;}
+
+/* ══════════════════════════════════════
+   시설 탭
+══════════════════════════════════════ */
+.fac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:2px;}
+.fac-card{
+  background:var(--bg2);padding:36px 28px;
+  border:1px solid rgba(200,168,75,.07);
+  transition:all .35s;position:relative;overflow:hidden;
+}
+.fac-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--primary),transparent);
+  transform:scaleX(0);transition:transform .35s;
+}
+.fac-card:hover::after{transform:scaleX(1);}
+.fac-card:hover{background:var(--bg3);}
+.fac-ico{font-size:1.9rem;margin-bottom:16px;display:block;}
+.fac-title{font-family:var(--font-title);font-size:1rem;font-weight:700;color:var(--cream);margin-bottom:10px;}
+.fac-desc{font-size:.8rem;color:var(--gray);line-height:1.85;}
+.fac-pt{display:inline-block;margin-top:10px;font-size:.7rem;color:var(--primary);}
+
+/* ══════════════════════════════════════
+   메뉴 탭
+══════════════════════════════════════ */
+.mcat{font-family:var(--font-title);font-size:1.15rem;color:var(--primary);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid rgba(200,168,75,.18);}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:40px;}
+.mitem{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 20px;border:1px solid rgba(200,168,75,.1);transition:border-color .3s;}
+.mitem:hover{border-color:rgba(200,168,75,.35);}
+.mitem h4{font-family:var(--font-title);font-size:.93rem;color:var(--cream);margin-bottom:4px;}
+.mitem p{font-size:.73rem;color:var(--gray);line-height:1.7;}
+.mprice{font-family:var(--font-title);font-size:1rem;color:var(--primary);white-space:nowrap;margin-left:14px;font-weight:700;}
+.mbadge{display:inline-block;background:var(--accent);color:var(--cream);font-size:.6rem;padding:2px 7px;margin-top:5px;letter-spacing:.08em;}
+
+/* ══════════════════════════════════════
+   시트콤 탭
+══════════════════════════════════════ */
+.sitcom-hdr{text-align:center;margin-bottom:40px;}
+.sitcom-filter{
+  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:36px;
+}
+.sf-btn{
+  background:transparent;border:1px solid rgba(200,168,75,.2);
+  color:rgba(245,240,232,.5);padding:7px 18px;
+  font-size:.76rem;cursor:pointer;transition:all .2s;
+  font-family:var(--font-title);
+}
+.sf-btn.on{background:rgba(200,168,75,.14);border-color:var(--primary);color:var(--primary);}
+.reel-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+  gap:14px;
+}
+.rcard{
+  aspect-ratio:9/16;background:var(--bg2);
+  border:1px solid rgba(200,168,75,.1);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:16px;position:relative;overflow:hidden;
+  cursor:pointer;transition:border-color .3s;text-decoration:none;
+}
+.rcard:hover{border-color:var(--primary);}
+.roverlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,8,4,.95) 30%,rgba(10,8,4,.1) 70%);}
+.rplay{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);
+  width:40px;height:40px;border:2px solid rgba(200,168,75,.5);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:1rem;color:var(--primary);transition:all .3s;
+}
+.rcard:hover .rplay{background:var(--primary);color:var(--bg);border-color:var(--primary);}
+.rep{position:relative;font-size:.6rem;color:var(--primary);letter-spacing:.15em;margin-bottom:4px;}
+.rtitle{position:relative;font-family:var(--font-title);font-size:.83rem;color:var(--cream);line-height:1.4;}
+.rphase{position:relative;font-size:.58rem;color:var(--gray);margin-top:2px;}
+
+/* ══════════════════════════════════════
+   이벤트 탭
+══════════════════════════════════════ */
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
+.ecard{border:1px solid rgba(200,168,75,.12);padding:28px;position:relative;transition:border-color .3s;}
+.ecard:hover{border-color:rgba(200,168,75,.3);}
+.ecard.on{border-color:var(--primary);}
+.ecard.on::after{content:'진행중';position:absolute;top:-1px;right:18px;background:var(--primary);color:var(--bg);font-size:.6rem;font-weight:700;padding:3px 10px;letter-spacing:.1em;font-family:var(--font-title);}
+.edate{font-size:.66rem;color:var(--primary-dk);letter-spacing:.2em;margin-bottom:10px;}
+.etitle{font-family:var(--font-title);font-size:1.08rem;color:var(--cream);margin-bottom:10px;line-height:1.4;}
+.edesc{font-size:.79rem;color:var(--gray);line-height:1.8;margin-bottom:14px;}
+.eprize{font-size:.74rem;color:var(--primary);}
+
+/* ══════════════════════════════════════
+   후기 탭
+══════════════════════════════════════ */
+.rv-scroll{overflow:hidden;margin:0 -40px;}
+.rv-track{display:flex;gap:18px;animation:scroll 32s linear infinite;width:max-content;padding:8px 40px;}
+.rv-track:hover{animation-play-state:paused;}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.rvcard{background:var(--bg2);border:1px solid rgba(200,168,75,.1);padding:24px 26px;min-width:290px;max-width:290px;flex-shrink:0;}
+.rvstars{color:var(--primary);font-size:.76rem;letter-spacing:2px;margin-bottom:10px;}
+.rvtext{font-family:'Noto Serif KR',serif;font-size:.85rem;color:var(--cream);line-height:1.85;margin-bottom:12px;}
+.rvauthor{font-size:.68rem;color:var(--gray);}
+.rvauthor strong{color:var(--primary-dk);}
+
+/* ══════════════════════════════════════
+   피드백 탭
+══════════════════════════════════════ */
+.fb-inner{max-width:680px;margin:0 auto;}
+.fb-tabs{display:flex;border:1px solid rgba(200,168,75,.2);margin-bottom:36px;}
+.fbtab{flex:1;background:transparent;border:none;color:rgba(245,240,232,.5);padding:14px 12px;font-family:var(--font-title);font-size:.83rem;letter-spacing:.07em;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.fbtab:first-child{border-right:1px solid rgba(200,168,75,.2);}
+.fbtab.on{background:rgba(200,168,75,.1);color:var(--primary);}
+.fbtab:hover:not(.on){color:var(--cream);}
+.fbbadge{background:var(--primary);color:var(--bg);font-size:.56rem;font-weight:700;padding:2px 7px;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
+.fb-pane{display:none;flex-direction:column;gap:24px;}
+.fb-pane.on{display:flex;}
+.fblbl{font-size:.7rem;color:var(--gray);letter-spacing:.15em;font-family:var(--font-title);}
+.stars-row{display:flex;justify-content:center;gap:5px;margin:10px 0 6px;}
+.star{font-size:2.2rem;color:rgba(200,168,75,.18);cursor:pointer;transition:all .2s;user-select:none;line-height:1;}
+.star.lit{color:var(--primary);text-shadow:0 0 10px rgba(200,168,75,.4);transform:scale(1.1);}
+.shint{text-align:center;font-size:.68rem;color:var(--gray);min-height:16px;}
+.fbtags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.tag{background:transparent;border:1px solid rgba(200,168,75,.18);color:rgba(245,240,232,.5);padding:6px 13px;font-size:.74rem;cursor:pointer;transition:all .2s;font-family:'Noto Sans KR',sans-serif;}
+.tag:hover{border-color:rgba(200,168,75,.4);color:var(--cream);}
+.tag.on{background:rgba(200,168,75,.14);border-color:var(--primary);color:var(--primary);}
+.fbta,.fbin{background:var(--bg2);border:1px solid rgba(200,168,75,.15);color:var(--cream);padding:13px 16px;font-size:.85rem;font-family:'Noto Sans KR',sans-serif;outline:none;width:100%;resize:none;transition:border-color .3s;line-height:1.7;}
+.fbta:focus,.fbin:focus{border-color:rgba(200,168,75,.4);}
+.fbta::placeholder,.fbin::placeholder{color:rgba(107,96,87,.5);}
+.fbrow{display:flex;gap:9px;}
+.fbin{flex:1;}
+.fbbtn{background:var(--primary);color:var(--bg);border:none;padding:0 28px;font-family:var(--font-title);font-size:.83rem;font-weight:700;letter-spacing:.1em;cursor:pointer;transition:background .3s;white-space:nowrap;flex-shrink:0;}
+.fbbtn:hover{background:var(--primary-lt);}
+.fbbtn.red{background:var(--accent);color:var(--cream);}
+.fbbtn.red:hover{background:#a52020;}
+.idnote{display:flex;gap:13px;background:rgba(200,168,75,.05);border:1px solid rgba(200,168,75,.17);border-left:3px solid var(--primary);padding:16px 20px;}
+.idnote-ico{font-size:1.6rem;flex-shrink:0;}
+.idnote-body{font-size:.8rem;color:var(--gray);line-height:1.8;}
+.idnote-body strong{color:var(--cream);display:block;margin-bottom:3px;font-family:var(--font-title);}
+.idnote-body em{font-style:normal;color:var(--primary);font-weight:700;}
+.fbdone{display:none;text-align:center;padding:40px 0;}
+.fbdone.show{display:block;animation:fadeIn .6s ease;}
+.done-ico{font-size:2.6rem;margin-bottom:12px;}
+.done-title{font-family:var(--font-title);font-size:1.3rem;color:var(--primary);margin-bottom:6px;letter-spacing:.1em;}
+.done-sub{font-size:.78rem;color:var(--gray);}
+.coupon{max-width:320px;margin:24px auto 0;border:1px solid rgba(200,168,75,.35);}
+.ctop,.cbot{background:rgba(200,168,75,.1);padding:8px 16px;text-align:center;font-size:.64rem;color:var(--primary);letter-spacing:.16em;font-family:var(--font-title);}
+.ctop{border-bottom:1px dashed rgba(200,168,75,.25);}
+.cbot{border-top:1px dashed rgba(200,168,75,.25);font-size:.6rem;color:var(--gray);}
+.cbody{background:var(--bg2);padding:24px 20px;text-align:center;}
+.cico{font-size:1.8rem;margin-bottom:10px;}
+.cttl{font-family:var(--font-title);font-size:.95rem;color:var(--cream);line-height:1.5;margin-bottom:14px;}
+.cttl em{font-style:normal;color:var(--primary);font-size:1.6rem;display:block;line-height:1.2;}
+.ccode{display:inline-block;background:rgba(200,168,75,.1);border:1px solid rgba(200,168,75,.3);color:var(--primary);font-family:monospace;font-size:1.2rem;letter-spacing:.18em;padding:6px 20px;margin-bottom:12px;font-weight:700;}
+.cinfo{font-size:.68rem;color:var(--gray);line-height:1.8;}
+.cinfo small{display:block;font-size:.6rem;color:rgba(107,96,87,.5);margin-top:2px;}
+
+/* ══════════════════════════════════════
+   오시는 길 탭
+══════════════════════════════════════ */
+.loc-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+.loch3{font-family:var(--font-title);font-size:1.6rem;font-weight:900;color:var(--cream);margin-bottom:28px;line-height:1.4;}
+.locrow{display:flex;gap:14px;margin-bottom:18px;}
+.locico{font-size:1.1rem;flex-shrink:0;margin-top:2px;}
+.loctxt h4{font-size:.7rem;color:var(--primary);letter-spacing:.15em;margin-bottom:3px;font-family:var(--font-title);}
+.loctxt p{font-size:.83rem;color:var(--cream);line-height:1.7;}
+.loctxt span{font-size:.7rem;color:var(--gray);}
+.mapbox{aspect-ratio:4/3;background:var(--bg2);border:1px solid rgba(200,168,75,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;position:relative;overflow:hidden;}
+.mapbox::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(200,168,75,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,168,75,.03) 1px,transparent 1px);background-size:40px 40px;}
+.mapbox>*{position:relative;}
+.mappin{font-size:2.3rem;}
+.mapname{font-family:var(--font-title);font-size:1rem;color:var(--primary);}
+.mapaddr{font-size:.72rem;color:var(--gray);text-align:center;line-height:1.7;}
+.mapbtn{background:var(--primary);color:var(--bg);padding:8px 20px;font-size:.76rem;font-weight:700;letter-spacing:.1em;text-decoration:none;font-family:var(--font-title);transition:background .3s;}
+.mapbtn:hover{background:var(--primary-lt);}
+
+/* ══════════════════════════════════════
+   푸터
+══════════════════════════════════════ */
+footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:48px 40px 32px;text-align:center;margin-top:40px;}
+.ftlogo{font-family:var(--font-title);font-size:1.4rem;font-weight:900;color:var(--primary);margin-bottom:6px;letter-spacing:.15em;}
+.ftsub{font-size:.66rem;color:var(--gray);letter-spacing:.18em;margin-bottom:24px;}
+.ftlinks{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:24px;}
+.ftlinks a{font-size:.73rem;color:var(--gray);text-decoration:none;letter-spacing:.1em;transition:color .3s;}
+.ftlinks a:hover{color:var(--primary);}
+.ftcopy{font-size:.64rem;color:rgba(107,96,87,.4);}
+
+/* ══════════════════════════════════════
+   반응형
+══════════════════════════════════════ */
+@media(max-width:768px){
+  header{padding:0 20px;}
+  .wrap{padding:48px 20px;}
+  .loc-grid{grid-template-columns:1fr;gap:32px;}
+  .hero-stats{gap:24px;}
+  .fbrow{flex-direction:column;}
+  .tab-btn{padding:0 16px;font-size:.75rem;}
+}
+</style>
+</head>
+<body data-ver="사극">
+
+<!-- 헤더 -->
+<header>
+  <a href="#" class="h-logo" onclick="showTab('home');return false;">
+    오빠피씨방
+    <small>OPPA PC BANG · BUPYEONG 6F</small>
+  </a>
+
+  <!-- 버전 선택기 -->
+  <div class="ver-selector" id="verSelector">
+    <button class="ver-btn" onclick="toggleVer()">
+      🏯 ver. 사극 <span class="ver-arrow">▾</span>
+    </button>
+    <div class="ver-dropdown" id="verDropdown">
+      <div class="ver-option active" onclick="setVer('사극')">ver. 사극</div>
+      <div class="ver-option locked">ver. ??? <span class="lock">🔒</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- 탭 네비게이션 -->
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn on" onclick="showTab('home')">🏯 홈</button>
+  <button class="tab-btn" onclick="showTab('facility')">⚡ 시설</button>
+  <button class="tab-btn" onclick="showTab('menu')">🍳 메뉴·요금</button>
+  <button class="tab-btn" onclick="showTab('sitcom')">🎬 시트콤</button>
+  <button class="tab-btn" onclick="showTab('events')">🏆 이벤트</button>
+  <button class="tab-btn" onclick="showTab('reviews')">⭐ 후기</button>
+  <button class="tab-btn" onclick="showTab('location')">📍 오시는 길</button>
+  <button class="tab-btn" onclick="showTab('feedback')">💬 피드백</button>
+</nav>
+
+<!-- ════════ 콘텐츠 ════════ -->
+<div class="content">
+
+  <!-- 홈 탭 -->
+  <div class="tab-panel on" id="panel-home">
+    <div class="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-badge" id="heroBadge">조선 제일의 피씨방</div>
+      <div class="hero-title">오빠피씨방</div>
+      <span class="hero-ver" id="heroVer">ver. 사극</span>
+      <p class="hero-sub">부평에 조선 제일의 피씨방이 열리었사옵니다</p>
+      <div class="hero-stats">
+        <div><span class="stat-num">3,000</span><span class="stat-lbl">무한리필 음료 (원)</span></div>
+        <div><span class="stat-num">75+</span><span class="stat-lbl">매달 게임 미션</span></div>
+        <div><span class="stat-num">6F</span><span class="stat-lbl">탁 트인 부평 뷰</span></div>
+        <div><span class="stat-num">1Hr</span><span class="stat-lbl">신규가입 무료쿠폰</span></div>
+      </div>
+      <button class="btn-gold" onclick="showTab('facility')">🏯 매장 둘러보기</button>
+      <p class="hero-loc"><strong>부평역</strong> 도보 3분 · <strong>6층</strong></p>
+    </div>
+
+    <div class="wrap" style="padding-top:0;">
+      <div class="sec-hdr">
+        <span class="sec-tag">QUICK MENU</span>
+        <h2>무엇이<br><em>궁금하시옵니까</em></h2>
+      </div>
+      <div class="preview-grid" id="previewGrid">
+        <div class="prev-card" onclick="showTab('facility')">
+          <span class="prev-icon">⚡</span>
+          <div class="prev-title">매장 시설</div>
+          <div class="prev-desc">래피드 트리거 · 모니터 암 · VOG · 청결 관리 · 서빙 로봇 · 6층 뷰</div>
+          <span class="prev-link">시설 전체 보기 →</span>
+        </div>
+        <div class="prev-card" onclick="showTab('menu')">
+          <span class="prev-icon">🍳</span>
+          <div class="prev-title">메뉴 · 요금</div>
+          <div class="prev-desc">무한리필 음료 3,000원 · 간장계란밥 2,500원 · 신규 1시간 무료</div>
+          <span class="prev-link">메뉴 전체 보기 →</span>
+        </div>
+        <div class="prev-card" onclick="showTab('sitcom')">
+          <span class="prev-icon">🎬</span>
+          <div class="prev-title">시트콤</div>
+          <div class="prev-desc">조선시대 PC방 시트콤 · 사장님 · 한준 · 서아의 이야기 · 매주 월·수·금</div>
+          <span class="prev-link">시트콤 보러가기 →</span>
+        </div>
+        <div class="prev-card" onclick="showTab('events')">
+          <span class="prev-icon">🏆</span>
+          <div class="prev-title">이벤트 · 대회</div>
+          <div class="prev-desc">매달 롤·배그·FC온라인 대회 · 미션 75개 · 이기면 무료 시간</div>
+          <span class="prev-link">이벤트 전체 보기 →</span>
+        </div>
+        <div class="prev-card" onclick="showTab('feedback')">
+          <span class="prev-icon">💡</span>
+          <div class="prev-title">숏츠 아이디어</div>
+          <div class="prev-desc">아이디어 채택 시 10시간 이용권 증정 · 당신의 아이디어가 실제 영상으로</div>
+          <span class="prev-link" style="color:#e8c96a;">10시간 쿠폰 받기 →</span>
+        </div>
+        <div class="prev-card" onclick="showTab('location')">
+          <span class="prev-icon">📍</span>
+          <div class="prev-title">오시는 길</div>
+          <div class="prev-desc">인천 부평역 도보 3분 · 6층 · 24시간 운영</div>
+          <span class="prev-link">지도 보기 →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 시설 탭 -->
+  <div class="tab-panel" id="panel-facility">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="sec-tag">FACILITY</span>
+        <h2>다른 피씨방과<br><em>다른 이유</em></h2>
+        <p class="sec-desc">손님이 오빠피씨방으로 몰리는 이유가 있사옵니다</p>
+      </div>
+      <div class="fac-grid" id="facGrid">
+        <!-- JS로 렌더링 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 메뉴 탭 -->
+  <div class="tab-panel" id="panel-menu">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="sec-tag">MENU</span>
+        <h2>조선 최고<br><em>먹거리</em></h2>
+        <p class="sec-desc">PC방의 한계를 깬 프리미엄 메뉴이옵니다</p>
+      </div>
+      <div id="menuContent">
+        <!-- JS로 렌더링 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 시트콤 탭 -->
+  <div class="tab-panel" id="panel-sitcom">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="sec-tag">SITCOM</span>
+        <h2>조선 피씨방<br><em>시트콤</em></h2>
+        <p class="sec-desc">매주 월·수·금 공개되옵니다</p>
+      </div>
+      <div class="sitcom-filter" id="sitcomFilter">
+        <button class="sf-btn on" onclick="filterSitcom('all',this)">전체</button>
+        <button class="sf-btn" onclick="filterSitcom('1부',this)">1부 · 오픈과 첫 만남</button>
+        <button class="sf-btn" onclick="filterSitcom('2부',this)">2부 · 썸과 사건들</button>
+        <button class="sf-btn" onclick="filterSitcom('스페셜',this)">스페셜</button>
+      </div>
+      <div class="reel-grid" id="reelGrid">
+        <!-- JS로 렌더링 -->
+      </div>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="https://www.instagram.com" target="_blank" class="btn-gold" style="display:inline-block;">인스타그램에서 전편 보기 →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 이벤트 탭 -->
+  <div class="tab-panel" id="panel-events">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="sec-tag">EVENTS</span>
+        <h2>매달 열리는<br><em>대회와 이벤트</em></h2>
+        <p class="sec-desc">타 PC방 대비 10배 많은 게임 미션. 이기면 공짜 시간이옵니다.</p>
+      </div>
+      <div class="ev-grid" id="evGrid">
+        <!-- JS로 렌더링 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 후기 탭 -->
+  <div class="tab-panel" id="panel-reviews">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="sec-tag">REVIEWS</span>
+        <h2>손님들의<br><em>말씀이옵니다</em></h2>
+      </div>
+    </div>
+    <div class="rv-scroll">
+      <div class="rv-track" id="rvTrack">
+        <!-- JS로 렌더링 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 오시는 길 탭 -->
+  <div class="tab-panel" id="panel-location">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="sec-tag">LOCATION</span>
+        <h2>찾아오시는<br><em>길이옵니다</em></h2>
+      </div>
+      <div class="loc-grid">
+        <div>
+          <p class="loch3">부평역 도보<br>3분 거리이옵니다</p>
+          <div class="locrow"><span class="locico">📍</span><div class="loctxt"><h4>주소</h4><p>인천광역시 부평구 (부평역 인근 6층)</p></div></div>
+          <div class="locrow"><span class="locico">🚇</span><div class="loctxt"><h4>지하철</h4><p>1호선 · 7호선 부평역</p><span>도보 3분 거리</span></div></div>
+          <div class="locrow"><span class="locico">🕐</span><div class="loctxt"><h4>운영시간</h4><p>24시간 연중무휴</p><span>청소년은 밤 10시 이후 이용 불가</span></div></div>
+          <div class="locrow"><span class="locico">📱</span><div class="loctxt"><h4>문의</h4><p>인스타그램 DM으로 문의하시옵소서</p></div></div>
+        </div>
+        <div class="mapbox">
+          <div class="mappin">📍</div>
+          <div class="mapname">오빠피씨방</div>
+          <div class="mapaddr">인천 부평구 · 6층<br>부평역 도보 3분</div>
+          <a href="https://map.naver.com" target="_blank" class="mapbtn">네이버 지도로 보기 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 피드백 탭 -->
+  <div class="tab-panel" id="panel-feedback">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="sec-tag">FEEDBACK</span>
+        <h2>한 말씀<br><em>남겨주시옵소서</em></h2>
+        <p class="sec-desc">손님의 말씀이 오빠피씨방을 더 좋게 만들사옵니다</p>
+      </div>
+      <div class="fb-inner">
+        <div class="fb-tabs">
+          <button class="fbtab on" onclick="switchFb('review')">💬 방문 후기</button>
+          <button class="fbtab" onclick="switchFb('idea')">🎬 숏츠 아이디어 <span class="fbbadge">10시간 증정</span></button>
+        </div>
+
+        <!-- 후기 -->
+        <div class="fb-pane on" id="fbReview">
+          <div>
+            <div class="fblbl" style="text-align:center;">방문 만족도</div>
+            <div class="stars-row">
+              <span class="star" data-v="1">★</span><span class="star" data-v="2">★</span>
+              <span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span>
+            </div>
+            <div class="shint" id="shint">별을 눌러 평점을 선택하시옵소서</div>
+          </div>
+          <div>
+            <div class="fblbl">어떤 점이 좋으셨사옵니까?</div>
+            <div class="fbtags">
+              <button class="tag" data-v="무한리필">🥤 무한리필 음료</button>
+              <button class="tag" data-v="래피드트리거">⚡ 래피드 트리거</button>
+              <button class="tag" data-v="모니터암">🖥️ 모니터 암</button>
+              <button class="tag" data-v="청결">✨ 매장 청결</button>
+              <button class="tag" data-v="화장실">🚻 화장실</button>
+              <button class="tag" data-v="뷰">🌇 6층 뷰</button>
+              <button class="tag" data-v="간장계란밥">🍳 간장계란밥</button>
+              <button class="tag" data-v="서빙로봇">🤖 서빙 로봇</button>
+              <button class="tag" data-v="이벤트">🏆 이벤트·대회</button>
+              <button class="tag" data-v="가격">💰 가격</button>
+            </div>
+          </div>
+          <textarea class="fbta" id="rvText" placeholder="자유롭게 말씀해 주시옵소서... (선택사항)" rows="4"></textarea>
+          <div class="fbrow">
+            <input type="text" class="fbin" id="rvNick" placeholder="닉네임 (선택사항)" maxlength="20">
+            <button class="fbbtn" onclick="submitReview()">후기 남기기</button>
+          </div>
+          <div class="fbdone" id="rvDone">
+            <div class="done-ico">🏯</div>
+            <div class="done-title">감사하옵니다</div>
+            <div class="done-sub">손님의 말씀을 소중히 간직하겠사옵니다</div>
+          </div>
+        </div>
+
+        <!-- 아이디어 -->
+        <div class="fb-pane" id="fbIdea">
+          <div class="idnote">
+            <div class="idnote-ico">🎬</div>
+            <div class="idnote-body">
+              <strong>채택된 아이디어는 실제 숏츠로 제작됩니다!</strong>
+              오빠피씨방 시트콤에 쓰일 재미있는 상황·대사·에피소드를 제안해주시옵소서.<br>
+              <em>채택 시 10시간 이용권을 증정하옵니다.</em>
+            </div>
+          </div>
+          <div>
+            <div class="fblbl">어떤 유형의 아이디어이옵니까?</div>
+            <div class="fbtags">
+              <button class="tag" data-v="사장님">👴 사장님</button>
+              <button class="tag" data-v="한준">🎮 한준</button>
+              <button class="tag" data-v="서아">💅 서아</button>
+              <button class="tag" data-v="손님">👥 손님</button>
+              <button class="tag" data-v="스페셜">🏯 스페셜 게스트</button>
+              <button class="tag" data-v="홍보">📢 매장 홍보</button>
+              <button class="tag" data-v="이벤트">🎁 이벤트</button>
+              <button class="tag" data-v="기타">💡 기타</button>
+            </div>
+          </div>
+          <textarea class="fbta" id="idText" placeholder="예) 손님이 무한리필 기록 세우려다 사장님한테 걸리는 장면&#10;예) 래피드 트리거로 과거시험 보는 선비&#10;&#10;어떤 아이디어든 환영이옵니다!" rows="6"></textarea>
+          <div class="fbrow">
+            <input type="text" class="fbin" id="idNick" placeholder="닉네임 또는 연락처 (쿠폰 전달용)" maxlength="30">
+            <button class="fbbtn red" onclick="submitIdea()">아이디어 제출</button>
+          </div>
+          <div class="fbdone" id="idDone">
+            <div class="done-ico">🎬</div>
+            <div class="done-title">아이디어 접수 완료!</div>
+            <div class="done-sub">검토 후 채택 시 연락드리겠사옵니다</div>
+            <div class="coupon">
+              <div class="ctop">✂ 숏츠 아이디어 채택 쿠폰 ✂</div>
+              <div class="cbody">
+                <div class="cico">🎁</div>
+                <div class="cttl">채택 시 드리는<br><em>10시간</em> 이용권</div>
+                <div class="ccode" id="ccode">IDEA-000000</div>
+                <div class="cinfo">이 화면을 캡처하시어 보관해주시옵소서<br>채택 연락 후 카운터에 제시하시옵소서<small>채택 확정 후 1회 사용 가능 · 유효기간 60일</small></div>
+              </div>
+              <div class="cbot">🏯 오빠피씨방 · 부평역 도보 3분 · 6층</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<footer>
+  <div class="ftlogo">오빠피씨방</div>
+  <div class="ftsub">OPPA PC BANG · 조선 제일의 피씨방 · BUPYEONG 6F</div>
+  <div class="ftlinks">
+    <a href="#" onclick="showTab('facility');return false;">시설</a>
+    <a href="#" onclick="showTab('menu');return false;">메뉴·요금</a>
+    <a href="#" onclick="showTab('sitcom');return false;">시트콤</a>
+    <a href="#" onclick="showTab('events');return false;">이벤트</a>
+    <a href="#" onclick="showTab('feedback');return false;">피드백</a>
+    <a href="https://www.instagram.com" target="_blank">인스타그램</a>
+  </div>
+  <div class="ftcopy">© 2026 오빠피씨방 · 인천 부평역 도보 3분 · 6층</div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════
+   데이터 (내용 추가 = 여기만 수정)
+══════════════════════════════════════ */
+const DATA = {
+
+  // ── 시설 (추가하면 자동으로 카드 생성)
+  facility: [
+    {ico:'⚡', title:'전 좌석 래피드 트리거 키보드', desc:'살짝만 닿아도 즉각 반응하는 신묘한 건반이옵니다. 다른 피씨방은 꾹 눌러야 하지만 여기선 생각만 해도 반응하옵니다. FPS 승패가 여기서 갈리옵니다.', pt:'↑ 전 좌석 기본 장착'},
+    {ico:'🖥️', title:'전 좌석 모니터 암', desc:'내 눈높이에 맞게 위아래·좌우 자유롭게 조절 가능하옵니다. 목이 꺾이지 않사옵니다. 장시간 게임해도 편안한 자세를 유지하옵니다.', pt:'↑ 인체공학적 설계'},
+    {ico:'💻', title:'VOG 독립 구동 시스템', desc:'서버 공유 방식이 아닌 독립 구동이옵니다. 다른 손님이 무거운 게임을 해도 내 화면에 영향이 없사옵니다. 렉 없는 쾌적한 프레임을 보장하옵니다.', pt:'↑ 하늘의 목소리가 지키옵니다'},
+    {ico:'🥤', title:'무한리필 음료', desc:'단돈 3,000원에 퇴실할 때까지 무제한이옵니다. 펩시제로 등 12종 음료와 얼음 포함. 온 조선이 이 소문에 몰려오고 있사옵니다.', pt:'↑ 3,000원 · 12종 · 무제한'},
+    {ico:'✨', title:'전문 청소업체 관리', desc:'알바생이 아닌 전문 청소업체가 정기 관리하옵니다. 화장실도 예쁘고 깔끔하며 오픈 주방은 흠 잡을 데가 없사옵니다. 특히 여성 손님들의 극찬이 이어지옵니다.', pt:'↑ 여성 손님 극찬 1위'},
+    {ico:'🤖', title:'서빙 로봇 (방자 로봇)', desc:'귀여운 서빙 로봇이 음식을 배달하옵니다. 쇠로 만든 방자가 열심히 일하고 있사옵니다. 주문 후 자리에서 기다리시면 되옵니다.', pt:'↑ 자리 서빙 운영 중'},
+    {ico:'🌇', title:'6층 탁 트인 부평 뷰', desc:'창문 필름을 없앤 탁 트인 6층 전망이옵니다. 답답한 지하 피씨방 느낌이 없사옵니다. 스카이라운지 감성으로 데이트 코스로도 완벽하옵니다.', pt:'↑ 스카이라운지 감성'},
+    {ico:'🎮', title:'다양한 모니터 라인업', desc:'벤큐 144Hz·240Hz, QHD 165Hz 등 게임 장르에 맞게 골라 앉는 재미가 있사옵니다. FPS, RPG, 배그, 롤 — 어떤 게임이든 최적 환경이 있사옵니다.', pt:'↑ 장르별 최적화'},
+  ],
+
+  // ── 메뉴 (카테고리별로 추가)
+  menu: [
+    { cat:'🍳 시그니처 푸드', items:[
+      {name:'추억의 계란 간장밥', desc:'특등급 찹쌀 · 무항생제 계란\n방앗간 직짜 참기름', price:'2,500원', badge:'🏆 시그니처'},
+      {name:'치킨마요 덮밥', desc:'수제 비법소스 오빠피씨 대표 식사\n손님 만족도 최상위', price:'7,000원', badge:'⭐ 강추'},
+      {name:'오빠 블랙', desc:'특제소스 + 짜파게티 오빠피씨 레시피\n직접 개발한 오리지널 메뉴', price:'5,000원', badge:'✨ 오리지널'},
+      {name:'불닭 창조주 레시피', desc:'유퀴즈 화제 레시피 그대로\n매운맛 도전자 환영', price:'7,500원', badge:'🔥 화제'},
+      {name:'서울시스터즈 김치우동', desc:'핫~매운 김치우동\n국물이 예술인 베스트 메뉴', price:'7,000원', badge:'⭐ BEST'},
+    ]},
+    { cat:'🥤 음료 · 디저트', items:[
+      {name:'무한리필 음료', desc:'펩시제로 등 12종 + 얼음\n퇴실할 때까지 무제한', price:'3,000원', badge:'🔥 만족도 1위'},
+      {name:'블루보틀 아메리카노', desc:'프리미엄 블루보틀 원두\n카페 절반 가격에 즐기기', price:'2,800원'},
+      {name:'수제 케이크', desc:'딸기·치즈·초코 등 매일 변경\n데이트 코스 완성', price:'5,500원~'},
+      {name:'하겐다즈 스틱바', desc:'초코·쿠키앤크림 등 4종\n프리미엄 아이스크림', price:'6,900원'},
+    ]},
+    { cat:'🍟 간식 · 분식', items:[
+      {name:'수제소세지', desc:'육즙 가득 수제 소세지\n오빠피씨 픽 간식', price:'3,000원', badge:'⭐ BEST'},
+      {name:'안흥찐빵', desc:'정통 안흥 찐빵 2개\n달콤하고 촉촉', price:'2,700원'},
+      {name:'수제 갈릭 러스크', desc:'바삭하고 고소한 수제 러스크\n커피와 찰떡궁합', price:'2,500원'},
+      {name:'소떡소떡', desc:'소세지 + 떡꼬치 황금 조합\n언제나 인기 간식', price:'3,000원'},
+    ]},
+    { cat:'💰 이용요금', items:[
+      {name:'신규 가입 즉시 1시간', desc:'가입만 하면 1시간 무료\n묻지도 따지지도 않고 지급', price:'1시간 무료', badge:'🎁 신규 혜택'},
+      {name:'현금 결제 보너스', desc:'현금 충전 시 카드보다\n훨씬 많은 보너스 시간', price:'1만원 = 11시간'},
+      {name:'회원 카드 요금', desc:'회원 가입 후 카드 결제\n편리하고 경제적으로', price:'1,000원/50분~'},
+      {name:'비회원 요금', desc:'가입 없이 바로 이용\n언제든 방문하세요', price:'1,000원/40분~'},
+    ]},
+  ],
+
+  // ── 시트콤 (편수 추가 = 여기에 한 줄 추가)
+  sitcom: [
+    {ep:'#01', title:'문을 열었사옵니다', phase:'1부', url:'https://www.instagram.com'},
+    {ep:'#02', title:'지게에 PC를 들고 나타난 자', phase:'1부', url:'https://www.instagram.com'},
+    {ep:'#03', title:'말 없는 지원자', phase:'1부', url:'https://www.instagram.com'},
+    // 새 편 추가: {ep:'#04', title:'첫 출근 대참사', phase:'1부', url:'https://...'},
+  ],
+
+  // ── 이벤트 (추가하면 카드 생성)
+  events: [
+    {date:'매월 진행', title:'🏆 리그 오브 레전드 대회', desc:'조선 최강의 소환사를 가리는 대회이옵니다. 팀 단위로 참가하시어 무료 시간을 가져가시옵소서.', prize:'🎁 우승 시 무료 이용시간 지급', active:true},
+    {date:'매월 진행', title:'🔫 배틀그라운드 대회', desc:'전국 최강자를 가리는 배그 대회이옵니다. 단독 참가 가능. 래피드 트리거로 승률을 높이시옵소서.', prize:'🎁 우승 시 무료 이용시간 지급', active:true},
+    {date:'매월 진행', title:'⚽ FC 온라인 대회', desc:'FC 온라인 최강 구단을 가리옵니다. 매월 새로운 토너먼트가 열리오니 놓치지 마시옵소서.', prize:'🎁 우승 시 무료 이용시간 지급', active:true},
+    {date:'상시 진행', title:'📋 게임 미션 75개', desc:'다른 PC방 미션이 8개일 때 오빠피씨방은 75개이옵니다. 게임만 잘해도 공짜 시간이 복사되옵니다.', prize:'🎁 미션 달성 시 무료 시간', active:false},
+  ],
+
+  // ── 후기 (추가하면 자동으로 무한 스크롤에 포함)
+  reviews: [
+    {stars:5, text:'"무한리필 음료가 진짜인지 의심해서 10잔 넘게 마셔봤는데 진짜였사옵니다. 3,000원에 이게 말이 되옵니까."', author:'단골 손님', sub:'부평 거주'},
+    {stars:5, text:'"PC방에서 화장실을 두 번 갔는데 둘 다 너무 깨끗하고 예뻤어요. 꽃도 있고 향도 좋고... 여기 단골 됐습니다."', author:'여성 손님', sub:'인스타 후기'},
+    {stars:5, text:'"래피드 트리거 키보드 처음 써봤는데 진짜 다릅니다. 생각만 해도 반응한다는 게 과장이 아니에요."', author:'발로란트 플레이어', sub:'20대'},
+    {stars:5, text:'"6층 뷰 보면서 게임하니까 기분이 다르옵니다. 답답한 지하 PC방이랑 차원이 달라요."', author:'단골 손님', sub:'남동구 거주'},
+    {stars:5, text:'"모니터 암 덕분에 3시간 게임했는데 목이 하나도 안 아팠어요. 다른 피씨방은 이제 못 가겠어요."', author:'게임 마니아', sub:'인스타 댓글'},
+    {stars:5, text:'"신규가입하면 1시간 무료라고 해서 반신반의했는데 진짜 그냥 줬습니다. 바로 친구들한테 소문 냈어요."', author:'신규 손님', sub:'20대'},
+    {stars:5, text:'"간장계란밥 일본 요리집보다 맛있어요. 2,500원인데 재료가 이렇게 좋을 줄 몰랐습니다."', author:'먹방 단골', sub:'네이버 리뷰'},
+    {stars:5, text:'"서빙 로봇이 귀여워서 주문을 더 하게 됩니다. 매장 전체 분위기가 너무 독특하고 좋아요."', author:'커플 손님', sub:'데이트 후기'},
+  ],
+};
+
+/* ══════════════════════════════════════
+   렌더링 함수
+══════════════════════════════════════ */
+function renderAll() {
+  renderFacility();
+  renderMenu();
+  renderSitcom('all');
+  renderEvents();
+  renderReviews();
+}
+
+function renderFacility() {
+  document.getElementById('facGrid').innerHTML =
+    DATA.facility.map(f=>`
+      <div class="fac-card">
+        <span class="fac-ico">${f.ico}</span>
+        <div class="fac-title">${f.title}</div>
+        <div class="fac-desc">${f.desc}</div>
+        <span class="fac-pt">${f.pt}</span>
+      </div>`).join('');
+}
+
+function renderMenu() {
+  document.getElementById('menuContent').innerHTML =
+    DATA.menu.map((cat,i)=>`
+      <div class="mcat">${cat.cat}</div>
+      <div class="mgrid">
+        ${cat.items.map(it=>`
+          <div class="mitem">
+            <div>
+              <h4>${it.name}</h4>
+              <p>${it.desc.replace(/\n/g,'<br>')}</p>
+              ${it.badge?`<span class="mbadge">${it.badge}</span>`:''}
+            </div>
+            <span class="mprice">${it.price}</span>
+          </div>`).join('')}
+      </div>
+      ${i<DATA.menu.length-1?'<div class="divider"></div>':''}`).join('');
+}
+
+function renderSitcom(filter) {
+  const items = filter==='all' ? DATA.sitcom : DATA.sitcom.filter(s=>s.phase===filter);
+  document.getElementById('reelGrid').innerHTML =
+    items.map(s=>`
+      <a href="${s.url}" target="_blank" class="rcard">
+        <div class="roverlay"></div>
+        <div class="rplay">▶</div>
+        <div class="rep">${s.ep}</div>
+        <div class="rtitle">${s.title}</div>
+        <div class="rphase">${s.phase}</div>
+      </a>`).join('');
+}
+
+function filterSitcom(filter, btn) {
+  document.querySelectorAll('.sf-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderSitcom(filter);
+}
+
+function renderEvents() {
+  document.getElementById('evGrid').innerHTML =
+    DATA.events.map(e=>`
+      <div class="ecard${e.active?' on':''}">
+        <div class="edate">${e.date}</div>
+        <div class="etitle">${e.title}</div>
+        <div class="edesc">${e.desc}</div>
+        <div class="eprize">${e.prize}</div>
+      </div>`).join('');
+}
+
+function renderReviews() {
+  const rvs = [...DATA.reviews, ...DATA.reviews]; // 무한 스크롤 복제
+  document.getElementById('rvTrack').innerHTML =
+    rvs.map(r=>`
+      <div class="rvcard">
+        <div class="rvstars">${'★'.repeat(r.stars)}</div>
+        <div class="rvtext">${r.text}</div>
+        <div class="rvauthor">— <strong>${r.author}</strong> · ${r.sub}</div>
+      </div>`).join('');
+}
+
+/* ══════════════════════════════════════
+   탭 전환
+══════════════════════════════════════ */
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('panel-'+id).classList.add('on');
+  const tabs = ['home','facility','menu','sitcom','events','reviews','location','feedback'];
+  const idx = tabs.indexOf(id);
+  document.querySelectorAll('.tab-btn')[idx].classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ══════════════════════════════════════
+   버전 전환 (새 버전 추가 시 여기만)
+══════════════════════════════════════ */
+const VERSIONS = {
+  '사극': {
+    label:'🏯 ver. 사극',
+    badge:'조선 제일의 피씨방',
+    sub:'부평에 조선 제일의 피씨방이 열리었사옵니다',
+    verText:'ver. 사극',
+  },
+  // '현대': {
+  //   label:'🏙️ ver. 현대',
+  //   badge:'부평 최고의 PC방',
+  //   sub:'부평에서 가장 스마트한 PC방입니다',
+  //   verText:'ver. 현대',
+  // },
+};
+
+function toggleVer() {
+  document.getElementById('verSelector').classList.toggle('open');
+}
+
+function setVer(ver) {
+  document.body.setAttribute('data-ver', ver);
+  const v = VERSIONS[ver];
+  document.querySelector('.ver-btn').innerHTML = `${v.label} <span class="ver-arrow">▾</span>`;
+  document.getElementById('heroBadge').textContent = v.badge;
+  document.getElementById('heroVer').textContent = v.verText;
+  document.getElementById('verSelector').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.ver-selector'))
+    document.getElementById('verSelector').classList.remove('open');
+});
+
+/* ══════════════════════════════════════
+   피드백
+══════════════════════════════════════ */
+const hints=['','아쉬웠사옵니다','보통이었사옵니다','좋았사옵니다','매우 좋았사옵니다','최고이옵니다!'];
+let rating=0;
+
+document.querySelectorAll('.star').forEach(s=>{
+  s.addEventListener('mouseenter',()=>{
+    const v=+s.dataset.v;
+    document.querySelectorAll('.star').forEach(x=>x.classList.toggle('lit',+x.dataset.v<=v));
+    document.getElementById('shint').textContent=hints[v];
+  });
+  s.addEventListener('mouseleave',()=>{
+    document.querySelectorAll('.star').forEach(x=>x.classList.toggle('lit',+x.dataset.v<=rating));
+    document.getElementById('shint').textContent=rating?hints[rating]:'별을 눌러 평점을 선택하시옵소서';
+  });
+  s.addEventListener('click',()=>{
+    rating=+s.dataset.v;
+    document.querySelectorAll('.star').forEach(x=>x.classList.toggle('lit',+x.dataset.v<=rating));
+    document.getElementById('shint').textContent=hints[rating];
+  });
+});
+
+document.querySelectorAll('.tag').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('on')));
+
+function switchFb(tab){
+  document.querySelectorAll('.fbtab').forEach((t,i)=>t.classList.toggle('on',(tab==='review'&&i===0)||(tab==='idea'&&i===1)));
+  document.getElementById('fbReview').classList.toggle('on',tab==='review');
+  document.getElementById('fbIdea').classList.toggle('on',tab==='idea');
+}
+
+function submitReview(){
+  const text=document.getElementById('rvText').value.trim();
+  if(!rating&&!text){
+    const h=document.getElementById('shint');
+    h.textContent='⚠️ 별점 또는 내용을 입력해주시옵소서';
+    h.style.color='#c0392b';
+    return;
+  }
+  document.getElementById('fbReview').querySelectorAll('.stars-row,.shint,.fbtags,.fbta,.fbrow').forEach(el=>el.style.display='none');
+  document.getElementById('fbReview').querySelector('.fblbl').style.display='none';
+  document.getElementById('rvDone').classList.add('show');
+}
+
+function submitIdea(){
+  const text=document.getElementById('idText').value.trim();
+  if(!text){document.getElementById('idText').style.borderColor='#c0392b';return;}
+  const code='IDEA-'+Math.random().toString(36).substr(2,6).toUpperCase();
+  document.getElementById('ccode').textContent=code;
+  document.getElementById('fbIdea').querySelectorAll('.idnote,.fblbl,.fbtags,.fbta,.fbrow').forEach(el=>el.style.display='none');
+  document.getElementById('idDone').classList.add('show');
+}
+
+/* ══ 초기화 ══ */
+renderAll();
+</script>
+</body>
+</html>
