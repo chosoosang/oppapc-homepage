@@ -514,6 +514,12 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 /* 요금제 보너스 노트 */
 .ticket-bonus-note{margin-top:12px;padding:10px 14px;background:rgba(100,150,255,.08);border:1px solid rgba(100,150,255,.2);border-radius:8px;font-size:.78rem;color:rgba(245,240,232,.75);}
 .ticket-bonus-note strong{color:#7ab8f5;font-weight:700;}
+
+.ticket-auto-table{display:flex;flex-direction:column;gap:5px;margin-top:10px;}
+.auto-row{display:flex;align-items:center;gap:8px;padding:5px 8px;background:rgba(100,150,255,.06);border-radius:6px;}
+.auto-amount{font-family:var(--font-title);font-size:.9rem;color:var(--cream);font-weight:700;min-width:48px;}
+.auto-arrow{color:var(--gray);font-size:.8rem;}
+.auto-reward{color:#7ab8f5;font-weight:700;font-size:.85rem;}
 </style>
 </head>
 <body data-ver="사극">
@@ -1061,7 +1067,14 @@ function renderTicket() {
     <div class="ticket-section">
       <div class="ticket-sec-title">💳 회원 카드 요금</div>
       <div class="ticket-grid">${mkCards(card,'tag-card','카드')}</div>
-      <div class="ticket-bonus-note">💡 카드 자동결제 등록 시 <strong>1시간 추가 서비스 증정</strong></div>
+      <div class="ticket-bonus-note">
+        💡 카드 자동충전 등록 시 추가 서비스 증정<br>
+        <div class="ticket-auto-table">
+          <div class="auto-row"><span class="auto-amount">1만원</span><span class="auto-arrow">→</span><span class="auto-reward">1시간 증정</span></div>
+          <div class="auto-row"><span class="auto-amount">5만원</span><span class="auto-arrow">→</span><span class="auto-reward">5시간 증정</span></div>
+          <div class="auto-row"><span class="auto-amount">10만원</span><span class="auto-arrow">→</span><span class="auto-reward">10시간 증정</span></div>
+        </div>
+      </div>
     </div>
     <div class="ticket-section">
       <div class="ticket-sec-title">🚶 비회원 요금</div>
