@@ -149,7 +149,7 @@ header{
 /* ══════════════════════════════════════
    콘텐츠 영역
 ══════════════════════════════════════ */
-.content{padding-top:0;min-height:100vh;}
+.content{padding-top:108px;min-height:100vh;}
 .tab-panel{display:none;animation:fadeIn .4s ease;}
 .tab-panel.on{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -183,7 +183,7 @@ h2 em{font-style:normal;color:var(--primary);}
   background:radial-gradient(ellipse 70% 50% at 50% 40%,rgba(200,168,75,.07) 0%,transparent 70%);
 }
 .hero{
-  min-height:calc(100vh - 108px);
+  min-height:60vh;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   text-align:center;padding:60px 20px 80px;
@@ -567,7 +567,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 <div class="content">
 
   <!-- 홈 탭 -->
-  <div class="tab-panel on" id="panel-home" style="padding-top:108px;">
+  <div class="tab-panel on" id="panel-home">
     <div class="hero">
       <div class="hero-grid"></div>
       <div class="hero-badge" id="heroBadge">조선 제일의 피씨방</div>
