@@ -690,6 +690,55 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       <div style="text-align:center;margin-top:32px;">
         <a href="https://www.instagram.com" target="_blank" class="btn-gold" style="display:inline-block;">인스타그램에서 전편 보기 →</a>
       </div>
+
+      <div class="divider"></div>
+
+      <div class="sec-hdr" style="margin-top:40px;">
+        <span class="sec-tag">IDEA</span>
+        <h2>숏츠 아이디어<br><em>제안하시옵소서</em></h2>
+        <p class="sec-desc">채택된 아이디어는 실제 시트콤 숏츠로 제작됩니다 · 채택 시 10시간 이용권 증정</p>
+      </div>
+      <div style="max-width:680px;margin:0 auto;">
+        <div class="idnote">
+          <div class="idnote-ico">🎬</div>
+          <div class="idnote-body">
+            <strong>아이디어가 영상이 됩니다!</strong>
+            사장님·한준·서아가 나오는 재미있는 상황·대사·에피소드를 자유롭게 제안해주시옵소서.<br>
+            <em>채택 시 10시간 이용권을 증정하옵니다.</em>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <div class="fblbl">어떤 유형의 아이디어이옵니까?</div>
+          <div class="fbtags" style="margin-top:8px;">
+            <button class="tag" data-v="사장님">👴 사장님</button>
+            <button class="tag" data-v="한준">🎮 한준</button>
+            <button class="tag" data-v="서아">💅 서아</button>
+            <button class="tag" data-v="손님">👥 손님</button>
+            <button class="tag" data-v="스페셜">🏯 스페셜</button>
+            <button class="tag" data-v="기타">💡 기타</button>
+          </div>
+        </div>
+        <textarea class="fbta" id="sitcomIdea" placeholder="예) 손님이 무한리필 기록 세우려다 사장님한테 걸리는 장면&#10;예) 래피드 트리거로 과거시험 보는 선비&#10;&#10;어떤 아이디어든 환영이옵니다!" rows="5" style="margin-top:16px;"></textarea>
+        <div class="fbrow" style="margin-top:9px;">
+          <input type="text" class="fbin" id="sitcomNick" placeholder="닉네임 또는 연락처 (쿠폰 전달용)" maxlength="30">
+          <button class="fbbtn" style="background:var(--accent);color:var(--cream);" onclick="submitSitcomIdea()">아이디어 제출</button>
+        </div>
+        <div class="fbdone" id="sitcomDone">
+          <div class="done-ico">🎬</div>
+          <div class="done-title">아이디어 접수 완료!</div>
+          <div class="done-sub">검토 후 채택 시 연락드리겠사옵니다</div>
+          <div class="coupon">
+            <div class="ctop">✂ 숏츠 아이디어 채택 쿠폰 ✂</div>
+            <div class="cbody">
+              <div class="cico">🎁</div>
+              <div class="cttl">채택 시 드리는<br><em>10시간</em> 이용권</div>
+              <div class="ccode" id="sitcomCode">IDEA-000000</div>
+              <div class="cinfo">채택 확정 후 카운터에 제시하시옵소서</div>
+            </div>
+            <div class="cbot">🏯 오빠피씨방 · 부평역 도보 3분 · 6층</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -728,8 +777,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       </div>
       <div class="fb-inner">
         <div class="fb-tabs">
-          <button class="fbtab2 on" onclick="switchFb2('review')">💬 방문 후기</button>
-          <button class="fbtab2" onclick="switchFb2('idea')">🎬 숏츠 아이디어 <span class="fbbadge">10시간 증정</span></button>
+          <button class="fbtab2 on" onclick="switchFb2('review')" style="border-right:none;">💬 방문 후기 남기기</button>
         </div>
         <div class="fb-pane on" id="fbReview2">
           <div><div class="fblbl" style="text-align:center;">방문 만족도</div>
@@ -758,17 +806,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
           </div>
           <div class="fbdone" id="rvDone2"><div class="done-ico">🏯</div><div class="done-title">감사하옵니다</div><div class="done-sub">소중히 간직하겠사옵니다</div></div>
         </div>
-        <div class="fb-pane" id="fbIdea2">
-          <div class="idnote"><div class="idnote-ico">🎬</div>
-            <div class="idnote-body"><strong>채택된 아이디어는 실제 숏츠로 제작됩니다!</strong>재미있는 에피소드를 제안해주시옵소서.<br><em>채택 시 10시간 이용권을 증정하옵니다.</em></div>
-          </div>
-          <textarea class="fbta" id="idText2" placeholder="아이디어를 자유롭게 적어주세요!" rows="5"></textarea>
-          <div class="fbrow">
-            <input type="text" class="fbin" id="idNick2" placeholder="닉네임 또는 연락처 (쿠폰 전달용)">
-            <button class="fbbtn" onclick="submitIdea2()">아이디어 제출</button>
-          </div>
-          <div class="fbdone" id="idDone2"><div class="done-ico">🎬</div><div class="done-title">아이디어 접수 완료!</div><div class="done-sub">채택 시 연락드리겠사옵니다</div></div>
-        </div>
+
       </div>
     </div>
   </div>
@@ -1326,7 +1364,8 @@ function switchFb2(tab){
   document.getElementById('fbIdea2').classList.toggle('on',tab==='idea');
 }
 function submitReview2(){if(!rating2&&!document.getElementById('rvText2').value.trim()){document.getElementById('shint2').textContent='⚠️ 별점 또는 내용을 입력해주시옵소서';return;}document.getElementById('rvDone2').classList.add('show');}
-function submitIdea2(){const t=document.getElementById('idText2').value.trim();if(!t){document.getElementById('idText2').style.borderColor='#c0392b';return;}document.getElementById('idDone2').classList.add('show');}
+function submitIdea2(){const t=document.getElementById('idText2')?.value.trim();if(!t){if(document.getElementById('idText2'))document.getElementById('idText2').style.borderColor='#c0392b';return;}document.getElementById('idDone2')?.classList.add('show');}
+function submitSitcomIdea(){const t=document.getElementById('sitcomIdea').value.trim();if(!t){document.getElementById('sitcomIdea').style.borderColor='#c0392b';return;}document.getElementById('sitcomCode').textContent='IDEA-'+Math.random().toString(36).substr(2,6).toUpperCase();document.getElementById('sitcomDone').classList.add('show');}
 
 /* ══ 초기화 ══ */
 renderAll();
