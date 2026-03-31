@@ -487,21 +487,18 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 .mrow-cond{font-size:.78rem;color:rgba(245,240,232,.7);}
 .mrow-reward{font-size:.78rem;font-weight:700;color:var(--primary);white-space:nowrap;}
 
-/* ── 미션 히어로 배너 ── */
-.mission-hero{display:flex;align-items:center;gap:32px;flex-wrap:wrap;background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.2);border-radius:14px;padding:28px 32px;margin-bottom:28px;}
+.mission-hero{display:flex;align-items:center;gap:32px;flex-wrap:wrap;background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.2);border-radius:14px;padding:28px 32px;margin-bottom:24px;}
 .mhero-stat{display:flex;flex-direction:column;align-items:center;gap:4px;}
 .mhero-num{font-family:var(--font-title);font-size:2.6rem;color:var(--primary);line-height:1;}
-.mhero-label{font-size:.7rem;color:var(--gray);letter-spacing:.1em;text-transform:uppercase;}
+.mhero-label{font-size:.68rem;color:var(--gray);letter-spacing:.1em;text-transform:uppercase;}
 .mhero-divider{width:1px;height:48px;background:rgba(200,168,75,.2);}
-.mhero-desc{font-size:.8rem;color:var(--gray);flex:1;min-width:160px;}
-/* ── 미션 게임 카드 (요약형) ── */
-.mcard-ico{font-size:1.1rem;margin-right:4px;}
-.mcard-cnt{margin-left:auto;background:rgba(200,168,75,.15);color:var(--primary);font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:20px;}
-.mcard-type{font-size:.65rem;color:var(--gray);letter-spacing:.1em;margin-bottom:6px;text-transform:uppercase;}
-.mcard-summary{font-size:.85rem;color:var(--cream);font-weight:600;margin-bottom:8px;line-height:1.4;}
-.mcard-reward{font-size:.75rem;color:var(--gray);}
-.mcard-reward strong{color:var(--primary);}
-@media(max-width:600px){.mission-hero{gap:20px;padding:20px;}.mhero-num{font-size:2rem;}.mhero-divider{display:none;}}
+.mhero-desc{font-size:.85rem;color:var(--cream);font-weight:600;flex:1;min-width:160px;}
+.mission-game-wrap{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+.mgame-badge{display:flex;align-items:center;gap:6px;background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.15);border-radius:8px;padding:9px 14px;font-size:.83rem;font-weight:600;color:var(--cream);transition:all .2s;}
+.mgame-badge:hover{background:rgba(200,168,75,.14);border-color:var(--primary);}
+.mgame-badge span{font-size:.95rem;}
+.mission-cta{font-size:.75rem;color:var(--gray);text-align:center;padding:11px;background:rgba(200,168,75,.04);border-radius:8px;letter-spacing:.05em;}
+@media(max-width:600px){.mission-hero{gap:16px;padding:20px;}.mhero-num{font-size:2rem;}.mhero-divider{display:none;}}
 </style>
 </head>
 <body data-ver="사극">
@@ -672,7 +669,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       <div class="sec-hdr">
         <span class="sec-tag">EVENTS</span>
         <h2>매달 열리는<br><em>대회와 이벤트</em></h2>
-        <p class="sec-desc">매달 대회·미션으로 지급되는 무료 시간 <strong style="color:var(--primary);font-size:1.1em;">100시간 이상</strong> · 게임 미션 <strong style="color:var(--primary);">77개</strong></p>
+        <p class="sec-desc">매달 대회·미션으로 지급되는 무료 시간 <strong style="color:var(--primary);font-size:1.1em;">100시간 이상</strong> · 이번 달 활성 미션 <strong style="color:var(--primary);">75개</strong></p>
       </div>
       <div class="ev-grid" id="evGrid">
         <!-- JS로 렌더링 -->
@@ -900,19 +897,22 @@ const DATA = {
      desc:'누적 플레이 시간 TOP 랭킹. 매월 새로운 시즌이 열리오니 놓치지 마시옵소서.',
      prizes:[{rank:'🥇 1위',val:'5시간 쿠폰'},{rank:'🥈 2위',val:'2시간 쿠폰'},{rank:'🎖 3위~',val:'10분 쿠폰'}],
      active:true},
-    // ─ 미션 요약 (게임별 미션 수 + 대표 조건)
-    {type:'missionSummary', totalCount:77, monthlyReward:'100시간 이상',
+    // ─ 미션 (게임 목록만, 설명 없음)
+    {type:'missionSummary', totalCount:75, monthlyReward:'100시간 이상',
      games:[
-       {game:'리그 오브 레전드', ico:'⚔️', count:3, summary:'누적 승리 80·90·100승', type:'승리 미션'},
-       {game:'서든어택', ico:'🔫', count:5, summary:'누적 플레이 10~50시간', type:'플레이 미션'},
-       {game:'배틀그라운드', ico:'🪖', count:1, summary:'누적 플레이 40시간', type:'플레이 미션'},
-       {game:'오버워치', ico:'🛡️', count:3, summary:'누적 플레이 10~30시간', type:'플레이 미션'},
-       {game:'아이온2', ico:'🧝', count:4, summary:'누적 플레이 20~50시간', type:'플레이 미션'},
-       {game:'FC온라인', ico:'⚽', count:1, summary:'누적 플레이 50시간', type:'플레이 미션'},
-       {game:'스타크래프트', ico:'🚀', count:1, summary:'누적 플레이 50시간', type:'플레이 미션'},
-       {game:'로스트아크', ico:'🏹', count:1, summary:'누적 플레이 10시간', type:'플레이 미션'},
-       {game:'메이플스토리', ico:'🍄', count:1, summary:'누적 플레이 10시간', type:'플레이 미션'},
-     ], active:false},
+       {game:'리그 오브 레전드', ico:'⚔️'},
+       {game:'발로란트', ico:'🎯'},
+       {game:'배틀그라운드', ico:'🪖'},
+       {game:'FC온라인', ico:'⚽'},
+       {game:'서든어택', ico:'🔫'},
+       {game:'스타크래프트', ico:'🚀'},
+       {game:'메이플스토리', ico:'🍄'},
+       {game:'로스트아크', ico:'🏹'},
+       {game:'던전앤파이터', ico:'⚡'},
+       {game:'오버워치', ico:'🛡️'},
+       {game:'아이온2', ico:'🧝'},
+       {game:'리니지 클래식', ico:'🏰'},
+     ]},
   ],
 
   // ── 후기 (추가하면 자동으로 무한 스크롤에 포함)
@@ -1068,24 +1068,21 @@ function renderEvents() {
      </div>
      <div class="ev-section-title" style="margin-top:56px;">🎯 이번 달 게임 미션</div>
      <div class="mission-hero">
-       <div class="mhero-stat"><span class="mhero-num">${ms.totalCount}개</span><span class="mhero-label">이번 달 미션 수</span></div>
+       <div class="mhero-stat">
+         <span class="mhero-num">${ms.totalCount}개</span>
+         <span class="mhero-label">이번 달 활성 미션</span>
+       </div>
        <div class="mhero-divider"></div>
-       <div class="mhero-stat"><span class="mhero-num">${ms.monthlyReward}</span><span class="mhero-label">매달 지급 쿠폰 시간</span></div>
-       <div class="mhero-desc">미션 달성 시 쿠폰 자동 지급 · 중복 달성 가능</div>
+       <div class="mhero-stat">
+         <span class="mhero-num">${ms.monthlyReward}</span>
+         <span class="mhero-label">매달 지급 쿠폰 시간</span>
+       </div>
+       <div class="mhero-desc">게임만 해도 쿠폰 시간이 계속 증정됩니다</div>
      </div>
-     <div class="ev-mission-grid">
-       ${ms.games.map(g=>`
-         <div class="mcard">
-           <div class="mcard-head">
-             <span class="mcard-ico">${g.ico}</span>
-             <span class="mcard-game">${g.game}</span>
-             <span class="mcard-cnt">${g.count}개</span>
-           </div>
-           <div class="mcard-type">${g.type}</div>
-           <div class="mcard-summary">${g.summary}</div>
-           <div class="mcard-reward">달성 시 → <strong>20~30분 쿠폰</strong></div>
-         </div>`).join('')}
-     </div>`;
+     <div class="mission-game-wrap">
+       ${ms.games.map(g=>`<div class="mgame-badge"><span>${g.ico}</span>${g.game}</div>`).join('')}
+     </div>
+     <div class="mission-cta">달성 즉시 자동 지급 · 이번 달 내내 · 중복 달성 가능</div>`;
 }
 
 function renderReviews() {
