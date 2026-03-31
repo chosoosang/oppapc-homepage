@@ -1,0 +1,22 @@
+name: Cloudflare Pages Preview
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare Pages (Preview)
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 726f3a8a05c359bcd611c739d037b160
+          projectName: oppapc-homepage
+          directory: .
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: dev
