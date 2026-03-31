@@ -1255,8 +1255,12 @@ function showTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('panel-'+id).classList.add('on');
-  const btn = document.querySelector(\`.tab-btn[onclick*="'${id}'"]\`);
-  if(btn) btn.classList.add('on');
+  // 버튼 활성화
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if(b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+id+"'")) {
+      b.classList.add('on');
+    }
+  });
 }
 
 /* ══════════════════════════════════════
