@@ -836,8 +836,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       </div>
       <div class="fb-inner">
         <div class="fb-tabs">
-          <button class="fbtab on" onclick="switchFb('review')">💬 방문 후기</button>
-          <button class="fbtab" onclick="switchFb('idea')">🎬 숏츠 아이디어 <span class="fbbadge">10시간 증정</span></button>
+          <button class="fbtab on" onclick="switchFb('review')" style="border-right:none;">💬 방문 후기 남기기</button>
         </div>
         <div class="fb-pane on" id="fbReview">
           <div>
@@ -852,15 +851,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
           </div>
           <div class="fbdone" id="rvDone"><div class="done-ico">🏯</div><div class="done-title">감사하옵니다</div><div class="done-sub">소중히 간직하겠사옵니다</div></div>
         </div>
-        <div class="fb-pane" id="fbIdea">
-          <div class="idnote"><div class="idnote-ico">🎬</div><div class="idnote-body"><strong>채택된 아이디어는 실제 숏츠로 제작됩니다!</strong>재미있는 에피소드를 제안해주시옵소서.<br><em>채택 시 10시간 이용권을 증정하옵니다.</em></div></div>
-          <textarea class="fbta" id="idText" placeholder="아이디어를 자유롭게 적어주세요!" rows="5"></textarea>
-          <div class="fbrow">
-            <input type="text" class="fbin" id="idNick" placeholder="닉네임 또는 연락처 (쿠폰 전달용)">
-            <button class="fbbtn" onclick="submitIdea()">아이디어 제출</button>
-          </div>
-          <div class="fbdone" id="idDone"><div class="done-ico">🎬</div><div class="done-title">아이디어 접수 완료!</div><div class="done-sub">채택 시 연락드리겠사옵니다</div></div>
-        </div>
+
       </div>
     </div>
   </div>
@@ -908,8 +899,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       </div>
       <div class="fb-inner">
         <div class="fb-tabs">
-          <button class="fbtab on" onclick="switchFb('review')">💬 방문 후기</button>
-          <button class="fbtab" onclick="switchFb('idea')">🎬 숏츠 아이디어 <span class="fbbadge">10시간 증정</span></button>
+          <button class="fbtab on" onclick="switchFb('review')" style="border-right:none;">💬 방문 후기 남기기</button>
         </div>
 
         <!-- 후기 -->
