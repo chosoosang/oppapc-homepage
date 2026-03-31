@@ -510,6 +510,10 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 .park-ico{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
 .park-row div strong{display:block;font-size:.88rem;color:var(--cream);margin-bottom:3px;}
 .park-row div p{font-size:.78rem;color:var(--gray);margin:0;}
+
+/* 요금제 보너스 노트 */
+.ticket-bonus-note{margin-top:12px;padding:10px 14px;background:rgba(100,150,255,.08);border:1px solid rgba(100,150,255,.2);border-radius:8px;font-size:.78rem;color:rgba(245,240,232,.75);}
+.ticket-bonus-note strong{color:#7ab8f5;font-weight:700;}
 </style>
 </head>
 <body data-ver="사극">
@@ -1057,6 +1061,7 @@ function renderTicket() {
     <div class="ticket-section">
       <div class="ticket-sec-title">💳 회원 카드 요금</div>
       <div class="ticket-grid">${mkCards(card,'tag-card','카드')}</div>
+      <div class="ticket-bonus-note">💡 카드 자동결제 등록 시 <strong>1시간 추가 서비스 증정</strong></div>
     </div>
     <div class="ticket-section">
       <div class="ticket-sec-title">🚶 비회원 요금</div>
