@@ -232,7 +232,7 @@ h2 em{font-style:normal;color:var(--primary);}
   letter-spacing:.06em;position:relative;z-index:1;
 }
 .hero-stats{
-  display:flex;gap:40px;justify-content:center;flex-wrap:wrap;
+  display:flex;gap:clamp(16px,2.5vw,36px);justify-content:center;flex-wrap:wrap;
   margin-bottom:44px;position:relative;z-index:1;
 }
 .stat-num{font-family:var(--font-title);font-size:1.8rem;font-weight:900;color:var(--primary);display:block;}
@@ -249,7 +249,7 @@ h2 em{font-style:normal;color:var(--primary);}
 
 /* 홈 탭 섹션 미리보기 */
 .preview-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:2px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
   margin-bottom:24px;
 }
 .prev-card{
@@ -499,6 +499,62 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 .mgame-badge span{font-size:.95rem;}
 .mission-cta{font-size:.75rem;color:var(--gray);text-align:center;padding:11px;background:rgba(200,168,75,.04);border-radius:8px;letter-spacing:.05em;}
 @media(max-width:600px){.mission-hero{gap:16px;padding:20px;}.mhero-num{font-size:2rem;}.mhero-divider{display:none;}}
+.park-box{margin-top:24px;background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.18);border-radius:12px;padding:20px;}
+.park-title{font-size:.75rem;font-weight:700;letter-spacing:.15em;color:var(--primary);text-transform:uppercase;margin-bottom:14px;}
+.park-rows{display:flex;flex-direction:column;gap:10px;}
+.park-row{display:flex;align-items:flex-start;gap:12px;padding:12px;border-radius:8px;background:rgba(255,255,255,.03);}
+.park-free{background:rgba(76,217,100,.06);border:1px solid rgba(76,217,100,.15);}
+.park-warn{background:rgba(255,149,0,.06);border:1px solid rgba(255,149,0,.15);}
+.park-ico{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+.park-row div strong{display:block;font-size:.88rem;color:var(--cream);margin-bottom:3px;}
+.park-row div p{font-size:.78rem;color:var(--gray);margin:0;}
+
+/* ── 메뉴 품질 철학 배너 ── */
+.quality-banner{background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.18);border-radius:14px;padding:28px 32px;margin-bottom:40px;}
+.qb-title{font-family:var(--font-title);font-size:1rem;color:var(--primary);font-weight:700;letter-spacing:.08em;margin-bottom:20px;}
+.qb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.qb-item{display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(200,168,75,.1);}
+.qb-ico{font-size:1.5rem;flex-shrink:0;margin-top:2px;}
+.qb-item div strong{display:block;font-size:.88rem;color:var(--cream);font-family:var(--font-title);margin-bottom:4px;}
+.qb-item div p{font-size:.75rem;color:var(--gray);line-height:1.7;margin:0;}
+@media(max-width:768px){.quality-banner{padding:20px;}.qb-grid{grid-template-columns:1fr;}}
+
+/* ── 히어로 가치 뱃지 ── */
+
+/* ── 시설 가치 배너 ── */
+.value-banner{display:flex;align-items:center;gap:20px;background:linear-gradient(135deg,rgba(200,168,75,.08) 0%,rgba(200,168,75,.04) 100%);border:1px solid rgba(200,168,75,.25);border-radius:16px;padding:28px 32px;margin-bottom:48px;flex-wrap:wrap;}
+.vb-left,.vb-right{flex:1;min-width:200px;}
+.vb-title{font-family:var(--font-title);font-size:1.1rem;color:var(--primary);font-weight:700;margin-bottom:8px;}
+.vb-desc{font-size:.8rem;color:var(--gray);line-height:1.9;}
+.vb-divider{font-size:1.8rem;color:rgba(200,168,75,.3);font-family:var(--font-title);flex-shrink:0;}
+.vb-crown{text-align:center;font-size:1.6rem;color:var(--primary);flex-shrink:0;line-height:1.4;}
+.vb-crown span{font-size:.65rem;color:var(--gray);letter-spacing:.08em;font-family:var(--font-title);}
+@media(max-width:768px){.value-banner{padding:20px;gap:16px;}.vb-divider{display:none;}.vb-crown{width:100%;}}
+
+
+/* ── 이벤트 탭 ── */
+.ev-summary{display:flex;align-items:center;justify-content:center;gap:0;background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.18);border-radius:14px;margin-bottom:48px;overflow:hidden;}
+.ev-sum-item{flex:1;text-align:center;padding:24px 16px;display:flex;flex-direction:column;gap:6px;align-items:center;}
+.ev-sum-num{font-family:var(--font-title);font-size:1.6rem;color:var(--primary);font-weight:900;}
+.ev-sum-lbl{font-size:.68rem;color:var(--gray);letter-spacing:.08em;}
+.ev-sum-divider{width:1px;background:rgba(200,168,75,.18);margin:16px 0;}
+.ev-section-hdr{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
+.ev-section-ico{font-size:1.6rem;flex-shrink:0;}
+.ev-section-hdr div strong{display:block;font-family:var(--font-title);font-size:1rem;color:var(--cream);margin-bottom:4px;}
+.ev-section-hdr div span{font-size:.78rem;color:var(--gray);}
+.ev-tour-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.ecard{background:rgba(255,255,255,.03);border:1px solid rgba(200,168,75,.15);border-radius:14px;padding:24px;transition:border-color .3s;}
+.ecard:hover{border-color:rgba(200,168,75,.4);}
+.ecard-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.ecard-game{font-size:.78rem;color:var(--primary);font-family:var(--font-title);font-weight:700;}
+.ecard-date{font-size:.68rem;color:var(--gray);}
+.etitle{font-family:var(--font-title);font-size:1rem;color:var(--cream);margin-bottom:8px;line-height:1.4;}
+.edesc{font-size:.78rem;color:var(--gray);line-height:1.8;margin-bottom:16px;}
+.prize-table{display:flex;flex-direction:column;gap:6px;}
+.prize-row{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;background:rgba(200,168,75,.05);border-radius:6px;font-size:.78rem;}
+.prize-rank{color:var(--gray);}
+.prize-val{color:var(--primary);font-weight:700;font-family:var(--font-title);}
+@media(max-width:600px){.ev-summary{grid-template-columns:repeat(2,1fr);}.ev-sum-divider{display:none;}.ev-tour-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body data-ver="사극">
@@ -530,9 +586,8 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
   <button class="tab-btn" onclick="showTab('ticket')">💰 요금제</button>
   <button class="tab-btn" onclick="showTab('sitcom')">🎬 시트콤</button>
   <button class="tab-btn" onclick="showTab('events')">🏆 이벤트</button>
-  <button class="tab-btn" onclick="showTab('reviews')">⭐ 후기</button>
+  <button class="tab-btn" onclick="showTab('reviews')">⭐ 후기 · 피드백</button>
   <button class="tab-btn" onclick="showTab('location')">📍 오시는 길</button>
-  <button class="tab-btn" onclick="showTab('feedback')">💬 피드백</button>
 </nav>
 
 <!-- ════════ 콘텐츠 ════════ -->
@@ -545,15 +600,16 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       <div class="hero-badge" id="heroBadge">조선 제일의 피씨방</div>
       <div class="hero-title">오빠피씨방</div>
       <span class="hero-ver" id="heroVer">ver. 사극</span>
-      <p class="hero-sub">부평에 조선 제일의 피씨방이 열리었사옵니다</p>
+      <p class="hero-sub">단돈 한 냥에 경복궁처럼 — 부평 최고급 시설을 가장 저렴하게 즐기시옵소서</p>
       <div class="hero-stats">
         <div><span class="stat-num">3,000</span><span class="stat-lbl">무한리필 음료 (원)</span></div>
-        <div><span class="stat-num">75+</span><span class="stat-lbl">매달 게임 미션</span></div>
-        <div><span class="stat-num">6F</span><span class="stat-lbl">탁 트인 부평 뷰</span></div>
         <div><span class="stat-num">1Hr</span><span class="stat-lbl">신규가입 무료쿠폰</span></div>
+        <div><span class="stat-num">3H+</span><span class="stat-lbl">무료주차 제공</span></div>
+        <div><span class="stat-num">6CH</span><span class="stat-lbl">모든 OTT 무료</span></div>
+        <div><span class="stat-num">4,000h</span><span class="stat-lbl">매달 쿠폰 지급</span></div>
       </div>
       <button class="btn-gold" onclick="showTab('facility')">🏯 매장 둘러보기</button>
-      <p class="hero-loc"><strong>부평역</strong> 도보 3분 · <strong>6층</strong></p>
+      <p class="hero-loc"><strong>부평 번화가</strong> 메인거리 중앙 · <strong>6층</strong></p>
     </div>
 
     <div class="wrap" style="padding-top:0;">
@@ -562,21 +618,22 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
         <h2>무엇이<br><em>궁금하시옵니까</em></h2>
       </div>
       <div class="preview-grid" id="previewGrid">
-        <div class="prev-card" onclick="showTab('facility')">
-          <span class="prev-icon">⚡</span>
-          <div class="prev-title">매장 시설</div>
-          <div class="prev-desc">래피드 트리거 · 모니터 암 · VOG · 청결 관리 · 서빙 로봇 · 6층 뷰</div>
-          <span class="prev-link">시설 전체 보기 →</span>
-        </div>
+
         <div class="prev-card" onclick="showTab('menu')">
           <span class="prev-icon">🍳</span>
-          <div class="prev-title">메뉴 · 요금</div>
-          <div class="prev-desc">무한리필 음료 3,000원 · 간장계란밥 2,500원 · 신규 1시간 무료</div>
+          <div class="prev-title">메뉴</div>
+          <div class="prev-desc">간장계란밥 2,500원 · 무한리필 음료 3,000원 · 수제 케이크 · 블루보틀 커피</div>
           <span class="prev-link">메뉴 전체 보기 →</span>
+        </div>
+        <div class="prev-card" onclick="showTab('ticket')">
+          <span class="prev-icon">💰</span>
+          <div class="prev-title">요금제</div>
+          <div class="prev-desc">신규가입 1시간 무료 · 카드 등록 1시간 추가 · 현금 1만원 = 11시간</div>
+          <span class="prev-link">요금 전체 보기 →</span>
         </div>
         <div class="prev-card" onclick="showTab('sitcom')">
           <span class="prev-icon">🎬</span>
-          <div class="prev-title">시트콤</div>
+          <div class="prev-title">시트콤 · 숏츠 아이디어</div>
           <div class="prev-desc">조선시대 PC방 시트콤 · 사장님 · 한준 · 서아의 이야기 · 매주 월·수·금</div>
           <span class="prev-link">시트콤 보러가기 →</span>
         </div>
@@ -595,7 +652,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
         <div class="prev-card" onclick="showTab('location')">
           <span class="prev-icon">📍</span>
           <div class="prev-title">오시는 길</div>
-          <div class="prev-desc">인천 부평역 도보 3분 · 6층 · 24시간 운영</div>
+          <div class="prev-desc">인천 부평 번화가 메인거리 중앙 · 6층 · 24시간 운영</div>
           <span class="prev-link">지도 보기 →</span>
         </div>
       </div>
@@ -610,6 +667,20 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
         <h2>다른 피씨방과<br><em>다른 이유</em></h2>
         <p class="sec-desc">손님이 오빠피씨방으로 몰리는 이유가 있사옵니다</p>
       </div>
+      <!-- 시설 가치 배너 -->
+      <div class="value-banner">
+        <div class="vb-left">
+          <div class="vb-title">💎 최고급 시설</div>
+          <div class="vb-desc">래피드 트리거 · VOG 독립구동 · 유료게임 중복 실행<br>전문 청소업체 · 서빙 로봇 · 6층 탁트인 뷰</div>
+        </div>
+        <div class="vb-divider">×</div>
+        <div class="vb-right">
+          <div class="vb-title">💰 최고의 가성비</div>
+          <div class="vb-desc">🥤 무한리필 음료 단돈 <span style="color:rgba(245,240,232,.9);font-weight:600;">3,000원</span> — 퇴실할 때까지 무제한<br>신규가입 1시간 무료 · 매달 <span style="color:rgba(245,240,232,.9);font-weight:600;">4,000시간+</span> 쿠폰 지급</div>
+        </div>
+        <div class="vb-crown">👑<br><span>이 두 가지를<br>동시에</span></div>
+      </div>
+
       <div class="fac-grid" id="facGrid">
         <!-- JS로 렌더링 -->
       </div>
@@ -624,6 +695,19 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
         <h2>조선 최고<br><em>먹거리</em></h2>
         <p class="sec-desc">PC방의 한계를 깬 프리미엄 메뉴이옵니다</p>
       </div>
+      <!-- 품질 철학 배너 -->
+      <div class="quality-banner">
+        <div class="qb-title">🏆 오빠피씨방 먹거리 철학</div>
+        <div class="qb-grid">
+          <div class="qb-item"><span class="qb-ico">🥚</span><div><strong>복지란 사용</strong><p>저가 계란 대신 동물복지 인증 복지란만 사용</p></div></div>
+          <div class="qb-item"><span class="qb-ico">🌾</span><div><strong>농협 특등급 쌀 + 찹쌀 블렌딩</strong><p>찰지고 윤기 있는 최고의 밥맛 — 한국은 밥맛이 좋아야 다 맛있다</p></div></div>
+          <div class="qb-item"><span class="qb-ico">🫙</span><div><strong>방앗간 직접 짜온 참기름</strong><p>기성 제품 아닌 시장 방앗간에서 직접 짜온 100% 순참기름 사용</p></div></div>
+          <div class="qb-item"><span class="qb-ico">🍳</span><div><strong>수제 소스 · 직접 제작</strong><p>간장·마요·특제소스 등 다수를 직접 제조 — 수제 음식 비율이 높은 매장</p></div></div>
+          <div class="qb-item"><span class="qb-ico">💎</span><div><strong>고급 재료 기반</strong><p>일반 재료도 모두 고급 재료 기준으로 엄선해 사용</p></div></div>
+          <div class="qb-item"><span class="qb-ico">💰</span><div><strong>수제라서 더 저렴하게</strong><p>직접 만들기 때문에 타 매장보다 저렴 — 맛과 가격 둘 다 잡음</p></div></div>
+        </div>
+      </div>
+
       <div id="menuContent"></div>
     </div>
   </div>
@@ -660,6 +744,44 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       <div style="text-align:center;margin-top:32px;">
         <a href="https://www.instagram.com" target="_blank" class="btn-gold" style="display:inline-block;">인스타그램에서 전편 보기 →</a>
       </div>
+
+      <div class="divider"></div>
+
+      <div class="sec-hdr" style="margin-top:40px;">
+        <span class="sec-tag">IDEA</span>
+        <h2>숏츠 아이디어<br><em>제안하시옵소서</em></h2>
+        <p class="sec-desc">채택된 아이디어는 실제 시트콤 숏츠로 제작됩니다 · 채택 시 10시간 이용권 증정</p>
+      </div>
+      <div style="max-width:680px;margin:0 auto;">
+        <div class="idnote">
+          <div class="idnote-ico">🎬</div>
+          <div class="idnote-body">
+            <strong>아이디어가 영상이 됩니다!</strong>
+            사장님·한준·서아가 나오는 재미있는 상황·대사·에피소드를 자유롭게 제안해주시옵소서.<br>
+            <em>채택 시 10시간 이용권을 증정하옵니다.</em>
+          </div>
+        </div>
+        <textarea class="fbta" id="sitcomIdea" placeholder="예) 손님이 무한리필 기록 세우려다 사장님한테 걸리는 장면&#10;예) 래피드 트리거로 과거시험 보는 선비&#10;&#10;어떤 아이디어든 환영이옵니다!" rows="5" style="margin-top:16px;"></textarea>
+        <div class="fbrow" style="margin-top:9px;">
+          <input type="text" class="fbin" id="sitcomNick" placeholder="닉네임 또는 연락처 (쿠폰 전달용)" maxlength="30">
+          <button class="fbbtn" style="background:var(--accent);color:var(--cream);" onclick="submitSitcomIdea()">아이디어 제출</button>
+        </div>
+        <div class="fbdone" id="sitcomDone">
+          <div class="done-ico">🎬</div>
+          <div class="done-title">아이디어 접수 완료!</div>
+          <div class="done-sub">검토 후 채택 시 연락드리겠사옵니다</div>
+          <div class="coupon">
+            <div class="ctop">✂ 숏츠 아이디어 채택 쿠폰 ✂</div>
+            <div class="cbody">
+              <div class="cico">🎁</div>
+              <div class="cttl">채택 시 드리는<br><em>10시간</em> 이용권</div>
+              <div class="ccode" id="sitcomCode">IDEA-000000</div>
+              <div class="cinfo">채택 확정 후 카운터에 제시하시옵소서</div>
+            </div>
+            <div class="cbot">🏯 오빠피씨방 · 부평 번화가 중앙 · 6층</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -668,10 +790,26 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
     <div class="wrap">
       <div class="sec-hdr">
         <span class="sec-tag">EVENTS</span>
-        <h2>매달 열리는<br><em>대회와 이벤트</em></h2>
-        <p class="sec-desc">매달 대회·미션으로 지급되는 무료 시간 <strong style="color:var(--primary);font-size:1.1em;">100시간 이상</strong> · 이번 달 활성 미션 <strong style="color:var(--primary);">75개</strong></p>
+        <h2>이기면<br><em>쿠폰이 옵니다</em></h2>
+        <p class="sec-desc">게임만 잘해도 — 매달 4,000시간 이상의 쿠폰이 손님들께 돌아갑니다</p>
       </div>
-      <div class="ev-grid" id="evGrid">
+      <div class="ev-summary">
+        <div class="ev-sum-item">
+          <span class="ev-sum-num">75개</span>
+          <span class="ev-sum-lbl">매달 게임 미션</span>
+        </div>
+        <div class="ev-sum-divider"></div>
+        <div class="ev-sum-item">
+          <span class="ev-sum-num">4,000h+</span>
+          <span class="ev-sum-lbl">매달 지급 쿠폰</span>
+        </div>
+        <div class="ev-sum-divider"></div>
+        <div class="ev-sum-item">
+          <span class="ev-sum-num">3종</span>
+          <span class="ev-sum-lbl">월간 게임 대회</span>
+        </div>
+      </div>
+      <div id="evGrid">
         <!-- JS로 렌더링 -->
       </div>
     </div>
@@ -690,6 +828,32 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
         <!-- JS로 렌더링 -->
       </div>
     </div>
+    <div class="wrap" style="margin-top:48px;">
+      <div class="sec-hdr">
+        <span class="sec-tag">FEEDBACK</span>
+        <h2>한 말씀<br><em>남겨주시옵소서</em></h2>
+        <p class="sec-desc">손님의 말씀이 오빠피씨방을 더 좋게 만들사옵니다</p>
+      </div>
+      <div class="fb-inner">
+        <div class="fb-tabs">
+          <button class="fbtab on" onclick="switchFb('review')" style="border-right:none;">💬 방문 후기 남기기</button>
+        </div>
+        <div class="fb-pane on" id="fbReview">
+          <div>
+            <div class="fblbl" style="text-align:center;">방문 만족도</div>
+            <div class="stars-row"><span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span></div>
+            <div class="shint" id="shint">별을 눌러 평점을 선택하시옵소서</div>
+          </div>
+          <textarea class="fbta" id="rvText" placeholder="자유롭게 말씀해 주시옵소서... (선택사항)" rows="4"></textarea>
+          <div class="fbrow">
+            <input type="text" class="fbin" id="rvNick" placeholder="닉네임 (선택사항)" maxlength="20">
+            <button class="fbbtn" onclick="submitReview()">후기 남기기</button>
+          </div>
+          <div class="fbdone" id="rvDone"><div class="done-ico">🏯</div><div class="done-title">감사하옵니다</div><div class="done-sub">소중히 간직하겠사옵니다</div></div>
+        </div>
+
+      </div>
+    </div>
   </div>
 
   <!-- 오시는 길 탭 -->
@@ -701,17 +865,32 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       </div>
       <div class="loc-grid">
         <div>
-          <p class="loch3">부평역 도보<br>3분 거리이옵니다</p>
-          <div class="locrow"><span class="locico">📍</span><div class="loctxt"><h4>주소</h4><p>인천광역시 부평구 (부평역 인근 6층)</p></div></div>
-          <div class="locrow"><span class="locico">🚇</span><div class="loctxt"><h4>지하철</h4><p>1호선 · 7호선 부평역</p><span>도보 3분 거리</span></div></div>
+          <p class="loch3">부평 번화가<br>메인거리 중심이옵니다</p>
+          <div class="locrow"><span class="locico">📍</span><div class="loctxt"><h4>주소</h4><p>인천광역시 부평구 (부평 번화가 메인거리 중앙 · 6층)</p></div></div>
+          <div class="locrow"><span class="locico">🚇</span><div class="loctxt"><h4>지하철</h4><p>1호선 · 7호선 부평역</p><span>부평 번화가 메인거리 중앙 · 도보 약 10분</span></div></div>
           <div class="locrow"><span class="locico">🕐</span><div class="loctxt"><h4>운영시간</h4><p>24시간 연중무휴</p><span>청소년은 밤 10시 이후 이용 불가</span></div></div>
-          <div class="locrow"><span class="locico">📱</span><div class="loctxt"><h4>문의</h4><p>인스타그램 DM으로 문의하시옵소서</p></div></div>
+          <div class="park-box">
+            <div class="park-title">🚗 주차 안내</div>
+            <div class="park-rows">
+              <div class="park-row park-free"><span class="park-ico">✅</span><div><strong>3시간 이상 이용 시 주차 무료 (갈 때까지)</strong><p>카운터에서 주차 등록 도와드립니다</p></div></div>
+              <div class="park-row park-warn"><span class="park-ico">⚠️</span><div><strong>리프트 주차장 — 대형 SUV 입차 불가</strong><p>차량 크기 확인 후 이용 부탁드립니다</p></div></div>
+              <div class="park-row"><span class="park-ico">📍</span><div><strong>주차장 위치 — 스타빠루뚜 건물 (별도 건물)</strong><p>네비 주소: 인천 부평동 201-13 · 주차 후 매장까지 도보 3분</p></div></div>
+            </div>
+          </div>
         </div>
-        <div class="mapbox">
-          <div class="mappin">📍</div>
-          <div class="mapname">오빠피씨방</div>
-          <div class="mapaddr">인천 부평구 · 6층<br>부평역 도보 3분</div>
-          <a href="https://map.naver.com" target="_blank" class="mapbtn">네이버 지도로 보기 →</a>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="mapbox">
+            <div class="mappin">🏯</div>
+            <div class="mapname">오빠피씨방</div>
+            <div class="mapaddr">인천 부평구 시장로 19<br>부평 번화가 메인거리 중앙 · 6층</div>
+            <a href="https://map.naver.com/p/search/인천%20부평구%20시장로%2019" target="_blank" class="mapbtn">매장 지도 보기 →</a>
+          </div>
+          <div class="mapbox">
+            <div class="mappin">🚗</div>
+            <div class="mapname">주차장 (스타빠루뚜 건물)</div>
+            <div class="mapaddr">인천 부평동 201-13<br>주차 후 매장까지 도보 3분 · 리프트 주차장</div>
+            <a href="https://map.naver.com/p/search/인천%20부평동%20201-13" target="_blank" class="mapbtn" style="background:rgba(200,168,75,.3);color:var(--cream);">주차장 지도 보기 →</a>
+          </div>
         </div>
       </div>
     </div>
@@ -727,8 +906,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       </div>
       <div class="fb-inner">
         <div class="fb-tabs">
-          <button class="fbtab on" onclick="switchFb('review')">💬 방문 후기</button>
-          <button class="fbtab" onclick="switchFb('idea')">🎬 숏츠 아이디어 <span class="fbbadge">10시간 증정</span></button>
+          <button class="fbtab on" onclick="switchFb('review')" style="border-right:none;">💬 방문 후기 남기기</button>
         </div>
 
         <!-- 후기 -->
@@ -808,7 +986,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
                 <div class="ccode" id="ccode">IDEA-000000</div>
                 <div class="cinfo">이 화면을 캡처하시어 보관해주시옵소서<br>채택 연락 후 카운터에 제시하시옵소서<small>채택 확정 후 1회 사용 가능 · 유효기간 60일</small></div>
               </div>
-              <div class="cbot">🏯 오빠피씨방 · 부평역 도보 3분 · 6층</div>
+              <div class="cbot">🏯 오빠피씨방 · 부평 번화가 중앙 · 6층</div>
             </div>
           </div>
         </div>
@@ -830,7 +1008,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
     <a href="#" onclick="showTab('feedback');return false;">피드백</a>
     <a href="https://www.instagram.com" target="_blank">인스타그램</a>
   </div>
-  <div class="ftcopy">© 2026 오빠피씨방 · 인천 부평역 도보 3분 · 6층</div>
+  <div class="ftcopy">© 2026 오빠피씨방 · 인천 부평 번화가 중앙 · 6층</div>
 </footer>
 
 <script>
@@ -849,21 +1027,31 @@ const DATA = {
     {ico:'🤖', title:'서빙 로봇 (방자 로봇)', desc:'귀여운 서빙 로봇이 음식을 배달하옵니다. 쇠로 만든 방자가 열심히 일하고 있사옵니다. 주문 후 자리에서 기다리시면 되옵니다.', pt:'↑ 자리 서빙 운영 중'},
     {ico:'🌇', title:'6층 탁 트인 부평 뷰', desc:'창문 필름을 없앤 탁 트인 6층 전망이옵니다. 답답한 지하 피씨방 느낌이 없사옵니다. 스카이라운지 감성으로 데이트 코스로도 완벽하옵니다.', pt:'↑ 스카이라운지 감성'},
     {ico:'🎮', title:'다양한 모니터 라인업', desc:'벤큐 144Hz·240Hz, QHD 165Hz 등 게임 장르에 맞게 골라 앉는 재미가 있사옵니다. FPS, RPG, 배그, 롤 — 어떤 게임이든 최적 환경이 있사옵니다.', pt:'↑ 장르별 최적화'},
+    {ico:'🎮', title:'유료게임 중복 실행 가능', desc:'리니지 두 개 켜놓고 FC온라인에 롤까지! 게임사가 달라도 동시 실행 가능하옵니다. 이런 환경을 지원하는 피씨방은 극히 드물사옵니다.', pt:'↑ 타 매장 대부분 불가'},
+    {ico:'🚗', title:'3시간 이상 이용 시 주차 무료', desc:'부평에서 갈 때까지 주차가 무료인 곳은 여기뿐이옵니다. 네비 주소 부평동 201-13 (스타빠루뚜 건물) · 주차 후 도보 3분. 단, 리프트 주차장으로 대형 SUV는 입차 불가이옵니다.', pt:'↑ 부평 유일 무료 주차'},
+    {ico:'🎂', title:'카페 수준의 케이크 · 디저트', desc:'딸기·치즈·초코 카페형 케이크와 블루보틀 원두커피를 PC방에서 즐기옵소서. 조명 좋은 6층 뷰와 함께라면 데이트 코스로도 완벽하옵니다.', pt:'↑ PC방 데이트 코스 1순위'},
+    {ico:'📺', title:'모든 OTT 무료 시청', desc:'넷플릭스 · 디즈니+ · 티빙 · 애플TV+ · 아마존 프라임 · iQIYI(아이치이)까지. 별도 구독 없이 모든 OTT를 자리에서 바로 시청 가능하옵니다.', pt:'↑ 모든 OTT 무료 · 추가비용 없음'},
   ],
 
   // ── 메뉴 (카테고리별로 추가)
   menu: [
+    { cat:'👨‍🍳 사장님 추천', items:[
+      {name:'매콤명란마요덮밥', desc:'매콤하고 고소한 명란마요 소스\n밥도둑 시그니처 메뉴', price:'5,500원', badge:'🔥 사장님 픽'},
+      {name:'도시락 세트', desc:'닭발·삼겹살 도시락 전 메뉴 추천\n3시간 쿠폰 증정 이벤트 진행 중!', price:'12,500원~', badge:'🎟️ 3시간 쿠폰 증정'},
+      {name:'수제소스 쌀떡꼬치', desc:'직접 만든 수제소스를 얹은 쌀떡꼬치\n쫀득하고 매콤달콤한 간식', price:'2,000원', badge:'⭐ 인기'},
+      {name:'카다이프 새우 계란간장밥', desc:'바삭한 카다이프 새우와 계란 간장밥의 조합\n오빠피씨 시그니처 특선 메뉴', price:'6,500원', badge:'✨ 특선'},
+    ]},
     { cat:'🍳 시그니처 푸드', items:[
       {name:'추억의 계란 간장밥', desc:'특등급 찹쌀 · 무항생제 계란\n방앗간 직짜 참기름', price:'2,500원', badge:'🏆 시그니처'},
-      {name:'치킨마요 덮밥', desc:'수제 비법소스 · 오빠피씨 대표 식사\n손님 만족도 최상위', price:'7,000원', badge:'⭐ 강추'},
+      {name:'오빠네 수제 햄치즈 토스트', desc:'오빠피씨 시그니처 토스트\n고소하고 든든한 한 끼', price:'3,700원', badge:'⭐ 강추'},
       {name:'오빠 블랙', desc:'특제소스 + 짜파게티\n직접 개발한 오리지널 레시피', price:'5,000원', badge:'✨ 오리지널'},
       {name:'불닭 창조주 레시피', desc:'유퀴즈 화제 레시피 그대로\n매운맛 도전자 환영', price:'7,500원', badge:'🔥 화제'},
-      {name:'서울시스터즈 김치우동', desc:'핫~매운 김치우동\n국물이 예술인 스테디셀러', price:'7,000원', badge:'⭐ BEST'},
+
     ]},
     { cat:'🥤 음료 · 디저트', items:[
       {name:'무한리필 음료', desc:'펩시제로 등 12종 + 얼음\n퇴실할 때까지 무제한', price:'3,000원', badge:'🔥 만족도 1위'},
       {name:'블루보틀 아메리카노', desc:'프리미엄 블루보틀 원두\n카페 절반 가격에 즐기기', price:'2,800원'},
-      {name:'수제 케이크', desc:'딸기·치즈·초코 등 매일 변경\n데이트 코스 완성', price:'5,500원~'},
+      {name:'카페형 케이크', desc:'딸기·치즈·초코 등 다양한 종류\n데이트 코스 완성', price:'5,500원~'},
       {name:'하겐다즈 스틱바', desc:'초코·쿠키앤크림 등 4종\n프리미엄 아이스크림', price:'6,900원'},
     ]},
     { cat:'🍟 간식 · 분식', items:[
@@ -898,7 +1086,7 @@ const DATA = {
      prizes:[{rank:'🥇 1위',val:'5시간 쿠폰'},{rank:'🥈 2위',val:'2시간 쿠폰'},{rank:'🎖 3위~',val:'10분 쿠폰'}],
      active:true},
     // ─ 미션 (게임 목록만, 설명 없음)
-    {type:'missionSummary', totalCount:75, monthlyReward:'100시간 이상',
+    {type:'missionSummary', totalCount:75, monthlyReward:'4,000시간 이상',
      games:[
        {game:'리그 오브 레전드', ico:'⚔️'},
        {game:'발로란트', ico:'🎯'},
@@ -972,33 +1160,20 @@ function renderMenu() {
 
 function renderTicket() {
   const nonmember = [
-    {amount:'1,000원', time:'40분'},
-    {amount:'2,000원', time:'1시간 20분'},
-    {amount:'3,000원', time:'2시간'},
-    {amount:'5,000원', time:'3시간 20분'},
-    {amount:'10,000원', time:'7시간'},
+    {amount:'1,000원', time:'40분'},{amount:'2,000원', time:'1시간 20분'},
+    {amount:'3,000원', time:'2시간'},{amount:'5,000원', time:'3시간 20분'},{amount:'10,000원', time:'7시간'},
   ];
   const card = [
-    {amount:'1,000원', time:'50분'},
-    {amount:'2,000원', time:'1시간 40분'},
-    {amount:'3,000원', time:'2시간 30분'},
-    {amount:'5,000원', time:'5시간'},
-    {amount:'10,000원', time:'10시간', hl:true},
-    {amount:'20,000원', time:'22시간'},
-    {amount:'30,000원', time:'33시간'},
-    {amount:'50,000원', time:'55시간'},
-    {amount:'100,000원', time:'120시간'},
+    {amount:'1,000원', time:'50분'},{amount:'2,000원', time:'1시간 40분'},
+    {amount:'3,000원', time:'2시간 30분'},{amount:'5,000원', time:'5시간'},
+    {amount:'10,000원', time:'10시간', hl:true},{amount:'20,000원', time:'22시간'},
+    {amount:'30,000원', time:'33시간'},{amount:'50,000원', time:'55시간'},{amount:'100,000원', time:'120시간'},
   ];
   const cash = [
-    {amount:'1,000원', time:'50분'},
-    {amount:'2,000원', time:'1시간 40분'},
-    {amount:'3,000원', time:'2시간 30분'},
-    {amount:'5,000원', time:'5시간 30분'},
-    {amount:'10,000원', time:'11시간 🔥', hl:true},
-    {amount:'20,000원', time:'24시간'},
-    {amount:'30,000원', time:'36시간'},
-    {amount:'50,000원', time:'65시간'},
-    {amount:'100,000원', time:'135시간'},
+    {amount:'1,000원', time:'50분'},{amount:'2,000원', time:'1시간 40분'},
+    {amount:'3,000원', time:'2시간 30분'},{amount:'5,000원', time:'5시간 30분'},
+    {amount:'10,000원', time:'11시간 🔥', hl:true},{amount:'20,000원', time:'24시간'},
+    {amount:'30,000원', time:'36시간'},{amount:'50,000원', time:'65시간'},{amount:'100,000원', time:'135시간'},
   ];
   const mkCards = (arr, tagClass, tagLabel) =>
     arr.map(t=>`<div class="tcard${t.hl?' highlight':''}">
@@ -1010,10 +1185,31 @@ function renderTicket() {
     <div class="ticket-section">
       <div class="ticket-sec-title">🎁 신규 혜택</div>
       <div class="ticket-grid">
-        <div class="tcard highlight" style="grid-column:span 2">
+        <div class="tcard highlight">
           <div class="tcard-amount" style="font-size:1.1rem">신규 가입 즉시</div>
           <div class="tcard-time">1시간 무료 쿠폰</div>
-          <span class="tcard-tag tag-free">100% 지급</span>
+          <span class="tcard-tag tag-free">회원가입만 하면 OK</span>
+        </div>
+        <div class="tcard highlight">
+          <div class="tcard-amount" style="font-size:1.1rem">카드 등록 시</div>
+          <div class="tcard-time">1시간 무료 증정</div>
+          <span class="tcard-tag tag-card">카드 등록 완료 후</span>
+        </div>
+      </div>
+    </div>
+    <div class="ticket-section">
+      <div class="ticket-sec-title">💵 회원 현금 요금 (보너스 더 받기!)</div>
+      <div class="ticket-grid">${mkCards(cash,'tag-cash','현금')}</div>
+    </div>
+    <div class="ticket-section">
+      <div class="ticket-sec-title">💳 회원 카드 요금</div>
+      <div class="ticket-grid">${mkCards(card,'tag-card','카드')}</div>
+      <div style="margin-top:12px;padding:12px 14px;background:rgba(100,150,255,.06);border:1px solid rgba(100,150,255,.18);border-radius:8px;font-size:.78rem;color:rgba(245,240,232,.75);">
+        💡 카드 자동충전 등록 시 추가 서비스 증정<br>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px;">
+          <div style="display:flex;gap:8px;padding:5px 8px;background:rgba(100,150,255,.06);border-radius:6px;"><span style="font-weight:700;min-width:48px;">1만원</span><span>→</span><span style="color:#7ab8f5;font-weight:700;">1시간 증정</span></div>
+          <div style="display:flex;gap:8px;padding:5px 8px;background:rgba(100,150,255,.06);border-radius:6px;"><span style="font-weight:700;min-width:48px;">5만원</span><span>→</span><span style="color:#7ab8f5;font-weight:700;">5시간 증정</span></div>
+          <div style="display:flex;gap:8px;padding:5px 8px;background:rgba(100,150,255,.06);border-radius:6px;"><span style="font-weight:700;min-width:48px;">10만원</span><span>→</span><span style="color:#7ab8f5;font-weight:700;">10시간 증정</span></div>
         </div>
       </div>
     </div>
@@ -1022,12 +1218,11 @@ function renderTicket() {
       <div class="ticket-grid">${mkCards(nonmember,'tag-card','비회원')}</div>
     </div>
     <div class="ticket-section">
-      <div class="ticket-sec-title">💳 회원 카드 요금</div>
-      <div class="ticket-grid">${mkCards(card,'tag-card','카드')}</div>
-    </div>
-    <div class="ticket-section">
-      <div class="ticket-sec-title">💵 회원 현금 요금 (보너스 더 받기!)</div>
-      <div class="ticket-grid">${mkCards(cash,'tag-cash','현금')}</div>
+      <div class="ticket-sec-title">🎮 유료게임 추가 차감</div>
+      <div style="background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.18);border-radius:10px;padding:20px 24px;font-size:.85rem;color:rgba(245,240,232,.9);line-height:2.2;">
+        유료게임 실행 시 계정 1개당 <strong style="color:var(--primary);font-size:1.1rem;">200원</strong> 추가 차감<br>
+        <span style="background:rgba(200,168,75,.15);border:1px solid rgba(200,168,75,.3);border-radius:6px;padding:4px 10px;font-size:.8rem;color:var(--primary);font-weight:700;">🔥 리니지 두 개 켜놓고 FC온라인에 롤까지 — 게임사 달라도 동시 실행 가능!</span>
+      </div>
     </div>`;
 }
 
@@ -1053,36 +1248,52 @@ function filterSitcom(filter, btn) {
 function renderEvents() {
   const tours = DATA.events.filter(e=>e.type==='tournament');
   const ms = DATA.events.find(e=>e.type==='missionSummary');
-  document.getElementById('evGrid').innerHTML =
-    `<div class="ev-section-title">🏆 이번 달 대회</div>
-     <div class="ev-tour-grid">
-       ${tours.map(e=>`
-         <div class="ecard on">
-           <div class="edate">${e.date} · ${e.game}</div>
-           <div class="etitle">${e.title}</div>
-           <div class="edesc">${e.desc}</div>
-           <div class="prize-table">
-             ${e.prizes.map(p=>`<div class="prize-row"><span class="prize-rank">${p.rank}</span><span class="prize-val">${p.val}</span></div>`).join('')}
-           </div>
-         </div>`).join('')}
-     </div>
-     <div class="ev-section-title" style="margin-top:56px;">🎯 이번 달 게임 미션</div>
-     <div class="mission-hero">
-       <div class="mhero-stat">
-         <span class="mhero-num">${ms.totalCount}개</span>
-         <span class="mhero-label">이번 달 활성 미션</span>
-       </div>
-       <div class="mhero-divider"></div>
-       <div class="mhero-stat">
-         <span class="mhero-num">${ms.monthlyReward}</span>
-         <span class="mhero-label">매달 지급 쿠폰 시간</span>
-       </div>
-       <div class="mhero-desc">게임만 해도 쿠폰 시간이 계속 증정됩니다</div>
-     </div>
-     <div class="mission-game-wrap">
-       ${ms.games.map(g=>`<div class="mgame-badge"><span>${g.ico}</span>${g.game}</div>`).join('')}
-     </div>
-     <div class="mission-cta">달성 즉시 자동 지급 · 이번 달 내내 · 중복 달성 가능</div>`;
+  document.getElementById('evGrid').innerHTML = `
+    <!-- 월간 대회 -->
+    <div class="ev-section-hdr">
+      <span class="ev-section-ico">🏆</span>
+      <div><strong>이번 달 월간 대회</strong><span>순위권에 들면 쿠폰 자동 지급</span></div>
+    </div>
+    <div class="ev-tour-grid">
+      ${tours.map(e=>`
+        <div class="ecard">
+          <div class="ecard-top">
+            <div class="ecard-game">${e.game === 'LOL' ? '⚔️ 리그 오브 레전드' : e.game === 'BATTLE_GROUND' ? '🪖 배틀그라운드' : '⚽ FC온라인'}</div>
+            <div class="ecard-date">${e.date}</div>
+          </div>
+          <div class="etitle">${e.title}</div>
+          <div class="edesc">${e.desc}</div>
+          <div class="prize-table">
+            ${e.prizes.map(p=>`
+              <div class="prize-row">
+                <span class="prize-rank">${p.rank}</span>
+                <span class="prize-val">${p.val}</span>
+              </div>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <!-- 게임 미션 -->
+    <div class="ev-section-hdr" style="margin-top:56px;">
+      <span class="ev-section-ico">🎯</span>
+      <div><strong>이번 달 게임 미션</strong><span>미션 달성하면 즉시 자동 지급 · 중복 달성 가능</span></div>
+    </div>
+    <div class="mission-hero">
+      <div class="mhero-stat">
+        <span class="mhero-num">${ms.totalCount}개</span>
+        <span class="mhero-label">이번 달 활성 미션</span>
+      </div>
+      <div class="mhero-divider"></div>
+      <div class="mhero-stat">
+        <span class="mhero-num">${ms.monthlyReward}</span>
+        <span class="mhero-label">매달 지급 쿠폰 시간</span>
+      </div>
+      <div class="mhero-desc">🔥 타 PC방 미션이 8개일 때 오빠피씨는 75개 — 게임만 해도 쿠폰이 복사됩니다</div>
+    </div>
+    <div class="mission-game-wrap">
+      ${ms.games.map(g=>`<div class="mgame-badge"><span>${g.ico}</span>${g.game}</div>`).join('')}
+    </div>
+    <div class="mission-cta">달성 즉시 자동 지급 · 이번 달 내내 · 중복 달성 가능</div>`;
 }
 
 function renderReviews() {
@@ -1103,7 +1314,7 @@ function showTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('panel-'+id).classList.add('on');
-  const tabs = ['home','facility','menu','ticket','sitcom','events','reviews','location','feedback'];
+  const tabs = ['home','facility','menu','ticket','sitcom','events','reviews','location'];
   const idx = tabs.indexOf(id);
   document.querySelectorAll('.tab-btn')[idx].classList.add('on');
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1197,6 +1408,8 @@ function submitIdea(){
   document.getElementById('fbIdea').querySelectorAll('.idnote,.fblbl,.fbtags,.fbta,.fbrow').forEach(el=>el.style.display='none');
   document.getElementById('idDone').classList.add('show');
 }
+
+function submitSitcomIdea(){const t=document.getElementById('sitcomIdea').value.trim();if(!t){document.getElementById('sitcomIdea').style.borderColor='#c0392b';return;}document.getElementById('sitcomCode').textContent='IDEA-'+Math.random().toString(36).substr(2,6).toUpperCase();document.getElementById('sitcomDone').classList.add('show');}
 
 /* ══ 초기화 ══ */
 renderAll();
