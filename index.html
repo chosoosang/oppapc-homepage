@@ -1065,33 +1065,20 @@ function renderMenu() {
 
 function renderTicket() {
   const nonmember = [
-    {amount:'1,000원', time:'40분'},
-    {amount:'2,000원', time:'1시간 20분'},
-    {amount:'3,000원', time:'2시간'},
-    {amount:'5,000원', time:'3시간 20분'},
-    {amount:'10,000원', time:'7시간'},
+    {amount:'1,000원', time:'40분'},{amount:'2,000원', time:'1시간 20분'},
+    {amount:'3,000원', time:'2시간'},{amount:'5,000원', time:'3시간 20분'},{amount:'10,000원', time:'7시간'},
   ];
   const card = [
-    {amount:'1,000원', time:'50분'},
-    {amount:'2,000원', time:'1시간 40분'},
-    {amount:'3,000원', time:'2시간 30분'},
-    {amount:'5,000원', time:'5시간'},
-    {amount:'10,000원', time:'10시간', hl:true},
-    {amount:'20,000원', time:'22시간'},
-    {amount:'30,000원', time:'33시간'},
-    {amount:'50,000원', time:'55시간'},
-    {amount:'100,000원', time:'120시간'},
+    {amount:'1,000원', time:'50분'},{amount:'2,000원', time:'1시간 40분'},
+    {amount:'3,000원', time:'2시간 30분'},{amount:'5,000원', time:'5시간'},
+    {amount:'10,000원', time:'10시간', hl:true},{amount:'20,000원', time:'22시간'},
+    {amount:'30,000원', time:'33시간'},{amount:'50,000원', time:'55시간'},{amount:'100,000원', time:'120시간'},
   ];
   const cash = [
-    {amount:'1,000원', time:'50분'},
-    {amount:'2,000원', time:'1시간 40분'},
-    {amount:'3,000원', time:'2시간 30분'},
-    {amount:'5,000원', time:'5시간 30분'},
-    {amount:'10,000원', time:'11시간 🔥', hl:true},
-    {amount:'20,000원', time:'24시간'},
-    {amount:'30,000원', time:'36시간'},
-    {amount:'50,000원', time:'65시간'},
-    {amount:'100,000원', time:'135시간'},
+    {amount:'1,000원', time:'50분'},{amount:'2,000원', time:'1시간 40분'},
+    {amount:'3,000원', time:'2시간 30분'},{amount:'5,000원', time:'5시간 30분'},
+    {amount:'10,000원', time:'11시간 🔥', hl:true},{amount:'20,000원', time:'24시간'},
+    {amount:'30,000원', time:'36시간'},{amount:'50,000원', time:'65시간'},{amount:'100,000원', time:'135시간'},
   ];
   const mkCards = (arr, tagClass, tagLabel) =>
     arr.map(t=>`<div class="tcard${t.hl?' highlight':''}">
@@ -1103,24 +1090,37 @@ function renderTicket() {
     <div class="ticket-section">
       <div class="ticket-sec-title">🎁 신규 혜택</div>
       <div class="ticket-grid">
-        <div class="tcard highlight" style="grid-column:span 2">
+        <div class="tcard highlight">
           <div class="tcard-amount" style="font-size:1.1rem">신규 가입 즉시</div>
           <div class="tcard-time">1시간 무료 쿠폰</div>
-          <span class="tcard-tag tag-free">100% 지급</span>
+          <span class="tcard-tag tag-free">회원가입만 하면 OK</span>
+        </div>
+        <div class="tcard highlight">
+          <div class="tcard-amount" style="font-size:1.1rem">카드 등록 시</div>
+          <div class="tcard-time">1시간 무료 증정</div>
+          <span class="tcard-tag tag-card">카드 등록 완료 후</span>
+        </div>
+      </div>
+    </div>
+    <div class="ticket-section">
+      <div class="ticket-sec-title">💵 회원 현금 요금 (보너스 더 받기!)</div>
+      <div class="ticket-grid">${mkCards(cash,'tag-cash','현금')}</div>
+    </div>
+    <div class="ticket-section">
+      <div class="ticket-sec-title">💳 회원 카드 요금</div>
+      <div class="ticket-grid">${mkCards(card,'tag-card','카드')}</div>
+      <div style="margin-top:12px;padding:12px 14px;background:rgba(100,150,255,.06);border:1px solid rgba(100,150,255,.18);border-radius:8px;font-size:.78rem;color:rgba(245,240,232,.75);">
+        💡 카드 자동충전 등록 시 추가 서비스 증정<br>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px;">
+          <div style="display:flex;gap:8px;padding:5px 8px;background:rgba(100,150,255,.06);border-radius:6px;"><span style="font-weight:700;min-width:48px;">1만원</span><span>→</span><span style="color:#7ab8f5;font-weight:700;">1시간 증정</span></div>
+          <div style="display:flex;gap:8px;padding:5px 8px;background:rgba(100,150,255,.06);border-radius:6px;"><span style="font-weight:700;min-width:48px;">5만원</span><span>→</span><span style="color:#7ab8f5;font-weight:700;">5시간 증정</span></div>
+          <div style="display:flex;gap:8px;padding:5px 8px;background:rgba(100,150,255,.06);border-radius:6px;"><span style="font-weight:700;min-width:48px;">10만원</span><span>→</span><span style="color:#7ab8f5;font-weight:700;">10시간 증정</span></div>
         </div>
       </div>
     </div>
     <div class="ticket-section">
       <div class="ticket-sec-title">🚶 비회원 요금</div>
       <div class="ticket-grid">${mkCards(nonmember,'tag-card','비회원')}</div>
-    </div>
-    <div class="ticket-section">
-      <div class="ticket-sec-title">💳 회원 카드 요금</div>
-      <div class="ticket-grid">${mkCards(card,'tag-card','카드')}</div>
-    </div>
-    <div class="ticket-section">
-      <div class="ticket-sec-title">💵 회원 현금 요금 (보너스 더 받기!)</div>
-      <div class="ticket-grid">${mkCards(cash,'tag-cash','현금')}</div>
     </div>`;
 }
 
