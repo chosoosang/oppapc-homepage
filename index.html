@@ -533,7 +533,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 
 
 /* ── 이벤트 탭 ── */
-.ev-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.18);border-radius:14px;margin-bottom:48px;overflow:hidden;}
+.ev-summary{display:flex;align-items:stretch;background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.18);border-radius:14px;margin-bottom:48px;overflow:hidden;}
 .ev-sum-item{text-align:center;padding:20px 12px;display:flex;flex-direction:column;gap:6px;}
 .ev-sum-num{font-family:var(--font-title);font-size:1.6rem;color:var(--primary);font-weight:900;}
 .ev-sum-lbl{font-size:.68rem;color:var(--gray);letter-spacing:.08em;}
@@ -790,7 +790,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       <div class="sec-hdr">
         <span class="sec-tag">EVENTS</span>
         <h2>이기면<br><em>쿠폰이 옵니다</em></h2>
-        <p class="sec-desc">게임만 잘해도 — 매달 100시간 이상의 쿠폰이 손님들께 돌아갑니다</p>
+        <p class="sec-desc">게임만 잘해도 — 매달 3,000시간 이상의 쿠폰이 손님들께 돌아갑니다</p>
       </div>
       <div class="ev-summary">
         <div class="ev-sum-item">
@@ -799,18 +799,13 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
         </div>
         <div class="ev-sum-divider"></div>
         <div class="ev-sum-item">
-          <span class="ev-sum-num">100h+</span>
+          <span class="ev-sum-num">3,000h+</span>
           <span class="ev-sum-lbl">매달 지급 쿠폰</span>
         </div>
         <div class="ev-sum-divider"></div>
         <div class="ev-sum-item">
           <span class="ev-sum-num">3종</span>
           <span class="ev-sum-lbl">월간 게임 대회</span>
-        </div>
-        <div class="ev-sum-divider"></div>
-        <div class="ev-sum-item">
-          <span class="ev-sum-num">즉시</span>
-          <span class="ev-sum-lbl">달성 시 자동 지급</span>
         </div>
       </div>
       <div id="evGrid">
@@ -1093,7 +1088,7 @@ const DATA = {
      prizes:[{rank:'🥇 1위',val:'5시간 쿠폰'},{rank:'🥈 2위',val:'2시간 쿠폰'},{rank:'🎖 3위~',val:'10분 쿠폰'}],
      active:true},
     // ─ 미션 (게임 목록만, 설명 없음)
-    {type:'missionSummary', totalCount:75, monthlyReward:'100시간 이상',
+    {type:'missionSummary', totalCount:75, monthlyReward:'3,000시간 이상',
      games:[
        {game:'리그 오브 레전드', ico:'⚔️'},
        {game:'발로란트', ico:'🎯'},
