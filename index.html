@@ -149,7 +149,7 @@ header{
 /* ══════════════════════════════════════
    콘텐츠 영역
 ══════════════════════════════════════ */
-.content{padding-top:108px;min-height:100vh;}
+.content{padding-top:108px;min-height:100vh;}.tab-panel.on{scroll-margin-top:108px;}
 .tab-panel{display:none;animation:fadeIn .4s ease;}
 .tab-panel.on{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -1258,7 +1258,7 @@ function showTab(id) {
   const tabs = ['home','facility','menu','ticket','sitcom','events','reviews','location'];
   const idx = tabs.indexOf(id);
   document.querySelectorAll('.tab-btn')[idx].classList.add('on');
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelector('.content').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 /* ══════════════════════════════════════
