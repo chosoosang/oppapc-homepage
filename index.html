@@ -1255,15 +1255,10 @@ function showTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('panel-'+id).classList.add('on');
-  const tabs = ['home','facility','menu','ticket','sitcom','events','reviews','location'];
-  const idx = tabs.indexOf(id);
-  document.querySelectorAll('.tab-btn')[idx].classList.add('on');
-  // 홈탭은 맨위, 나머지는 헤더+탭nav 높이(108px) 바로 아래로
-  if(id === 'home') {
-    window.scrollTo({top:0, behavior:'instant'});
-  } else {
-    window.scrollTo({top:108, behavior:'instant'});
-  }
+  // 배열 인덱스 대신 onclick 속성으로 버튼 찾기 (순서 오류 방지)
+  const btn = document.querySelector(`.tab-btn[onclick*="'${id}'"]`);
+  if(btn) btn.classList.add('on');
+  window.scrollTo({top:0, behavior:'instant'});
 }
 
 /* ══════════════════════════════════════
