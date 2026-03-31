@@ -232,7 +232,7 @@ h2 em{font-style:normal;color:var(--primary);}
   letter-spacing:.06em;position:relative;z-index:1;
 }
 .hero-stats{
-  display:flex;gap:40px;justify-content:center;flex-wrap:wrap;
+  display:flex;gap:clamp(16px,2.5vw,36px);justify-content:center;flex-wrap:wrap;
   margin-bottom:44px;position:relative;z-index:1;
 }
 .stat-num{font-family:var(--font-title);font-size:1.8rem;font-weight:900;color:var(--primary);display:block;}
@@ -606,6 +606,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
         <div><span class="stat-num">1Hr</span><span class="stat-lbl">신규가입 무료쿠폰</span></div>
         <div><span class="stat-num">3H+</span><span class="stat-lbl">무료주차 제공</span></div>
         <div><span class="stat-num">6CH</span><span class="stat-lbl">모든 OTT 무료</span></div>
+        <div><span class="stat-num">4,000h</span><span class="stat-lbl">매달 쿠폰 지급</span></div>
       </div>
       <button class="btn-gold" onclick="showTab('facility')">🏯 매장 둘러보기</button>
       <p class="hero-loc"><strong>부평 번화가</strong> 메인거리 중앙 · <strong>6층</strong></p>
