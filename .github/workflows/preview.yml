@@ -1,0 +1,23 @@
+name: Cloudflare Pages Preview
+
+on:
+  push:
+    branches:
+      - dev
+      - dev2
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare Pages
+        run: |
+          npx wrangler pages deploy . \
+            --project-name=oppapc-homepage \
+            --branch=${{ github.ref_name }} \
+            --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 726f3a8a05c359bcd611c739d037b160
