@@ -531,6 +531,30 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 .vb-crown span{font-size:.65rem;color:var(--gray);letter-spacing:.08em;font-family:var(--font-title);}
 @media(max-width:768px){.value-banner{padding:20px;gap:16px;}.vb-divider{display:none;}.vb-crown{width:100%;}}
 
+
+/* ── 이벤트 탭 ── */
+.ev-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.18);border-radius:14px;margin-bottom:48px;overflow:hidden;}
+.ev-sum-item{text-align:center;padding:20px 12px;display:flex;flex-direction:column;gap:6px;}
+.ev-sum-num{font-family:var(--font-title);font-size:1.6rem;color:var(--primary);font-weight:900;}
+.ev-sum-lbl{font-size:.68rem;color:var(--gray);letter-spacing:.08em;}
+.ev-sum-divider{width:1px;background:rgba(200,168,75,.18);margin:16px 0;}
+.ev-section-hdr{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
+.ev-section-ico{font-size:1.6rem;flex-shrink:0;}
+.ev-section-hdr div strong{display:block;font-family:var(--font-title);font-size:1rem;color:var(--cream);margin-bottom:4px;}
+.ev-section-hdr div span{font-size:.78rem;color:var(--gray);}
+.ev-tour-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.ecard{background:rgba(255,255,255,.03);border:1px solid rgba(200,168,75,.15);border-radius:14px;padding:24px;transition:border-color .3s;}
+.ecard:hover{border-color:rgba(200,168,75,.4);}
+.ecard-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.ecard-game{font-size:.78rem;color:var(--primary);font-family:var(--font-title);font-weight:700;}
+.ecard-date{font-size:.68rem;color:var(--gray);}
+.etitle{font-family:var(--font-title);font-size:1rem;color:var(--cream);margin-bottom:8px;line-height:1.4;}
+.edesc{font-size:.78rem;color:var(--gray);line-height:1.8;margin-bottom:16px;}
+.prize-table{display:flex;flex-direction:column;gap:6px;}
+.prize-row{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;background:rgba(200,168,75,.05);border-radius:6px;font-size:.78rem;}
+.prize-rank{color:var(--gray);}
+.prize-val{color:var(--primary);font-weight:700;font-family:var(--font-title);}
+@media(max-width:600px){.ev-summary{grid-template-columns:repeat(2,1fr);}.ev-sum-divider{display:none;}.ev-tour-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body data-ver="사극">
@@ -765,10 +789,31 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
     <div class="wrap">
       <div class="sec-hdr">
         <span class="sec-tag">EVENTS</span>
-        <h2>매달 열리는<br><em>대회와 이벤트</em></h2>
-        <p class="sec-desc">매달 대회·미션으로 지급되는 무료 시간 <strong style="color:var(--primary);font-size:1.1em;">100시간 이상</strong> · 이번 달 활성 미션 <strong style="color:var(--primary);">75개</strong></p>
+        <h2>이기면<br><em>쿠폰이 옵니다</em></h2>
+        <p class="sec-desc">게임만 잘해도 — 매달 100시간 이상의 쿠폰이 손님들께 돌아갑니다</p>
       </div>
-      <div class="ev-grid" id="evGrid">
+      <div class="ev-summary">
+        <div class="ev-sum-item">
+          <span class="ev-sum-num">75개</span>
+          <span class="ev-sum-lbl">매달 게임 미션</span>
+        </div>
+        <div class="ev-sum-divider"></div>
+        <div class="ev-sum-item">
+          <span class="ev-sum-num">100h+</span>
+          <span class="ev-sum-lbl">매달 지급 쿠폰</span>
+        </div>
+        <div class="ev-sum-divider"></div>
+        <div class="ev-sum-item">
+          <span class="ev-sum-num">3종</span>
+          <span class="ev-sum-lbl">월간 게임 대회</span>
+        </div>
+        <div class="ev-sum-divider"></div>
+        <div class="ev-sum-item">
+          <span class="ev-sum-num">즉시</span>
+          <span class="ev-sum-lbl">달성 시 자동 지급</span>
+        </div>
+      </div>
+      <div id="evGrid">
         <!-- JS로 렌더링 -->
       </div>
     </div>
@@ -1210,36 +1255,52 @@ function filterSitcom(filter, btn) {
 function renderEvents() {
   const tours = DATA.events.filter(e=>e.type==='tournament');
   const ms = DATA.events.find(e=>e.type==='missionSummary');
-  document.getElementById('evGrid').innerHTML =
-    `<div class="ev-section-title">🏆 이번 달 대회</div>
-     <div class="ev-tour-grid">
-       ${tours.map(e=>`
-         <div class="ecard on">
-           <div class="edate">${e.date} · ${e.game}</div>
-           <div class="etitle">${e.title}</div>
-           <div class="edesc">${e.desc}</div>
-           <div class="prize-table">
-             ${e.prizes.map(p=>`<div class="prize-row"><span class="prize-rank">${p.rank}</span><span class="prize-val">${p.val}</span></div>`).join('')}
-           </div>
-         </div>`).join('')}
-     </div>
-     <div class="ev-section-title" style="margin-top:56px;">🎯 이번 달 게임 미션</div>
-     <div class="mission-hero">
-       <div class="mhero-stat">
-         <span class="mhero-num">${ms.totalCount}개</span>
-         <span class="mhero-label">이번 달 활성 미션</span>
-       </div>
-       <div class="mhero-divider"></div>
-       <div class="mhero-stat">
-         <span class="mhero-num">${ms.monthlyReward}</span>
-         <span class="mhero-label">매달 지급 쿠폰 시간</span>
-       </div>
-       <div class="mhero-desc">게임만 해도 쿠폰 시간이 계속 증정됩니다</div>
-     </div>
-     <div class="mission-game-wrap">
-       ${ms.games.map(g=>`<div class="mgame-badge"><span>${g.ico}</span>${g.game}</div>`).join('')}
-     </div>
-     <div class="mission-cta">달성 즉시 자동 지급 · 이번 달 내내 · 중복 달성 가능</div>`;
+  document.getElementById('evGrid').innerHTML = `
+    <!-- 월간 대회 -->
+    <div class="ev-section-hdr">
+      <span class="ev-section-ico">🏆</span>
+      <div><strong>이번 달 월간 대회</strong><span>순위권에 들면 쿠폰 자동 지급</span></div>
+    </div>
+    <div class="ev-tour-grid">
+      ${tours.map(e=>`
+        <div class="ecard">
+          <div class="ecard-top">
+            <div class="ecard-game">${e.game === 'LOL' ? '⚔️ 리그 오브 레전드' : e.game === 'BATTLE_GROUND' ? '🪖 배틀그라운드' : '⚽ FC온라인'}</div>
+            <div class="ecard-date">${e.date}</div>
+          </div>
+          <div class="etitle">${e.title}</div>
+          <div class="edesc">${e.desc}</div>
+          <div class="prize-table">
+            ${e.prizes.map(p=>`
+              <div class="prize-row">
+                <span class="prize-rank">${p.rank}</span>
+                <span class="prize-val">${p.val}</span>
+              </div>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <!-- 게임 미션 -->
+    <div class="ev-section-hdr" style="margin-top:56px;">
+      <span class="ev-section-ico">🎯</span>
+      <div><strong>이번 달 게임 미션</strong><span>미션 달성하면 즉시 자동 지급 · 중복 달성 가능</span></div>
+    </div>
+    <div class="mission-hero">
+      <div class="mhero-stat">
+        <span class="mhero-num">${ms.totalCount}개</span>
+        <span class="mhero-label">이번 달 활성 미션</span>
+      </div>
+      <div class="mhero-divider"></div>
+      <div class="mhero-stat">
+        <span class="mhero-num">${ms.monthlyReward}</span>
+        <span class="mhero-label">매달 지급 쿠폰 시간</span>
+      </div>
+      <div class="mhero-desc">🔥 타 PC방 미션이 8개일 때 오빠피씨는 75개 — 게임만 해도 쿠폰이 복사됩니다</div>
+    </div>
+    <div class="mission-game-wrap">
+      ${ms.games.map(g=>`<div class="mgame-badge"><span>${g.ico}</span>${g.game}</div>`).join('')}
+    </div>
+    <div class="mission-cta">달성 즉시 자동 지급 · 이번 달 내내 · 중복 달성 가능</div>`;
 }
 
 function renderReviews() {
