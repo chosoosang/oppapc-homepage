@@ -1482,6 +1482,15 @@ function renderSeatsMap(seats) {
 
 /* ══ 초기화 ══ */
 renderAll();
+
+/* ══ URL 파라미터로 탭 직접 열기 ══ */
+/* 예: oppapc.com/?tab=location → 오시는 길 탭 바로 열림 */
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get('tab');
+  const validTabs = ['home','facility','menu','ticket','sitcom','events','reviews','location'];
+  if (tab && validTabs.includes(tab)) showTab(tab);
+})();
 </script>
 </body>
 </html>
