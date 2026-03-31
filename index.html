@@ -518,6 +518,19 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 .qb-item div strong{display:block;font-size:.88rem;color:var(--cream);font-family:var(--font-title);margin-bottom:4px;}
 .qb-item div p{font-size:.75rem;color:var(--gray);line-height:1.7;margin:0;}
 @media(max-width:768px){.quality-banner{padding:20px;}.qb-grid{grid-template-columns:1fr;}}
+
+/* ── 히어로 가치 뱃지 ── */
+.hero-value-badge{margin-top:10px;display:inline-block;font-family:var(--font-title);font-size:.72rem;letter-spacing:.18em;color:var(--primary-dk);border-top:1px solid rgba(200,168,75,.2);padding-top:8px;position:relative;z-index:1;}
+
+/* ── 시설 가치 배너 ── */
+.value-banner{display:flex;align-items:center;gap:20px;background:linear-gradient(135deg,rgba(200,168,75,.08) 0%,rgba(200,168,75,.04) 100%);border:1px solid rgba(200,168,75,.25);border-radius:16px;padding:28px 32px;margin-bottom:48px;flex-wrap:wrap;}
+.vb-left,.vb-right{flex:1;min-width:200px;}
+.vb-title{font-family:var(--font-title);font-size:1.1rem;color:var(--primary);font-weight:700;margin-bottom:8px;}
+.vb-desc{font-size:.8rem;color:var(--gray);line-height:1.9;}
+.vb-divider{font-size:1.8rem;color:rgba(200,168,75,.3);font-family:var(--font-title);flex-shrink:0;}
+.vb-crown{text-align:center;font-size:1.6rem;color:var(--primary);flex-shrink:0;line-height:1.4;}
+.vb-crown span{font-size:.65rem;color:var(--gray);letter-spacing:.08em;font-family:var(--font-title);}
+@media(max-width:768px){.value-banner{padding:20px;gap:16px;}.vb-divider{display:none;}.vb-crown{width:100%;}}
 </style>
 </head>
 <body data-ver="사극">
@@ -572,6 +585,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
       </div>
       <button class="btn-gold" onclick="showTab('facility')">🏯 매장 둘러보기</button>
       <p class="hero-loc"><strong>부평역</strong> 도보 3분 · <strong>6층</strong></p>
+      <div class="hero-value-badge">✦ 부평 최고급 시설 · 최고의 가성비 ✦</div>
     </div>
 
     <div class="wrap" style="padding-top:0;">
@@ -629,6 +643,20 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
         <h2>다른 피씨방과<br><em>다른 이유</em></h2>
         <p class="sec-desc">손님이 오빠피씨방으로 몰리는 이유가 있사옵니다</p>
       </div>
+      <!-- 시설 가치 배너 -->
+      <div class="value-banner">
+        <div class="vb-left">
+          <div class="vb-title">💎 최고급 시설</div>
+          <div class="vb-desc">래피드 트리거 · 모니터 암 · VOG 독립구동<br>전문 청소업체 · 서빙 로봇 · 6층 탁트인 뷰</div>
+        </div>
+        <div class="vb-divider">×</div>
+        <div class="vb-right">
+          <div class="vb-title">💰 최고의 가성비</div>
+          <div class="vb-desc">신규가입 1시간 무료 · 현금 1만원 = 11시간<br>무한리필 음료 3,000원 · 3시간 이상 주차 무료</div>
+        </div>
+        <div class="vb-crown">👑<br><span>이 두 가지를<br>동시에</span></div>
+      </div>
+
       <div class="fac-grid" id="facGrid">
         <!-- JS로 렌더링 -->
       </div>
