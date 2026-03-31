@@ -149,7 +149,7 @@ header{
 /* ══════════════════════════════════════
    콘텐츠 영역
 ══════════════════════════════════════ */
-.content{padding-top:108px;min-height:100vh;}
+.content{padding-top:0;min-height:100vh;}
 .tab-panel{display:none;animation:fadeIn .4s ease;}
 .tab-panel.on{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -157,7 +157,7 @@ header{
 /* ══════════════════════════════════════
    공통 컴포넌트
 ══════════════════════════════════════ */
-.wrap{max-width:1180px;margin:0 auto;padding:64px 40px;}.tab-panel:not(#panel-home) .wrap:first-child{padding-top:24px;}
+.wrap{max-width:1180px;margin:0 auto;padding:64px 40px;}
 .sec-hdr{text-align:center;margin-bottom:56px;}
 .sec-tag{
   display:inline-block;font-size:.66rem;letter-spacing:.35em;
@@ -180,6 +180,7 @@ h2 em{font-style:normal;color:var(--primary);}
    히어로 (홈 탭)
 ══════════════════════════════════════ */
 #panel-home{
+  padding-top:108px;
   background:radial-gradient(ellipse 70% 50% at 50% 40%,rgba(200,168,75,.07) 0%,transparent 70%);
 }
 .hero{
@@ -447,7 +448,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 ══════════════════════════════════════ */
 @media(max-width:768px){
   header{padding:0 20px;}
-  .wrap{padding:48px 20px;}
+  .wrap{padding:48px 20px;}.tab-panel:not(#panel-home)>.wrap:first-of-type{padding-top:12px;}
   .loc-grid{grid-template-columns:1fr;gap:32px;}
   .hero-stats{gap:24px;}
   .fbrow{flex-direction:column;}
@@ -633,7 +634,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
   </div>
 
   <!-- 시설 탭 -->
-  <div class="tab-panel" id="panel-facility">
+  <div class="tab-panel" id="panel-facility" style="padding-top:108px;">
     <div class="wrap">
       <div class="sec-hdr">
         <span class="sec-tag">FACILITY</span>
@@ -647,7 +648,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
   </div>
 
   <!-- 메뉴 탭 -->
-  <div class="tab-panel" id="panel-menu">
+  <div class="tab-panel" id="panel-menu" style="padding-top:108px;">
     <div class="wrap">
       <div class="sec-hdr">
         <span class="sec-tag">MENU</span>
@@ -659,7 +660,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
   </div>
 
   <!-- 요금제 탭 -->
-  <div class="tab-panel" id="panel-ticket">
+  <div class="tab-panel" id="panel-ticket" style="padding-top:108px;">
     <div class="wrap">
       <div class="sec-hdr">
         <span class="sec-tag">PRICING</span>
@@ -671,7 +672,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
   </div>
 
   <!-- 시트콤 탭 -->
-  <div class="tab-panel" id="panel-sitcom">
+  <div class="tab-panel" id="panel-sitcom" style="padding-top:108px;">
     <div class="wrap">
       <div class="sec-hdr">
         <span class="sec-tag">SITCOM</span>
@@ -743,7 +744,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
   </div>
 
   <!-- 이벤트 탭 -->
-  <div class="tab-panel" id="panel-events">
+  <div class="tab-panel" id="panel-events" style="padding-top:108px;">
     <div class="wrap">
       <div class="sec-hdr">
         <span class="sec-tag">EVENTS</span>
@@ -757,7 +758,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
   </div>
 
   <!-- 후기 탭 -->
-  <div class="tab-panel" id="panel-reviews">
+  <div class="tab-panel" id="panel-reviews" style="padding-top:108px;">
     <div class="wrap">
       <div class="sec-hdr">
         <span class="sec-tag">REVIEWS</span>
@@ -812,7 +813,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
   </div>
 
   <!-- 오시는 길 탭 -->
-  <div class="tab-panel" id="panel-location">
+  <div class="tab-panel" id="panel-location" style="padding-top:108px;">
     <div class="wrap">
       <div class="sec-hdr">
         <span class="sec-tag">LOCATION</span>
