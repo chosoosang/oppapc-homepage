@@ -499,7 +499,6 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 .mgame-badge span{font-size:.95rem;}
 .mission-cta{font-size:.75rem;color:var(--gray);text-align:center;padding:11px;background:rgba(200,168,75,.04);border-radius:8px;letter-spacing:.05em;}
 @media(max-width:600px){.mission-hero{gap:16px;padding:20px;}.mhero-num{font-size:2rem;}.mhero-divider{display:none;}}
-
 .park-box{margin-top:24px;background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.18);border-radius:12px;padding:20px;}
 .park-title{font-size:.75rem;font-weight:700;letter-spacing:.15em;color:var(--primary);text-transform:uppercase;margin-bottom:14px;}
 .park-rows{display:flex;flex-direction:column;gap:10px;}
@@ -698,6 +697,41 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
     <div class="rv-scroll">
       <div class="rv-track" id="rvTrack">
         <!-- JS로 렌더링 -->
+      </div>
+    </div>
+    <div class="wrap" style="margin-top:48px;">
+      <div class="sec-hdr">
+        <span class="sec-tag">FEEDBACK</span>
+        <h2>한 말씀<br><em>남겨주시옵소서</em></h2>
+        <p class="sec-desc">손님의 말씀이 오빠피씨방을 더 좋게 만들사옵니다</p>
+      </div>
+      <div class="fb-inner">
+        <div class="fb-tabs">
+          <button class="fbtab on" onclick="switchFb('review')">💬 방문 후기</button>
+          <button class="fbtab" onclick="switchFb('idea')">🎬 숏츠 아이디어 <span class="fbbadge">10시간 증정</span></button>
+        </div>
+        <div class="fb-pane on" id="fbReview">
+          <div>
+            <div class="fblbl" style="text-align:center;">방문 만족도</div>
+            <div class="stars-row"><span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span></div>
+            <div class="shint" id="shint">별을 눌러 평점을 선택하시옵소서</div>
+          </div>
+          <textarea class="fbta" id="rvText" placeholder="자유롭게 말씀해 주시옵소서... (선택사항)" rows="4"></textarea>
+          <div class="fbrow">
+            <input type="text" class="fbin" id="rvNick" placeholder="닉네임 (선택사항)" maxlength="20">
+            <button class="fbbtn" onclick="submitReview()">후기 남기기</button>
+          </div>
+          <div class="fbdone" id="rvDone"><div class="done-ico">🏯</div><div class="done-title">감사하옵니다</div><div class="done-sub">소중히 간직하겠사옵니다</div></div>
+        </div>
+        <div class="fb-pane" id="fbIdea">
+          <div class="idnote"><div class="idnote-ico">🎬</div><div class="idnote-body"><strong>채택된 아이디어는 실제 숏츠로 제작됩니다!</strong>재미있는 에피소드를 제안해주시옵소서.<br><em>채택 시 10시간 이용권을 증정하옵니다.</em></div></div>
+          <textarea class="fbta" id="idText" placeholder="아이디어를 자유롭게 적어주세요!" rows="5"></textarea>
+          <div class="fbrow">
+            <input type="text" class="fbin" id="idNick" placeholder="닉네임 또는 연락처 (쿠폰 전달용)">
+            <button class="fbbtn" onclick="submitIdea()">아이디어 제출</button>
+          </div>
+          <div class="fbdone" id="idDone"><div class="done-ico">🎬</div><div class="done-title">아이디어 접수 완료!</div><div class="done-sub">채택 시 연락드리겠사옵니다</div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -993,20 +1027,33 @@ function renderMenu() {
 
 function renderTicket() {
   const nonmember = [
-    {amount:'1,000원', time:'40분'},{amount:'2,000원', time:'1시간 20분'},
-    {amount:'3,000원', time:'2시간'},{amount:'5,000원', time:'3시간 20분'},{amount:'10,000원', time:'7시간'},
+    {amount:'1,000원', time:'40분'},
+    {amount:'2,000원', time:'1시간 20분'},
+    {amount:'3,000원', time:'2시간'},
+    {amount:'5,000원', time:'3시간 20분'},
+    {amount:'10,000원', time:'7시간'},
   ];
   const card = [
-    {amount:'1,000원', time:'50분'},{amount:'2,000원', time:'1시간 40분'},
-    {amount:'3,000원', time:'2시간 30분'},{amount:'5,000원', time:'5시간'},
-    {amount:'10,000원', time:'10시간', hl:true},{amount:'20,000원', time:'22시간'},
-    {amount:'30,000원', time:'33시간'},{amount:'50,000원', time:'55시간'},{amount:'100,000원', time:'120시간'},
+    {amount:'1,000원', time:'50분'},
+    {amount:'2,000원', time:'1시간 40분'},
+    {amount:'3,000원', time:'2시간 30분'},
+    {amount:'5,000원', time:'5시간'},
+    {amount:'10,000원', time:'10시간', hl:true},
+    {amount:'20,000원', time:'22시간'},
+    {amount:'30,000원', time:'33시간'},
+    {amount:'50,000원', time:'55시간'},
+    {amount:'100,000원', time:'120시간'},
   ];
   const cash = [
-    {amount:'1,000원', time:'50분'},{amount:'2,000원', time:'1시간 40분'},
-    {amount:'3,000원', time:'2시간 30분'},{amount:'5,000원', time:'5시간 30분'},
-    {amount:'10,000원', time:'11시간 🔥', hl:true},{amount:'20,000원', time:'24시간'},
-    {amount:'30,000원', time:'36시간'},{amount:'50,000원', time:'65시간'},{amount:'100,000원', time:'135시간'},
+    {amount:'1,000원', time:'50분'},
+    {amount:'2,000원', time:'1시간 40분'},
+    {amount:'3,000원', time:'2시간 30분'},
+    {amount:'5,000원', time:'5시간 30분'},
+    {amount:'10,000원', time:'11시간 🔥', hl:true},
+    {amount:'20,000원', time:'24시간'},
+    {amount:'30,000원', time:'36시간'},
+    {amount:'50,000원', time:'65시간'},
+    {amount:'100,000원', time:'135시간'},
   ];
   const mkCards = (arr, tagClass, tagLabel) =>
     arr.map(t=>`<div class="tcard${t.hl?' highlight':''}">
@@ -1018,29 +1065,24 @@ function renderTicket() {
     <div class="ticket-section">
       <div class="ticket-sec-title">🎁 신규 혜택</div>
       <div class="ticket-grid">
-        <div class="tcard highlight">
+        <div class="tcard highlight" style="grid-column:span 2">
           <div class="tcard-amount" style="font-size:1.1rem">신규 가입 즉시</div>
           <div class="tcard-time">1시간 무료 쿠폰</div>
-          <span class="tcard-tag tag-free">회원가입만 하면 OK</span>
-        </div>
-        <div class="tcard highlight">
-          <div class="tcard-amount" style="font-size:1.1rem">카드 등록 시</div>
-          <div class="tcard-time">1시간 무료 증정</div>
-          <span class="tcard-tag tag-card">카드 등록 완료 후</span>
+          <span class="tcard-tag tag-free">100% 지급</span>
         </div>
       </div>
     </div>
     <div class="ticket-section">
-      <div class="ticket-sec-title">💵 회원 현금 요금 (보너스 더 받기!)</div>
-      <div class="ticket-grid">${mkCards(cash,'tag-cash','현금')}</div>
+      <div class="ticket-sec-title">🚶 비회원 요금</div>
+      <div class="ticket-grid">${mkCards(nonmember,'tag-card','비회원')}</div>
     </div>
     <div class="ticket-section">
       <div class="ticket-sec-title">💳 회원 카드 요금</div>
       <div class="ticket-grid">${mkCards(card,'tag-card','카드')}</div>
     </div>
     <div class="ticket-section">
-      <div class="ticket-sec-title">🚶 비회원 요금</div>
-      <div class="ticket-grid">${mkCards(nonmember,'tag-card','비회원')}</div>
+      <div class="ticket-sec-title">💵 회원 현금 요금 (보너스 더 받기!)</div>
+      <div class="ticket-grid">${mkCards(cash,'tag-cash','현금')}</div>
     </div>`;
 }
 
