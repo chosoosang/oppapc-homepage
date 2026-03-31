@@ -555,6 +555,30 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 .prize-rank{color:var(--gray);}
 .prize-val{color:var(--primary);font-weight:700;font-family:var(--font-title);}
 @media(max-width:600px){.ev-summary{grid-template-columns:repeat(2,1fr);}.ev-sum-divider{display:none;}.ev-tour-grid{grid-template-columns:1fr;}}
+
+/* ── 자리 현황 ── */
+.seats-summary{display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap;}
+.seats-sum-card{flex:1;min-width:100px;text-align:center;padding:24px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(200,168,75,.15);border-radius:12px;display:flex;flex-direction:column;gap:8px;}
+.seats-avail-card{background:rgba(76,217,100,.07);border-color:rgba(76,217,100,.25);}
+.seats-used-card{background:rgba(255,100,100,.06);border-color:rgba(255,100,100,.2);}
+.seats-sum-num{font-family:var(--font-title);font-size:2.4rem;font-weight:900;color:var(--cream);}
+.seats-avail-card .seats-sum-num{color:#4cd964;}
+.seats-used-card .seats-sum-num{color:#ff6b6b;}
+.seats-sum-lbl{font-size:.72rem;color:var(--gray);letter-spacing:.08em;}
+.seats-legend{display:flex;gap:20px;margin-bottom:20px;justify-content:center;}
+.sl-item{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--gray);}
+.sl-dot{width:14px;height:14px;border-radius:3px;display:inline-block;}
+.sl-free{background:rgba(76,217,100,.5);border:1px solid rgba(76,217,100,.8);}
+.sl-busy{background:rgba(255,107,107,.5);border:1px solid rgba(255,107,107,.8);}
+.seats-map{display:flex;flex-direction:column;gap:4px;overflow-x:auto;padding-bottom:8px;}
+.seats-row{display:flex;gap:4px;align-items:center;}
+.seats-row-label{font-size:.6rem;color:var(--gray);min-width:40px;text-align:right;padding-right:6px;flex-shrink:0;}
+.seat{width:36px;height:36px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;cursor:default;transition:transform .15s;flex-shrink:0;font-family:var(--font-title);}
+.seat:hover{transform:scale(1.15);}
+.seat.free{background:rgba(76,217,100,.18);border:1px solid rgba(76,217,100,.5);color:rgba(76,217,100,.9);}
+.seat.busy{background:rgba(255,107,107,.18);border:1px solid rgba(255,107,107,.4);color:rgba(255,107,107,.8);}
+.seat.gap{background:transparent;border:none;visibility:hidden;}
+@media(max-width:600px){.seat{width:28px;height:28px;font-size:.5rem;}.seats-map{gap:3px;}}
 </style>
 </head>
 <body data-ver="사극">
@@ -581,6 +605,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 <!-- 탭 네비게이션 -->
 <nav class="tab-nav" id="tabNav">
   <button class="tab-btn on" onclick="showTab('home')">🏯 홈</button>
+  <button class="tab-btn" onclick="showTab('seats')">🖥️ 자리현황</button>
   <button class="tab-btn" onclick="showTab('facility')">⚡ 시설</button>
   <button class="tab-btn" onclick="showTab('menu')">🍳 메뉴</button>
   <button class="tab-btn" onclick="showTab('ticket')">💰 요금제</button>
@@ -656,6 +681,48 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
           <span class="prev-link">지도 보기 →</span>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- 자리 현황 탭 -->
+  <div class="tab-panel" id="panel-seats">
+    <div class="wrap">
+      <div class="sec-hdr">
+        <span class="sec-tag">SEATS</span>
+        <h2>지금 당장<br><em>자리 현황</em></h2>
+        <p class="sec-desc" id="seatsUpdatedAt">불러오는 중...</p>
+      </div>
+
+      <!-- 요약 -->
+      <div class="seats-summary">
+        <div class="seats-sum-card seats-avail-card">
+          <span class="seats-sum-num" id="seatsAvail">-</span>
+          <span class="seats-sum-lbl">빈 자리</span>
+        </div>
+        <div class="seats-sum-card seats-used-card">
+          <span class="seats-sum-num" id="seatsUsed">-</span>
+          <span class="seats-sum-lbl">이용 중</span>
+        </div>
+        <div class="seats-sum-card">
+          <span class="seats-sum-num" id="seatsTotal">-</span>
+          <span class="seats-sum-lbl">전체 석</span>
+        </div>
+      </div>
+
+      <!-- 범례 -->
+      <div class="seats-legend">
+        <span class="sl-item"><span class="sl-dot sl-free"></span>빈 자리</span>
+        <span class="sl-item"><span class="sl-dot sl-busy"></span>이용 중</span>
+      </div>
+
+      <!-- 배치도 -->
+      <div class="seats-map" id="seatsMap">
+        <!-- JS로 렌더링 -->
+      </div>
+
+      <p style="text-align:center;font-size:.7rem;color:var(--gray);margin-top:24px;">
+        ⏱ 1시간마다 자동 업데이트 · 실시간 확인은 카운터 문의
+      </p>
     </div>
   </div>
 
@@ -1410,6 +1477,49 @@ function submitIdea(){
 }
 
 function submitSitcomIdea(){const t=document.getElementById('sitcomIdea').value.trim();if(!t){document.getElementById('sitcomIdea').style.borderColor='#c0392b';return;}document.getElementById('sitcomCode').textContent='IDEA-'+Math.random().toString(36).substr(2,6).toUpperCase();document.getElementById('sitcomDone').classList.add('show');}
+
+
+/* ══ 자리 현황 ══ */
+async function loadSeats() {
+  try {
+    const res = await fetch('seats.json?t=' + Date.now());
+    const d = await res.json();
+    document.getElementById('seatsAvail').textContent = d.available;
+    document.getElementById('seatsUsed').textContent = d.occupied;
+    document.getElementById('seatsTotal').textContent = d.total;
+    document.getElementById('seatsUpdatedAt').textContent = '마지막 업데이트: ' + d.updated_at;
+    renderSeatsMap(d.seats);
+  } catch(e) {
+    document.getElementById('seatsUpdatedAt').textContent = '데이터를 불러올 수 없사옵니다';
+  }
+}
+
+function renderSeatsMap(seats) {
+  // 실제 배치: 이미지 기준
+  // 상단 블록: 158~151 | gap | 150~146 | gap | 145~137
+  // 중간 블록 상: 116~109 | gap | 084~069
+  // 중간 블록 하: 108~101 | gap | 068~053
+  // 하단 블록 상: 100~093 | gap | 052~037
+  // 하단 블록 하: 092~085 | gap | 036~021
+  const rows = [
+    { label:'A', nums: [158,157,156,155,154,153,152,151, null, 150,149,148,147,146, null, 145,144,143,142,141,140, null, 139,138,137] },
+    { label:'B', nums: [116,115,114,113,112,111,110,109, null, 84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69] },
+    { label:'C', nums: [108,107,106,105,104,103,102,101, null, 68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53] },
+    { label:'D', nums: [100,99,98,97,96,95,94,93, null, 52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37] },
+    { label:'E', nums: [92,91,90,89,88,87,86,85, null, 36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21] },
+  ];
+
+  const map = document.getElementById('seatsMap');
+  map.innerHTML = rows.map(row => {
+    const cells = row.nums.map(n => {
+      if (n === null) return '<div class="seat gap"></div>';
+      const s = seats[String(n)];
+      const cls = s && s.used ? 'busy' : 'free';
+      return `<div class="seat ${cls}" title="${n}번">${String(n).padStart(3,'0')}</div>`;
+    }).join('');
+    return `<div class="seats-row"><span class="seats-row-label">${row.label}</span>${cells}</div>`;
+  }).join('');
+}
 
 /* ══ 초기화 ══ */
 renderAll();
