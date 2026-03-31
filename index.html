@@ -149,7 +149,7 @@ header{
 /* ══════════════════════════════════════
    콘텐츠 영역
 ══════════════════════════════════════ */
-.content{padding-top:0;min-height:100vh;}.tab-panel{padding-top:108px;}.tab-panel.on{display:block;}
+.content{padding-top:108px;min-height:100vh;}
 .tab-panel{display:none;animation:fadeIn .4s ease;}
 .tab-panel.on{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -1258,7 +1258,12 @@ function showTab(id) {
   const tabs = ['home','facility','menu','ticket','sitcom','events','reviews','location'];
   const idx = tabs.indexOf(id);
   document.querySelectorAll('.tab-btn')[idx].classList.add('on');
-  window.scrollTo(0, 0);
+  // 홈탭은 맨위, 나머지는 헤더+탭nav 높이(108px) 바로 아래로
+  if(id === 'home') {
+    window.scrollTo({top:0, behavior:'instant'});
+  } else {
+    window.scrollTo({top:108, behavior:'instant'});
+  }
 }
 
 /* ══════════════════════════════════════
