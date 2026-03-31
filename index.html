@@ -149,7 +149,7 @@ header{
 /* ══════════════════════════════════════
    콘텐츠 영역
 ══════════════════════════════════════ */
-.content{padding-top:108px;min-height:100vh;}
+.content{padding-top:0;min-height:100vh;}
 .tab-panel{display:none;animation:fadeIn .4s ease;}
 .tab-panel.on{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -157,7 +157,7 @@ header{
 /* ══════════════════════════════════════
    공통 컴포넌트
 ══════════════════════════════════════ */
-.wrap{max-width:1180px;margin:0 auto;padding:64px 40px;}
+.wrap{max-width:1180px;margin:0 auto;padding:64px 40px;}.tab-panel:not(#panel-home) .wrap:first-child{padding-top:24px;}
 .sec-hdr{text-align:center;margin-bottom:56px;}
 .sec-tag{
   display:inline-block;font-size:.66rem;letter-spacing:.35em;
@@ -567,7 +567,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 <div class="content">
 
   <!-- 홈 탭 -->
-  <div class="tab-panel on" id="panel-home">
+  <div class="tab-panel on" id="panel-home" style="padding-top:108px;">
     <div class="hero">
       <div class="hero-grid"></div>
       <div class="hero-badge" id="heroBadge">조선 제일의 피씨방</div>
