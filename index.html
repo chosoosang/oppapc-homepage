@@ -520,6 +520,14 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 .auto-amount{font-family:var(--font-title);font-size:.9rem;color:var(--cream);font-weight:700;min-width:48px;}
 .auto-arrow{color:var(--gray);font-size:.8rem;}
 .auto-reward{color:#7ab8f5;font-weight:700;font-size:.85rem;}
+
+.fbtab2{flex:1;background:transparent;border:none;color:rgba(245,240,232,.5);padding:14px 12px;font-family:var(--font-title);font-size:.83rem;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.fbtab2:first-child{border-right:1px solid rgba(200,168,75,.2);}
+.fbtab2.on{background:rgba(200,168,75,.1);color:var(--primary);}
+.stars-row2{display:flex;justify-content:center;gap:5px;margin:10px 0 6px;}
+.star2{font-size:2.2rem;color:rgba(200,168,75,.18);cursor:pointer;transition:all .2s;user-select:none;line-height:1;}
+.star2.lit{color:var(--primary);}
+.shint2{text-align:center;font-size:.68rem;color:var(--gray);min-height:16px;}
 </style>
 </head>
 <body data-ver="사극">
@@ -551,9 +559,8 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
   <button class="tab-btn" onclick="showTab('ticket')">💰 요금제</button>
   <button class="tab-btn" onclick="showTab('sitcom')">🎬 시트콤</button>
   <button class="tab-btn" onclick="showTab('events')">🏆 이벤트</button>
-  <button class="tab-btn" onclick="showTab('reviews')">⭐ 후기</button>
+  <button class="tab-btn" onclick="showTab('reviews')">⭐ 후기 · 피드백</button>
   <button class="tab-btn" onclick="showTab('location')">📍 오시는 길</button>
-  <button class="tab-btn" onclick="showTab('feedback')">💬 피드백</button>
 </nav>
 
 <!-- ════════ 콘텐츠 ════════ -->
@@ -711,6 +718,57 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
     <div class="rv-scroll">
       <div class="rv-track" id="rvTrack">
         <!-- JS로 렌더링 -->
+      </div>
+    </div>
+    <div class="wrap" style="margin-top:56px;">
+      <div class="sec-hdr">
+        <span class="sec-tag">FEEDBACK</span>
+        <h2>한 말씀<br><em>남겨주시옵소서</em></h2>
+        <p class="sec-desc">손님의 말씀이 오빠피씨방을 더 좋게 만들사옵니다</p>
+      </div>
+      <div class="fb-inner">
+        <div class="fb-tabs">
+          <button class="fbtab2 on" onclick="switchFb2('review')">💬 방문 후기</button>
+          <button class="fbtab2" onclick="switchFb2('idea')">🎬 숏츠 아이디어 <span class="fbbadge">10시간 증정</span></button>
+        </div>
+        <div class="fb-pane on" id="fbReview2">
+          <div><div class="fblbl" style="text-align:center;">방문 만족도</div>
+            <div class="stars-row2">
+              <span class="star2" data-v="1">★</span><span class="star2" data-v="2">★</span>
+              <span class="star2" data-v="3">★</span><span class="star2" data-v="4">★</span><span class="star2" data-v="5">★</span>
+            </div>
+            <div class="shint2" id="shint2">별을 눌러 평점을 선택하시옵소서</div>
+          </div>
+          <div><div class="fblbl">어떤 점이 좋으셨사옵니까?</div>
+            <div class="fbtags">
+              <button class="tag" data-v="무한리필">🥤 무한리필 음료</button>
+              <button class="tag" data-v="래피드트리거">⚡ 래피드 트리거</button>
+              <button class="tag" data-v="청결">✨ 매장 청결</button>
+              <button class="tag" data-v="뷰">🌇 6층 뷰</button>
+              <button class="tag" data-v="간장계란밥">🍳 간장계란밥</button>
+              <button class="tag" data-v="OTT">📺 OTT 무료</button>
+              <button class="tag" data-v="주차">🚗 무료 주차</button>
+              <button class="tag" data-v="가격">💰 가격</button>
+            </div>
+          </div>
+          <textarea class="fbta" id="rvText2" placeholder="자유롭게 말씀해 주시옵소서... (선택사항)" rows="4"></textarea>
+          <div class="fbrow">
+            <input type="text" class="fbin" id="rvNick2" placeholder="닉네임 (선택사항)" maxlength="20">
+            <button class="fbbtn" onclick="submitReview2()">후기 남기기</button>
+          </div>
+          <div class="fbdone" id="rvDone2"><div class="done-ico">🏯</div><div class="done-title">감사하옵니다</div><div class="done-sub">소중히 간직하겠사옵니다</div></div>
+        </div>
+        <div class="fb-pane" id="fbIdea2">
+          <div class="idnote"><div class="idnote-ico">🎬</div>
+            <div class="idnote-body"><strong>채택된 아이디어는 실제 숏츠로 제작됩니다!</strong>재미있는 에피소드를 제안해주시옵소서.<br><em>채택 시 10시간 이용권을 증정하옵니다.</em></div>
+          </div>
+          <textarea class="fbta" id="idText2" placeholder="아이디어를 자유롭게 적어주세요!" rows="5"></textarea>
+          <div class="fbrow">
+            <input type="text" class="fbin" id="idNick2" placeholder="닉네임 또는 연락처 (쿠폰 전달용)">
+            <button class="fbbtn" onclick="submitIdea2()">아이디어 제출</button>
+          </div>
+          <div class="fbdone" id="idDone2"><div class="done-ico">🎬</div><div class="done-title">아이디어 접수 완료!</div><div class="done-sub">채택 시 연락드리겠사옵니다</div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1159,7 +1217,7 @@ function showTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('panel-'+id).classList.add('on');
-  const tabs = ['home','facility','menu','ticket','sitcom','events','reviews','location','feedback'];
+  const tabs = ['home','facility','menu','ticket','sitcom','events','reviews','location'];
   const idx = tabs.indexOf(id);
   document.querySelectorAll('.tab-btn')[idx].classList.add('on');
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1253,6 +1311,22 @@ function submitIdea(){
   document.getElementById('fbIdea').querySelectorAll('.idnote,.fblbl,.fbtags,.fbta,.fbrow').forEach(el=>el.style.display='none');
   document.getElementById('idDone').classList.add('show');
 }
+
+/* ══ 후기탭 피드백 ══ */
+const hints2=['','아쉬웠사옵니다','보통이었사옵니다','좋았사옵니다','매우 좋았사옵니다','최고이옵니다!'];
+let rating2=0;
+document.querySelectorAll('.star2').forEach(s=>{
+  s.addEventListener('mouseenter',()=>{const v=+s.dataset.v;document.querySelectorAll('.star2').forEach(x=>x.classList.toggle('lit',+x.dataset.v<=v));document.getElementById('shint2').textContent=hints2[v];});
+  s.addEventListener('mouseleave',()=>{document.querySelectorAll('.star2').forEach(x=>x.classList.toggle('lit',+x.dataset.v<=rating2));document.getElementById('shint2').textContent=rating2?hints2[rating2]:'별을 눌러 평점을 선택하시옵소서';});
+  s.addEventListener('click',()=>{rating2=+s.dataset.v;document.querySelectorAll('.star2').forEach(x=>x.classList.toggle('lit',+x.dataset.v<=rating2));document.getElementById('shint2').textContent=hints2[rating2];});
+});
+function switchFb2(tab){
+  document.querySelectorAll('.fbtab2').forEach((t,i)=>t.classList.toggle('on',(tab==='review'&&i===0)||(tab==='idea'&&i===1)));
+  document.getElementById('fbReview2').classList.toggle('on',tab==='review');
+  document.getElementById('fbIdea2').classList.toggle('on',tab==='idea');
+}
+function submitReview2(){if(!rating2&&!document.getElementById('rvText2').value.trim()){document.getElementById('shint2').textContent='⚠️ 별점 또는 내용을 입력해주시옵소서';return;}document.getElementById('rvDone2').classList.add('show');}
+function submitIdea2(){const t=document.getElementById('idText2').value.trim();if(!t){document.getElementById('idText2').style.borderColor='#c0392b';return;}document.getElementById('idDone2').classList.add('show');}
 
 /* ══ 초기화 ══ */
 renderAll();
