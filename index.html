@@ -530,9 +530,8 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
   <button class="tab-btn" onclick="showTab('ticket')">💰 요금제</button>
   <button class="tab-btn" onclick="showTab('sitcom')">🎬 시트콤</button>
   <button class="tab-btn" onclick="showTab('events')">🏆 이벤트</button>
-  <button class="tab-btn" onclick="showTab('reviews')">⭐ 후기</button>
+  <button class="tab-btn" onclick="showTab('reviews')">⭐ 후기 · 피드백</button>
   <button class="tab-btn" onclick="showTab('location')">📍 오시는 길</button>
-  <button class="tab-btn" onclick="showTab('feedback')">💬 피드백</button>
 </nav>
 
 <!-- ════════ 콘텐츠 ════════ -->
@@ -1103,7 +1102,7 @@ function showTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('panel-'+id).classList.add('on');
-  const tabs = ['home','facility','menu','ticket','sitcom','events','reviews','location','feedback'];
+  const tabs = ['home','facility','menu','ticket','sitcom','events','reviews','location'];
   const idx = tabs.indexOf(id);
   document.querySelectorAll('.tab-btn')[idx].classList.add('on');
   window.scrollTo({top:0,behavior:'smooth'});
