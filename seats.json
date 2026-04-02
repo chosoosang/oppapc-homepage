@@ -1,8 +1,8 @@
 {
   "total": 158,
-  "occupied": 64,
-  "available": 94,
-  "updated_at": "2026-04-02 19:00",
+  "occupied": 55,
+  "available": 103,
+  "updated_at": "2026-04-02 20:00",
   "seats": [
     {
       "no": 1,
@@ -111,12 +111,12 @@
     },
     {
       "no": 22,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 23,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -131,7 +131,7 @@
     },
     {
       "no": 26,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -161,12 +161,12 @@
     },
     {
       "no": 32,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 33,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -216,22 +216,22 @@
     },
     {
       "no": 43,
-      "used": true,
-      "remain": 0
-    },
-    {
-      "no": 44,
       "used": false,
       "remain": 0
     },
     {
-      "no": 45,
+      "no": 44,
       "used": true,
       "remain": 0
     },
     {
+      "no": 45,
+      "used": false,
+      "remain": 0
+    },
+    {
       "no": 46,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -241,17 +241,17 @@
     },
     {
       "no": 48,
-      "used": true,
-      "remain": 0
-    },
-    {
-      "no": 49,
       "used": false,
       "remain": 0
     },
     {
-      "no": 50,
+      "no": 49,
       "used": true,
+      "remain": 0
+    },
+    {
+      "no": 50,
+      "used": false,
       "remain": 0
     },
     {
@@ -346,17 +346,17 @@
     },
     {
       "no": 69,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 70,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 71,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -391,12 +391,12 @@
     },
     {
       "no": 78,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 79,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -476,7 +476,7 @@
     },
     {
       "no": 95,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -551,12 +551,12 @@
     },
     {
       "no": 110,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 111,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -571,7 +571,7 @@
     },
     {
       "no": 114,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -581,7 +581,7 @@
     },
     {
       "no": 116,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -731,7 +731,7 @@
     },
     {
       "no": 146,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
