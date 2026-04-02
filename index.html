@@ -579,6 +579,29 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 .seat.busy{background:rgba(255,107,107,.18);border:1px solid rgba(255,107,107,.4);color:rgba(255,107,107,.8);}
 .seat.gap{background:transparent;border:none;visibility:hidden;}
 @media(max-width:600px){.seat{width:28px;height:28px;font-size:.5rem;}.seats-map{gap:3px;}}
+
+/* ══ 플로팅 채팅 ══ */
+.chat-btn{position:fixed;bottom:24px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--primary);border:none;cursor:pointer;z-index:300;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 4px 20px rgba(200,168,75,.5);transition:transform .2s,box-shadow .2s;}
+.chat-btn:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(200,168,75,.7);}
+.chat-btn .chat-badge{position:absolute;top:-2px;right:-2px;width:18px;height:18px;background:#ff4757;border-radius:50%;font-size:.6rem;color:#fff;display:flex;align-items:center;justify-content:center;display:none;}
+.chat-window{position:fixed;bottom:90px;right:20px;width:340px;max-width:calc(100vw - 32px);height:480px;max-height:calc(100vh - 120px);background:var(--bg2);border:1px solid rgba(200,168,75,.25);border-radius:16px;display:flex;flex-direction:column;z-index:300;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);transform:scale(0);transform-origin:bottom right;transition:transform .25s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+.chat-window.open{transform:scale(1);pointer-events:all;}
+.chat-head{padding:14px 16px;background:rgba(200,168,75,.1);border-bottom:1px solid rgba(200,168,75,.15);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.chat-head-ico{font-size:1.4rem;}
+.chat-head-title{font-family:var(--font-title);font-size:.85rem;color:var(--primary);}
+.chat-head-sub{font-size:.65rem;color:var(--gray);}
+.chat-close{margin-left:auto;background:none;border:none;color:var(--gray);cursor:pointer;font-size:1.1rem;padding:4px;}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.chat-msg{max-width:85%;padding:9px 12px;border-radius:12px;font-size:.78rem;line-height:1.6;}
+.chat-msg.ai{background:rgba(255,255,255,.06);color:var(--cream);align-self:flex-start;border-bottom-left-radius:3px;}
+.chat-msg.user{background:rgba(200,168,75,.2);color:var(--cream);align-self:flex-end;border-bottom-right-radius:3px;}
+.chat-msg.typing{color:var(--gray);font-style:italic;}
+.chat-input-row{padding:10px 12px;border-top:1px solid rgba(200,168,75,.1);display:flex;gap:8px;flex-shrink:0;}
+.chat-input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(200,168,75,.2);border-radius:20px;padding:8px 14px;color:var(--cream);font-size:.78rem;outline:none;resize:none;}
+.chat-input:focus{border-color:rgba(200,168,75,.5);}
+.chat-send{background:var(--primary);border:none;border-radius:50%;width:36px;height:36px;color:var(--bg);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;}
+.chat-send:disabled{background:rgba(200,168,75,.3);cursor:not-allowed;}
+@media(max-width:400px){.chat-window{right:8px;bottom:80px;width:calc(100vw - 16px);}}
 </style>
 </head>
 <body data-ver="사극">
@@ -1480,6 +1503,111 @@ function renderSeatsMap(seats) {
   }).join('');
 }
 
+
+/* ══ 플로팅 채팅 AI ══ */
+const CHAT_SYSTEM = `당신은 인천 부평구에 위치한 오빠피씨방의 전담 AI 안내원입니다. 조선시대 사극 말투로 정중하게 답변하되 핵심은 간결하게 전달하세요.
+
+[매장 정보]
+- 위치: 인천 부평구 시장로 19, 6층 (부평 번화가 메인거리 중앙)
+- 운영: 24시간 연중무휴 (청소년 밤 10시 이후 불가)
+- 주차: 스타빠루뚜 건물 (인천 부평동 201-13), 3시간 이상 무료, 리프트 주차장(대형 SUV 불가)
+
+[요금]
+- 신규가입: 즉시 1시간 무료쿠폰
+- 현금 1만원 = 11시간
+- 카드: 자동충전 방식
+- 유료게임: 계정 1개당 200원 추가 차감
+
+[무한리필 음료]
+- 3,000원으로 퇴실 시까지 무제한 (펩시제로, 탐스제로 등 12종)
+
+[시설]
+- 전 좌석 래피드 트리거 키보드 + 모니터 암
+- VOG 독립 구동 (렉 없음)
+- PC 사양: i5-12400F / RTX 3060 Ti / RAM 32GB
+- 모니터: 32인치 165Hz, 벤큐 144Hz·240Hz, 알파스캔 QHD 165Hz
+- 서빙 로봇, 6층 탁트인 뷰, 전문 청소업체 관리
+- 문서작업·프린터·스캔 완비
+
+[메뉴 (추천)]
+- 간장계란밥 2,500원 (무항생제 계란·방앗간 참기름)
+- 블루보틀 원두커피 2,800원
+- 매콤명란마요덮밥 5,500원
+- 카다이프새우계란간장밥 6,500원
+- 도시락세트 12,500원~ (3시간 쿠폰 증정)
+
+[이벤트]
+- 게임 미션 75개 (달성 시 무료 시간)
+- 매달 롤·배그·FC온라인 대회 진행
+- 매달 4,000시간+ 쿠폰 지급
+
+[OTT·부가서비스]
+- 넷플릭스 등 6개 채널 무료
+
+답변 시 반드시 사극 말투 유지, 모르는 건 "카운터에 직접 문의하시옵소서"라고 안내하세요.`;
+
+let chatOpen = false;
+let chatHistory = [];
+let chatLoading = false;
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chatWindow').classList.toggle('open', chatOpen);
+  if (chatOpen) {
+    document.getElementById('chatBadge').style.display = 'none';
+    setTimeout(() => document.getElementById('chatInput').focus(), 300);
+  }
+}
+
+function appendMsg(text, role) {
+  const msgs = document.getElementById('chatMsgs');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  div.innerHTML = text.replace(/\n/g, '<br>');
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || chatLoading) return;
+
+  input.value = '';
+  appendMsg(text, 'user');
+  chatHistory.push({role:'user', content: text});
+
+  chatLoading = true;
+  document.getElementById('chatSend').disabled = true;
+  const typingDiv = appendMsg('답변을 준비하고 있사옵니다...', 'ai typing');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 500,
+        system: CHAT_SYSTEM,
+        messages: chatHistory
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || '죄송하옵니다, 잠시 후 다시 시도해주시옵소서.';
+    typingDiv.className = 'chat-msg ai';
+    typingDiv.innerHTML = reply.replace(/\n/g, '<br>');
+    chatHistory.push({role:'assistant', content: reply});
+  } catch(e) {
+    typingDiv.className = 'chat-msg ai';
+    typingDiv.innerHTML = '연결에 문제가 생겼사옵니다. 잠시 후 다시 시도해주시옵소서.';
+  }
+
+  chatLoading = false;
+  document.getElementById('chatSend').disabled = false;
+  document.getElementById('chatMsgs').scrollTop = 99999;
+}
+
 /* ══ 초기화 ══ */
 renderAll();
 
@@ -1492,5 +1620,31 @@ renderAll();
   if (tab && validTabs.includes(tab)) showTab(tab);
 })();
 </script>
+
+<!-- 플로팅 채팅 버튼 -->
+<button class="chat-btn" onclick="toggleChat()" title="AI 문의하기" aria-label="AI 채팅 문의">
+  💬
+  <span class="chat-badge" id="chatBadge">1</span>
+</button>
+
+<!-- 채팅 창 -->
+<div class="chat-window" id="chatWindow">
+  <div class="chat-head">
+    <span class="chat-head-ico">🏯</span>
+    <div>
+      <div class="chat-head-title">오빠피씨방 AI</div>
+      <div class="chat-head-sub">매장 관련 무엇이든 물어보시옵소서</div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="chat-msg ai">안녕하시옵니까! 오빠피씨방 AI이옵니다 🏯<br>요금, 메뉴, 이벤트, 시설 등 궁금하신 것을 말씀해주시옵소서!</div>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chatInput" placeholder="메시지를 입력하시옵소서..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}">
+    <button class="chat-send" id="chatSend" onclick="sendChat()">➤</button>
+  </div>
+</div>
+
 </body>
 </html>
