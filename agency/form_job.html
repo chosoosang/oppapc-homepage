@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>구인 신청서 / Job Request Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#2563EB;--blue-lt:#EFF6FF;--blue-md:#DBEAFE;--navy:#1A3A5C;--gray:#64748B;--border:#CBD5E1;--white:#fff;--bg:#EFF6FF;--text:#1E293B;--shadow:0 4px 20px rgba(0,0,0,.1)}
+body{font-family:'Noto Sans KR','Noto Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
+
+.lang-bar{background:var(--navy);padding:10px 16px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.lb{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;border-radius:100px;padding:5px 13px;font-size:13px;cursor:pointer;transition:.2s;font-family:inherit}
+.lb:hover{background:rgba(255,255,255,.25)}
+.lb.active{background:#fff;color:var(--navy);font-weight:700}
+
+.top-bar{background:var(--blue);padding:20px;text-align:center;color:#fff}
+.top-bar h1{font-size:22px;font-weight:900;margin-bottom:4px}
+.top-bar p{font-size:13px;opacity:.85}
+.owner-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border-radius:100px;padding:4px 14px;font-size:12px;margin-top:8px;font-weight:700}
+
+.progress-wrap{padding:16px 16px 0}
+.progress-steps{display:flex;margin-bottom:8px}
+.step{flex:1;text-align:center;position:relative}
+.step::after{content:'';position:absolute;top:14px;left:50%;right:-50%;height:2px;background:var(--border);z-index:0}
+.step:last-child::after{display:none}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--white);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gray);position:relative;z-index:1;transition:.3s}
+.step.active .step-dot{background:var(--blue);border-color:var(--blue);color:#fff}
+.step.done .step-dot{background:var(--blue);border-color:var(--blue);color:#fff}
+.step.done::after{background:var(--blue)}
+.step-label{font-size:11px;color:var(--gray)}
+.step.active .step-label{color:var(--blue);font-weight:700}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;margin:0 16px 16px}
+.progress-fill{height:100%;background:var(--blue);border-radius:2px;transition:.4s}
+
+.card{background:var(--white);border-radius:16px;margin:0 14px 14px;padding:22px 18px;box-shadow:var(--shadow)}
+.card-title{font-size:16px;font-weight:900;color:var(--navy);margin-bottom:4px}
+.card-sub{font-size:12px;color:var(--gray);margin-bottom:18px}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fg label{font-size:14px;font-weight:700;color:var(--navy)}
+.req{color:#DC2626;font-size:12px}
+.fg input,.fg select{padding:14px 15px;border:2px solid var(--border);border-radius:10px;font-size:16px;font-family:inherit;transition:.2s;background:var(--white);width:100%;-webkit-appearance:none}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--blue)}
+.fg textarea{padding:13px 15px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;min-height:70px;width:100%}
+.fg textarea:focus{outline:none;border-color:var(--blue)}
+.hint{font-size:11px;color:var(--gray);margin-top:2px}
+
+.radio-group{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ri{border:2px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.ri:hover{border-color:var(--blue);background:var(--blue-lt)}
+.ri.on{border-color:var(--blue);background:var(--blue-md);font-weight:700;color:var(--blue)}
+.rd{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s}
+.ri.on .rd{border-color:var(--blue);background:var(--blue)}
+.ri.on .rd::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff;display:block}
+
+.btn-row{display:flex;gap:10px;margin:0 14px 10px}
+.btn{padding:15px;border-radius:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:.2s;flex:1;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-back{background:var(--white);color:var(--gray);border:2px solid var(--border)}
+.btn-next{background:var(--blue);color:#fff}.btn-next:hover{background:#1D4ED8}
+
+.notice{background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;padding:12px 14px;font-size:12px;color:#92400E;margin-bottom:14px;line-height:1.7}
+
+.complete{display:flex;flex-direction:column;align-items:center;padding:44px 18px;text-align:center}
+.ci{font-size:60px;margin-bottom:16px;animation:bounce .6s ease}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.ct{font-size:22px;font-weight:900;color:var(--blue);margin-bottom:8px}
+.cs{font-size:14px;color:var(--gray);line-height:1.8;margin-bottom:20px}
+.owner-badge{background:var(--blue-lt);border:1px solid var(--blue-md);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--blue);font-weight:700;margin-bottom:14px;width:100%;text-align:center}
+.sbox{background:var(--blue-lt);border:2px solid var(--blue-md);border-radius:12px;padding:18px;width:100%;text-align:left;margin-bottom:18px}
+.sr{display:flex;gap:10px;margin-bottom:8px;font-size:13px}
+.sr:last-child{margin-bottom:0}
+.sl{color:var(--gray);width:80px;flex-shrink:0}
+.sv{font-weight:700;color:var(--navy)}
+.page{display:none}.page.active{display:block}
+</style>
+</head>
+<body>
+
+<!-- 언어 선택 바 -->
+<div class="lang-bar">
+  <button class="lb active" onclick="setLang('ko')">🇰🇷 한국어</button>
+  <button class="lb" onclick="setLang('en')">🇺🇸 English</button>
+  <button class="lb" onclick="setLang('vi')">🇻🇳 Tiếng Việt</button>
+  <button class="lb" onclick="setLang('zh')">🇨🇳 中文</button>
+  <button class="lb" onclick="setLang('ja')">🇯🇵 日本語</button>
+</div>
+
+<div class="top-bar">
+  <h1 id="t-title">🏭 구인 신청서</h1>
+  <p id="t-sub">외국인 근로자 채용을 도와드립니다</p>
+  <div id="ownerChip" style="display:none" class="owner-chip">담당: <span id="ownerName"></span></div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="step active" id="s1"><div class="step-dot">1</div><div class="step-label" id="sl1">업체정보</div></div>
+    <div class="step" id="s2"><div class="step-dot">2</div><div class="step-label" id="sl2">채용조건</div></div>
+    <div class="step" id="s3"><div class="step-dot">3</div><div class="step-label" id="sl3">연락처</div></div>
+    <div class="step" id="s4"><div class="step-dot">4</div><div class="step-label" id="sl4">완료</div></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="pf" style="width:25%"></div></div>
+</div>
+
+<!-- STEP 1 -->
+<div class="page active" id="page1">
+  <div class="card">
+    <div class="card-title" id="t-s1title">🏢 업체 기본 정보</div>
+    <div class="card-sub" id="t-s1sub">업체명과 업종을 알려주세요</div>
+    <div class="fg"><label id="t-company">업체명 <span class="req">*</span></label><input type="text" id="p1co" placeholder=""></div>
+    <div class="fg">
+      <label id="t-sector">업종 <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="ri" onclick="sel(this,'sector','제조업 (공장)')"><div class="rd"></div><span id="t-mfg">🏭 제조업</span></div>
+        <div class="ri" onclick="sel(this,'sector','농업 (농장)')"><div class="rd"></div><span id="t-farm">🌾 농업</span></div>
+        <div class="ri" onclick="sel(this,'sector','건설업')"><div class="rd"></div><span id="t-cons">🏗️ 건설업</span></div>
+        <div class="ri" onclick="sel(this,'sector','어업')"><div class="rd"></div><span id="t-fish">🐟 어업</span></div>
+        <div class="ri" onclick="sel(this,'sector','서비스업')"><div class="rd"></div><span id="t-svc">🛎️ 서비스업</span></div>
+        <div class="ri" onclick="sel(this,'sector','식품가공')"><div class="rd"></div><span id="t-food">🍱 식품가공</span></div>
+      </div>
+    </div>
+    <div class="fg"><label id="t-region">근무 지역 <span class="req">*</span></label><input type="text" id="p1region" placeholder=""></div>
+    <div class="fg"><label id="t-address">상세 주소</label><input type="text" id="p1addr" placeholder=""><span class="hint" id="t-addr-hint">담당자만 확인합니다</span></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-next" onclick="go(2)" id="t-next1">다음 →</button></div>
+</div>
+
+<!-- STEP 2 -->
+<div class="page" id="page2">
+  <div class="card">
+    <div class="card-title" id="t-s2title">👥 채용 조건</div>
+    <div class="card-sub" id="t-s2sub">어떤 근로자가 필요하신가요?</div>
+    <div class="fg"><label id="t-count">필요 인원 <span class="req">*</span></label><input type="number" id="p2cnt" min="1" value="1"></div>
+    <div class="fg">
+      <label id="t-nation">선호 국적</label>
+      <select id="p2nation">
+        <option value="" id="t-nation-any">국적 무관</option>
+        <option value="베트남">🇻🇳 베트남</option>
+        <option value="네팔">🇳🇵 네팔</option>
+        <option value="캄보디아">🇰🇭 캄보디아</option>
+        <option value="인도네시아">🇮🇩 인도네시아</option>
+        <option value="미얀마">🇲🇲 미얀마</option>
+      </select>
+    </div>
+    <div class="fg"><label id="t-pay">급여 조건</label><input type="text" id="p2pay" placeholder=""></div>
+    <div class="fg">
+      <label id="t-gender">성별 조건</label>
+      <div class="radio-group" style="grid-template-columns:repeat(3,1fr)">
+        <div class="ri" style="justify-content:center" onclick="sel(this,'gender','무관')"><div class="rd"></div><span id="t-any">무관</span></div>
+        <div class="ri" style="justify-content:center" onclick="sel(this,'gender','남')"><div class="rd"></div><span id="t-male">남성</span></div>
+        <div class="ri" style="justify-content:center" onclick="sel(this,'gender','여')"><div class="rd"></div><span id="t-female">여성</span></div>
+      </div>
+    </div>
+    <div class="fg">
+      <label id="t-accomm">숙식 제공</label>
+      <div class="radio-group">
+        <div class="ri" onclick="sel(this,'accommodation','제공')"><div class="rd"></div><span id="t-accomm-yes">✅ 숙식 제공</span></div>
+        <div class="ri" onclick="sel(this,'accommodation','미제공')"><div class="rd"></div><span id="t-accomm-no">❌ 미제공</span></div>
+      </div>
+    </div>
+    <div class="fg"><label id="t-memo">기타 요청사항</label><textarea id="p2memo" placeholder=""></textarea></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-back" onclick="go(1)" id="t-prev2">← 이전</button><button class="btn btn-next" onclick="go(3)" id="t-next2">다음 →</button></div>
+</div>
+
+<!-- STEP 3 -->
+<div class="page" id="page3">
+  <div class="card">
+    <div class="card-title" id="t-s3title">📞 담당자 연락처</div>
+    <div class="card-sub" id="t-s3sub">채용 담당자 정보를 입력해주세요</div>
+    <div class="fg"><label id="t-cname">담당자 이름 <span class="req">*</span></label><input type="text" id="p3cname" placeholder=""></div>
+    <div class="fg"><label id="t-phone">연락처 <span class="req">*</span></label><input type="tel" id="p3phone" placeholder="031-000-0000"></div>
+    <div class="fg"><label id="t-email">이메일</label><input type="email" id="p3email" placeholder=""></div>
+    <div class="notice" id="t-privacy">🔒 입력하신 업체 정보와 연락처는 담당 소개소에만 전달되며 외부에 공개되지 않습니다.</div>
+    <div class="fg">
+      <label id="t-agree-label">개인정보 동의 <span class="req">*</span></label>
+      <div class="ri" id="agreeBtn" onclick="toggleAgree()"><div class="rd"></div><span id="t-agree">입력한 정보를 채용 목적으로 활용하는 것에 동의합니다</span></div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-back" onclick="go(2)" id="t-prev3">← 이전</button><button class="btn btn-next" onclick="submit()" id="t-submit">✅ 신청하기</button></div>
+</div>
+
+<!-- STEP 4 -->
+<div class="page" id="page4">
+  <div class="card complete">
+    <div class="ci">🎉</div>
+    <div class="ct" id="t-done-title">신청 완료!</div>
+    <div class="cs" id="t-done-sub">담당자가 확인 후 빠른 시일 내에 연락드리겠습니다</div>
+    <div class="owner-badge" id="ownerBadge"></div>
+    <div class="sbox" id="sbox"></div>
+    <p style="font-size:12px;color:var(--gray)" id="t-done-note">추가 문의는 담당자에게 직접 연락해주세요</p>
+  </div>
+</div>
+
+<script>
+const OWNER = new URLSearchParams(window.location.search).get('owner') || '미지정';
+if(OWNER!=='미지정'){document.getElementById('ownerChip').style.display='inline-flex';document.getElementById('ownerName').textContent=OWNER;}
+
+const LANGS = {
+  ko:{
+    title:'🏭 구인 신청서',sub:'외국인 근로자 채용을 도와드립니다',
+    sl1:'업체정보',sl2:'채용조건',sl3:'연락처',sl4:'완료',
+    s1title:'🏢 업체 기본 정보',s1sub:'업체명과 업종을 알려주세요',
+    company:'업체명',sector:'업종',region:'근무 지역',address:'상세 주소',addrHint:'담당자만 확인합니다',
+    mfg:'🏭 제조업',farm:'🌾 농업',cons:'🏗️ 건설업',fish:'🐟 어업',svc:'🛎️ 서비스업',food:'🍱 식품가공',
+    s2title:'👥 채용 조건',s2sub:'어떤 근로자가 필요하신가요?',
+    count:'필요 인원',nation:'선호 국적',nationAny:'국적 무관',
+    pay:'급여 조건',gender:'성별 조건',any:'무관',male:'남성',female:'여성',
+    accomm:'숙식 제공',accommYes:'✅ 숙식 제공',accommNo:'❌ 미제공',memo:'기타 요청사항',
+    s3title:'📞 담당자 연락처',s3sub:'채용 담당자 정보를 입력해주세요',
+    cname:'담당자 이름',phone:'연락처',email:'이메일',
+    privacy:'🔒 입력하신 업체 정보와 연락처는 담당 소개소에만 전달되며 외부에 공개되지 않습니다.',
+    agreeLabel:'개인정보 동의',agree:'입력한 정보를 채용 목적으로 활용하는 것에 동의합니다',
+    next:'다음 →',prev:'← 이전',submit:'✅ 신청하기',
+    doneTitle:'신청 완료!',doneSub:'담당자가 확인 후 빠른 시일 내에 연락드리겠습니다',
+    doneNote:'추가 문의는 담당자에게 직접 연락해주세요',
+    ownerBadge:(o)=>`📋 ${o} 담당자 DB에 등록되었습니다`,
+    alertCompany:'업체명을 입력해주세요',alertSector:'업종을 선택해주세요',alertRegion:'근무 지역을 입력해주세요',alertCname:'담당자 이름을 입력해주세요',alertPhone:'연락처를 입력해주세요',alertAgree:'개인정보 활용에 동의해주세요',
+    coLabel:'업체명',sectorLabel:'업종',regionLabel:'지역',cntLabel:'인원',cnameLbl:'담당자',phoneLbl:'연락처',ownerLbl:'소개소',
+  },
+  en:{
+    title:'🏭 Job Request Form',sub:'We will help you hire foreign workers',
+    sl1:'Company',sl2:'Conditions',sl3:'Contact',sl4:'Done',
+    s1title:'🏢 Company Information',s1sub:'Please enter company name and industry',
+    company:'Company Name',sector:'Industry',region:'Work Location',address:'Detailed Address',addrHint:'Only the manager will see this',
+    mfg:'🏭 Manufacturing',farm:'🌾 Agriculture',cons:'🏗️ Construction',fish:'🐟 Fishery',svc:'🛎️ Service',food:'🍱 Food Processing',
+    s2title:'👥 Hiring Conditions',s2sub:'What kind of workers do you need?',
+    count:'Number of Workers',nation:'Preferred Nationality',nationAny:'Any Nationality',
+    pay:'Salary',gender:'Gender Preference',any:'Any',male:'Male',female:'Female',
+    accomm:'Accommodation',accommYes:'✅ Provided',accommNo:'❌ Not Provided',memo:'Additional Requirements',
+    s3title:'📞 Contact Information',s3sub:'Enter contact person details',
+    cname:'Contact Person',phone:'Phone Number',email:'Email',
+    privacy:'🔒 Your information will only be sent to the employment agency and will not be disclosed publicly.',
+    agreeLabel:'Privacy Agreement',agree:'I agree to use the information for hiring purposes',
+    next:'Next →',prev:'← Back',submit:'✅ Submit',
+    doneTitle:'Submitted!',doneSub:'We will contact you as soon as possible',
+    doneNote:'Please contact the person in charge for further inquiries',
+    ownerBadge:(o)=>`📋 Registered in ${o}'s DB`,
+    alertCompany:'Please enter company name',alertSector:'Please select industry',alertRegion:'Please enter work location',alertCname:'Please enter contact name',alertPhone:'Please enter phone number',alertAgree:'Please agree to the terms',
+    coLabel:'Company',sectorLabel:'Industry',regionLabel:'Location',cntLabel:'Workers',cnameLbl:'Contact',phoneLbl:'Phone',ownerLbl:'Agency',
+  },
+  vi:{
+    title:'🏭 Đơn Tuyển Dụng',sub:'Chúng tôi sẽ giúp bạn tuyển dụng lao động nước ngoài',
+    sl1:'Công ty',sl2:'Điều kiện',sl3:'Liên hệ',sl4:'Hoàn tất',
+    s1title:'🏢 Thông tin cơ bản của công ty',s1sub:'Vui lòng nhập tên công ty và ngành nghề',
+    company:'Tên công ty',sector:'Ngành nghề',region:'Địa điểm làm việc',address:'Địa chỉ chi tiết',addrHint:'Chỉ người phụ trách mới xem được',
+    mfg:'🏭 Sản xuất',farm:'🌾 Nông nghiệp',cons:'🏗️ Xây dựng',fish:'🐟 Ngư nghiệp',svc:'🛎️ Dịch vụ',food:'🍱 Chế biến thực phẩm',
+    s2title:'👥 Điều kiện tuyển dụng',s2sub:'Bạn cần loại lao động nào?',
+    count:'Số lượng cần tuyển',nation:'Quốc tịch ưu tiên',nationAny:'Không phân biệt quốc tịch',
+    pay:'Mức lương',gender:'Yêu cầu giới tính',any:'Không quan trọng',male:'Nam',female:'Nữ',
+    accomm:'Chỗ ở & ăn uống',accommYes:'✅ Có cung cấp',accommNo:'❌ Không cung cấp',memo:'Yêu cầu khác',
+    s3title:'📞 Thông tin liên hệ',s3sub:'Nhập thông tin người phụ trách tuyển dụng',
+    cname:'Tên người phụ trách',phone:'Số điện thoại',email:'Email',
+    privacy:'🔒 Thông tin của bạn chỉ được gửi đến công ty giới thiệu việc làm và không được công khai.',
+    agreeLabel:'Đồng ý bảo mật',agree:'Tôi đồng ý cho phép sử dụng thông tin đã nhập cho mục đích tuyển dụng',
+    next:'Tiếp theo →',prev:'← Quay lại',submit:'✅ Gửi đơn',
+    doneTitle:'Đã gửi thành công!',doneSub:'Người phụ trách sẽ liên hệ với bạn sớm nhất',
+    doneNote:'Liên hệ người phụ trách trực tiếp nếu có thắc mắc',
+    ownerBadge:(o)=>`📋 Đã đăng ký vào DB của ${o}`,
+    alertCompany:'Vui lòng nhập tên công ty',alertSector:'Vui lòng chọn ngành nghề',alertRegion:'Vui lòng nhập địa điểm',alertCname:'Vui lòng nhập tên người phụ trách',alertPhone:'Vui lòng nhập số điện thoại',alertAgree:'Vui lòng đồng ý',
+    coLabel:'Công ty',sectorLabel:'Ngành',regionLabel:'Địa điểm',cntLabel:'Số lượng',cnameLbl:'Phụ trách',phoneLbl:'ĐT',ownerLbl:'Đại lý',
+  },
+  zh:{
+    title:'🏭 招工申请表',sub:'我们将帮助您招募外籍劳动者',
+    sl1:'公司信息',sl2:'招工条件',sl3:'联系方式',sl4:'完成',
+    s1title:'🏢 公司基本信息',s1sub:'请输入公司名称和行业',
+    company:'公司名称',sector:'行业',region:'工作地点',address:'详细地址',addrHint:'仅负责人可查看',
+    mfg:'🏭 制造业',farm:'🌾 农业',cons:'🏗️ 建筑业',fish:'🐟 渔业',svc:'🛎️ 服务业',food:'🍱 食品加工',
+    s2title:'👥 招工条件',s2sub:'您需要什么样的劳动者?',
+    count:'所需人数',nation:'优先国籍',nationAny:'不限国籍',
+    pay:'薪资待遇',gender:'性别要求',any:'不限',male:'男',female:'女',
+    accomm:'食宿提供',accommYes:'✅ 提供食宿',accommNo:'❌ 不提供',memo:'其他要求',
+    s3title:'📞 联系方式',s3sub:'请输入招工负责人信息',
+    cname:'负责人姓名',phone:'联系电话',email:'电子邮件',
+    privacy:'🔒 您的信息仅发送给职业介绍所，不会对外公开。',
+    agreeLabel:'个人信息同意',agree:'我同意将所填信息用于招工目的',
+    next:'下一步 →',prev:'← 返回',submit:'✅ 提交申请',
+    doneTitle:'申请成功!',doneSub:'负责人将尽快与您联系',
+    doneNote:'如有疑问请直接联系负责人',
+    ownerBadge:(o)=>`📋 已登记到 ${o} 的数据库`,
+    alertCompany:'请输入公司名称',alertSector:'请选择行业',alertRegion:'请输入工作地点',alertCname:'请输入负责人姓名',alertPhone:'请输入联系电话',alertAgree:'请同意条款',
+    coLabel:'公司',sectorLabel:'行业',regionLabel:'地点',cntLabel:'人数',cnameLbl:'负责人',phoneLbl:'电话',ownerLbl:'介绍所',
+  },
+  ja:{
+    title:'🏭 求人申請書',sub:'外国人労働者の採用をお手伝いします',
+    sl1:'会社情報',sl2:'採用条件',sl3:'連絡先',sl4:'完了',
+    s1title:'🏢 会社基本情報',s1sub:'会社名と業種を入力してください',
+    company:'会社名',sector:'業種',region:'勤務地',address:'詳細住所',addrHint:'担当者のみ確認できます',
+    mfg:'🏭 製造業',farm:'🌾 農業',cons:'🏗️ 建設業',fish:'🐟 漁業',svc:'🛎️ サービス業',food:'🍱 食品加工',
+    s2title:'👥 採用条件',s2sub:'どのような労働者が必要ですか?',
+    count:'必要人数',nation:'優先国籍',nationAny:'国籍不問',
+    pay:'給与条件',gender:'性別条件',any:'不問',male:'男性',female:'女性',
+    accomm:'宿食提供',accommYes:'✅ 提供あり',accommNo:'❌ 提供なし',memo:'その他要望',
+    s3title:'📞 担当者連絡先',s3sub:'採用担当者の情報を入力してください',
+    cname:'担当者名',phone:'連絡先',email:'メールアドレス',
+    privacy:'🔒 ご入力の情報は職業紹介所にのみ送信され、外部には公開されません。',
+    agreeLabel:'個人情報同意',agree:'入力した情報を採用目的で使用することに同意します',
+    next:'次へ →',prev:'← 戻る',submit:'✅ 申請する',
+    doneTitle:'申請完了!',doneSub:'担当者が確認後、早急にご連絡いたします',
+    doneNote:'ご不明な点は担当者に直接お問い合わせください',
+    ownerBadge:(o)=>`📋 ${o}のDBに登録されました`,
+    alertCompany:'会社名を入力してください',alertSector:'業種を選択してください',alertRegion:'勤務地を入力してください',alertCname:'担当者名を入力してください',alertPhone:'連絡先を入力してください',alertAgree:'同意してください',
+    coLabel:'会社名',sectorLabel:'業種',regionLabel:'勤務地',cntLabel:'人数',cnameLbl:'担当者',phoneLbl:'電話',ownerLbl:'紹介所',
+  }
+};
+
+let curLang='ko';
+let d={company:'',sector:'',region:'',address:'',count:1,nation:'',pay:'',gender:'무관',accommodation:'',memo:'',cname:'',phone:'',email:'',agreed:false};
+
+function setLang(lang){
+  curLang=lang;
+  document.querySelectorAll('.lb').forEach(b=>b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  applyLang();
+}
+
+function applyLang(){
+  const L=LANGS[curLang];
+  const s=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};
+  s('t-title',L.title);s('t-sub',L.sub);
+  s('sl1',L.sl1);s('sl2',L.sl2);s('sl3',L.sl3);s('sl4',L.sl4);
+  s('t-s1title',L.s1title);s('t-s1sub',L.s1sub);
+  s('t-company',L.company+' *');s('t-sector',L.sector+' *');
+  s('t-region',L.region+' *');s('t-address',L.address);s('t-addr-hint',L.addrHint);
+  s('t-mfg',L.mfg);s('t-farm',L.farm);s('t-cons',L.cons);s('t-fish',L.fish);s('t-svc',L.svc);s('t-food',L.food);
+  s('t-s2title',L.s2title);s('t-s2sub',L.s2sub);
+  s('t-count',L.count+' *');s('t-nation',L.nation);s('t-nation-any',L.nationAny);
+  s('t-pay',L.pay);s('t-gender',L.gender);s('t-any',L.any);s('t-male',L.male);s('t-female',L.female);
+  s('t-accomm',L.accomm);s('t-accomm-yes',L.accommYes);s('t-accomm-no',L.accommNo);s('t-memo',L.memo);
+  s('t-s3title',L.s3title);s('t-s3sub',L.s3sub);
+  s('t-cname',L.cname+' *');s('t-phone',L.phone+' *');s('t-email',L.email);
+  s('t-privacy',L.privacy);s('t-agree-label',L.agreeLabel+' *');s('t-agree',L.agree);
+  s('t-next1',L.next);s('t-prev2',L.prev);s('t-next2',L.next);s('t-prev3',L.prev);s('t-submit',L.submit);
+}
+
+function go(n){
+  if(n===2&&!v1())return;
+  if(n===3&&!v2())return;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page'+n).classList.add('active');
+  window.scrollTo(0,0);
+  document.getElementById('pf').style.width={1:25,2:50,3:75,4:100}[n]+'%';
+  for(let i=1;i<=4;i++){const s=document.getElementById('s'+i);s.classList.remove('active','done');if(i<n)s.classList.add('done');if(i===n)s.classList.add('active');}
+}
+
+const L=()=>LANGS[curLang];
+function v1(){
+  d.company=document.getElementById('p1co').value.trim();
+  d.region=document.getElementById('p1region').value.trim();
+  d.address=document.getElementById('p1addr').value.trim();
+  if(!d.company){alert(L().alertCompany);return false;}
+  if(!d.sector){alert(L().alertSector);return false;}
+  if(!d.region){alert(L().alertRegion);return false;}
+  return true;
+}
+function v2(){
+  d.count=parseInt(document.getElementById('p2cnt').value)||1;
+  d.nation=document.getElementById('p2nation').value;
+  d.pay=document.getElementById('p2pay').value.trim();
+  d.memo=document.getElementById('p2memo').value.trim();
+  return true;
+}
+function submit(){
+  d.cname=document.getElementById('p3cname').value.trim();
+  d.phone=document.getElementById('p3phone').value.trim();
+  d.email=document.getElementById('p3email').value.trim();
+  if(!d.cname){alert(L().alertCname);return;}
+  if(!d.phone){alert(L().alertPhone);return;}
+  if(!d.agreed){alert(L().alertAgree);return;}
+
+  const fm={'제조업 (공장)':'jf-mfg','농업 (농장)':'jf-farm','건설업':'jf-cons','어업':'jf-fish','서비스업':'jf-svc','식품가공':'jf-food'};
+  const job={id:Date.now(),owner:OWNER,company:d.company,address:d.address,contact:`${d.cname} / ${d.phone}`,sector:d.sector,count:d.count,nation:d.nation,pay:d.pay,region:d.region,memo:(d.accommodation?`숙식 ${d.accommodation}. `:'')+d.memo,folderId:fm[d.sector]||'jf-all',source:'자가입력폼',date:new Date().toLocaleDateString('ko-KR')};
+  const arr=JSON.parse(localStorage.getItem('v5_jobs')||'[]');
+  arr.push(job);
+  localStorage.setItem('v5_jobs',JSON.stringify(arr));
+
+  const Lc=L();
+  document.getElementById('ownerBadge').textContent=Lc.ownerBadge(OWNER);
+  document.getElementById('sbox').innerHTML=`
+    <div class="sr"><span class="sl">${Lc.coLabel}</span><span class="sv">${d.company}</span></div>
+    <div class="sr"><span class="sl">${Lc.sectorLabel}</span><span class="sv">${d.sector}</span></div>
+    <div class="sr"><span class="sl">${Lc.regionLabel}</span><span class="sv">${d.region}</span></div>
+    <div class="sr"><span class="sl">${Lc.cntLabel}</span><span class="sv">${d.count}명</span></div>
+    <div class="sr"><span class="sl">${Lc.cnameLbl}</span><span class="sv">${d.cname}</span></div>
+    <div class="sr"><span class="sl">${Lc.phoneLbl}</span><span class="sv">${d.phone}</span></div>
+    <div class="sr"><span class="sl">${Lc.ownerLbl}</span><span class="sv">${OWNER}</span></div>`;
+  document.getElementById('t-done-title').textContent=Lc.doneTitle;
+  document.getElementById('t-done-sub').textContent=Lc.doneSub;
+  document.getElementById('t-done-note').textContent=Lc.doneNote;
+  go(4);
+}
+
+function sel(el,group,val){el.closest('.radio-group').querySelectorAll('.ri').forEach(e=>e.classList.remove('on'));el.classList.add('on');d[group]=val;}
+function toggleAgree(){d.agreed=!d.agreed;document.getElementById('agreeBtn').classList.toggle('on',d.agreed);}
+
+const urlLang=new URLSearchParams(window.location.search).get('lang');
+if(urlLang&&LANGS[urlLang]){curLang=urlLang;document.querySelectorAll('.lb').forEach(b=>{if(b.onclick&&b.getAttribute('onclick')?.includes(urlLang))b.classList.add('active');else b.classList.remove('active');});}
+applyLang();
+</script>
+</body>
+</html>

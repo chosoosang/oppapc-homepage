@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>다국어 안내문 생성</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F0F4F8;--white:#fff;--navy:#1A3A5C;--blue:#2563EB;--blue-lt:#EFF6FF;
+  --green:#16A34A;--green-lt:#F0FDF4;--orange:#EA580C;--orange-lt:#FFF7ED;
+  --red:#DC2626;--gray:#64748B;--gray-lt:#F1F5F9;--border:#CBD5E1;--text:#1E293B;
+  --shadow:0 2px 12px rgba(0,0,0,.08);--shadow-lg:0 8px 30px rgba(0,0,0,.14);
+}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
+
+.header{background:var(--navy);padding:0 20px;display:flex;align-items:center;gap:12px;height:60px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.header h1{color:#fff;font-size:18px;font-weight:900}
+.header h1 span{color:#60A5FA}
+.back-btn{background:rgba(255,255,255,.15);border:none;border-radius:8px;color:#fff;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit}
+.back-btn:hover{background:rgba(255,255,255,.25)}
+
+.main{padding:16px;max-width:900px;margin:0 auto}
+
+/* API KEY */
+.api-box{background:var(--white);border-radius:12px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.api-box input{flex:1;min-width:200px;padding:10px 13px;border:2px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit}
+.api-box input:focus{outline:none;border-color:var(--blue)}
+
+/* 템플릿 선택 */
+.template-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.tpl-card{background:var(--white);border:2px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:.2s;text-align:center}
+.tpl-card:hover{border-color:var(--blue);background:var(--blue-lt)}
+.tpl-card.active{border-color:var(--blue);background:var(--blue);color:#fff}
+.tpl-card.active .tpl-sub{color:rgba(255,255,255,.7)}
+.tpl-icon{font-size:28px;display:block;margin-bottom:6px}
+.tpl-name{font-size:13px;font-weight:700}
+.tpl-sub{font-size:11px;color:var(--gray);margin-top:2px}
+
+/* 언어 선택 */
+.lang-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.lang-chip{border:2px solid var(--border);border-radius:100px;padding:7px 16px;cursor:pointer;font-size:13px;font-weight:600;background:var(--white);transition:.2s;display:flex;align-items:center;gap:6px}
+.lang-chip:hover{border-color:var(--blue)}
+.lang-chip.active{border-color:var(--blue);background:var(--blue);color:#fff}
+
+/* 입력 폼 */
+.input-panel{background:var(--white);border-radius:12px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
+.panel-title{font-size:14px;font-weight:900;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg.full{grid-column:1/-1}
+.fg label{font-size:12px;font-weight:700;color:var(--navy)}
+.fg input,.fg select,.fg textarea{padding:11px 13px;border:2px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;transition:.2s;background:var(--white)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--blue)}
+.fg textarea{resize:vertical;min-height:70px}
+
+/* 생성 버튼 */
+.gen-btn{width:100%;padding:16px;border-radius:12px;border:none;font-size:16px;font-weight:900;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,var(--blue),#1D4ED8);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;box-shadow:0 4px 14px rgba(37,99,235,.3);transition:.2s}
+.gen-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,.4)}
+.gen-btn:disabled{background:#CBD5E1;box-shadow:none;transform:none;cursor:not-allowed}
+
+/* 로딩 */
+.loading-box{background:var(--white);border-radius:12px;box-shadow:var(--shadow);padding:32px;text-align:center;display:none;margin-bottom:14px}
+.spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 결과 */
+.result-section{display:none;margin-bottom:14px}
+.result-card{background:var(--white);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px}
+.result-hd{padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.result-lang{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#fff}
+.result-actions{display:flex;gap:6px}
+.act-btn{border:none;border-radius:7px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;transition:.2s}
+.act-copy{background:rgba(255,255,255,.2);color:#fff}
+.act-copy:hover{background:rgba(255,255,255,.35)}
+.act-kakao{background:#FEE500;color:#3A1D1D}
+.act-kakao:hover{background:#FFD700}
+.result-body{padding:16px;line-height:1.9;font-size:14px;white-space:pre-wrap;border-top:1px solid var(--gray-lt)}
+.result-body.ko{color:var(--text)}
+.result-body.vi{font-family:'Noto Sans KR',sans-serif;color:#1D4ED8}
+.result-body.ne{font-family:'Noto Sans KR',sans-serif;color:var(--green)}
+.result-body.km{color:var(--orange)}
+.result-body.id{color:#7C3AED}
+.result-body.my{color:#BE185D}
+.edit-area{width:100%;padding:14px 16px;border:none;border-top:2px solid var(--gray-lt);font-size:14px;font-family:inherit;line-height:1.9;resize:vertical;min-height:120px;color:var(--text);background:var(--gray-lt)}
+.edit-area:focus{outline:none;background:#fff}
+
+/* 히스토리 */
+.history-section{background:var(--white);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.hist-hd{padding:12px 16px;background:var(--navy);color:#fff;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.hist-list{max-height:280px;overflow-y:auto}
+.hist-item{padding:11px 16px;border-bottom:1px solid var(--gray-lt);cursor:pointer;transition:.15s;display:flex;align-items:center;gap:10px}
+.hist-item:hover{background:var(--blue-lt)}
+.hist-info{flex:1;min-width:0}
+.hist-title{font-size:13px;font-weight:700;color:var(--navy)}
+.hist-meta{font-size:11px;color:var(--gray);margin-top:2px}
+.hist-time{font-size:10px;color:var(--border);flex-shrink:0}
+.hist-empty{padding:24px;text-align:center;color:var(--gray);font-size:13px}
+
+/* BTN */
+.btn{padding:8px 14px;border-radius:7px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:.2s}
+.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:#1D4ED8}
+.btn-danger{background:var(--red);color:#fff}
+
+/* TOAST */
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);z-index:999;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap}
+.toast.show{opacity:1}
+
+@media(max-width:580px){.form-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <button class="back-btn" onclick="history.back()">← 뒤로</button>
+  <h1>🌏 다국어 <span>안내문 생성</span></h1>
+</div>
+
+<div class="main">
+
+  <!-- API KEY -->
+  <div class="api-box">
+    <span style="font-size:13px;font-weight:700;color:var(--navy);white-space:nowrap">🔑 API 키</span>
+    <input type="password" id="apiKey" placeholder="sk-ant-api03-... (한번 저장하면 유지됩니다)">
+    <button class="btn btn-primary" onclick="saveKey()">저장</button>
+    <span style="font-size:11px;color:var(--gray)" id="keyStatus"></span>
+  </div>
+
+  <!-- 템플릿 선택 -->
+  <div class="panel-title" style="font-size:15px;font-weight:900;color:var(--navy);margin-bottom:10px">📋 안내문 종류 선택</div>
+  <div class="template-grid" id="tplGrid"></div>
+
+  <!-- 언어 선택 -->
+  <div class="panel-title" style="font-size:15px;font-weight:900;color:var(--navy);margin-bottom:10px">🌏 번역할 언어 선택 <span style="font-size:11px;font-weight:400;color:var(--gray)">(복수 선택 가능)</span></div>
+  <div class="lang-grid" id="langGrid"></div>
+
+  <!-- 입력 폼 -->
+  <div class="input-panel">
+    <div class="panel-title">✏️ 내용 입력 <span style="font-size:11px;font-weight:400;color:var(--gray)">비워두면 기본 내용으로 생성</span></div>
+    <div class="form-grid" id="inputForm"></div>
+  </div>
+
+  <!-- 생성 버튼 -->
+  <button class="gen-btn" id="genBtn" onclick="generate()">
+    🤖 AI로 다국어 안내문 생성
+  </button>
+
+  <!-- 로딩 -->
+  <div class="loading-box" id="loadingBox">
+    <div class="spinner"></div>
+    <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px">AI가 번역 중입니다...</div>
+    <div style="font-size:12px;color:var(--gray)" id="loadingLangs"></div>
+  </div>
+
+  <!-- 결과 -->
+  <div class="result-section" id="resultSection"></div>
+
+  <!-- 히스토리 -->
+  <div class="history-section">
+    <div class="hist-hd">
+      <span>📜 생성 이력</span>
+      <button onclick="clearHistory()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:3px 8px;border-radius:5px;font-size:11px;cursor:pointer">지우기</button>
+    </div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── 데이터 ──
+const TEMPLATES = [
+  {
+    id:'work_notice', icon:'📢', name:'근무 안내', sub:'출퇴근·규칙',
+    fields:[
+      {id:'company',   label:'업체명',       placeholder:'예: (주)한국정밀'},
+      {id:'start_date',label:'근무 시작일',   placeholder:'예: 2025년 3월 1일', type:'date'},
+      {id:'work_time', label:'근무 시간',     placeholder:'예: 08:00~17:00'},
+      {id:'location',  label:'근무 장소',     placeholder:'예: 경기도 시흥시 정왕로 100'},
+      {id:'salary',    label:'월 급여',       placeholder:'예: 260만원'},
+      {id:'manager',   label:'담당자 연락처', placeholder:'예: 010-0000-0000'},
+      {id:'extra',     label:'추가 안내사항', placeholder:'기타 전달사항', type:'textarea', full:true},
+    ],
+    prompt: (f) => `다음 근무 안내 내용을 작성하세요:
+업체명: ${f.company||'(업체명)'}
+근무 시작일: ${f.start_date||'추후 안내'}
+근무 시간: ${f.work_time||'08:00~17:00'}
+근무 장소: ${f.location||'(근무지)'}
+월 급여: ${f.salary||'(급여)'}
+담당자 연락처: ${f.manager||'(연락처)'}
+추가사항: ${f.extra||'없음'}
+안전하고 성실하게 근무해주시기 바랍니다.`
+  },
+  {
+    id:'visa_expire', icon:'🛂', name:'비자 만료 안내', sub:'갱신 촉구',
+    fields:[
+      {id:'name',       label:'근로자 이름',   placeholder:'홍길동'},
+      {id:'visa_type',  label:'비자 종류',     placeholder:'예: E-9'},
+      {id:'expire_date',label:'만료일',        placeholder:'예: 2025년 8월 15일'},
+      {id:'action',     label:'해야 할 일',    placeholder:'예: 출입국관리소 방문', type:'textarea', full:true},
+      {id:'manager',    label:'담당자 연락처', placeholder:'010-0000-0000'},
+    ],
+    prompt: (f) => `비자 만료 안내문을 작성하세요:
+근로자명: ${f.name||'(이름)'}
+비자 종류: ${f.visa_type||'E-9'}
+만료일: ${f.expire_date||'(만료일)'}
+해야 할 일: ${f.action||'담당자에게 연락'}
+담당자 연락처: ${f.manager||'(연락처)'}
+만료 전 반드시 갱신하지 않으면 불법 체류가 됩니다. 빠른 처리를 당부하세요.`
+  },
+  {
+    id:'safety', icon:'⛑️', name:'안전 수칙', sub:'산업안전',
+    fields:[
+      {id:'company',   label:'업체명·현장명', placeholder:'예: 3공장 / 논산 농장'},
+      {id:'job_type',  label:'업종',          placeholder:'예: 제조업, 건설업, 농업'},
+      {id:'rules',     label:'핵심 안전 수칙', placeholder:'예: 안전화 착용 필수, 기계 조작 전 교육 이수', type:'textarea', full:true},
+      {id:'emergency', label:'긴급 연락처',   placeholder:'예: 119 / 담당자 010-0000-0000'},
+    ],
+    prompt: (f) => `산업 안전 수칙 안내문을 작성하세요:
+현장: ${f.company||'(현장명)'}
+업종: ${f.job_type||'(업종)'}
+핵심 안전 수칙: ${f.rules||'안전 장비 착용, 무단 이탈 금지'}
+긴급 연락처: ${f.emergency||'119'}
+안전사고 예방을 위해 반드시 준수해주세요.`
+  },
+  {
+    id:'salary_notice', icon:'💰', name:'급여 안내', sub:'급여일·공제',
+    fields:[
+      {id:'salary_date',label:'급여 지급일',  placeholder:'예: 매월 10일'},
+      {id:'salary_amt', label:'월 급여',      placeholder:'예: 2,600,000원'},
+      {id:'deduction',  label:'공제 항목',    placeholder:'예: 4대보험, 숙식비', type:'textarea', full:true},
+      {id:'account',    label:'계좌 확인 요청',placeholder:'예: 신한은행 110-000-000000'},
+      {id:'manager',    label:'급여 문의처',  placeholder:'010-0000-0000'},
+    ],
+    prompt: (f) => `급여 안내문을 작성하세요:
+급여 지급일: ${f.salary_date||'매월 10일'}
+월 급여: ${f.salary_amt||'(급여)'}
+공제 항목: ${f.deduction||'4대보험'}
+계좌: ${f.account||'(계좌번호)'}
+문의: ${f.manager||'(연락처)'}
+급여 관련 문의는 담당자에게 하세요.`
+  },
+  {
+    id:'welcome', icon:'👋', name:'입사 환영', sub:'첫날 안내',
+    fields:[
+      {id:'name',      label:'근로자 이름',  placeholder:'홍길동'},
+      {id:'company',   label:'업체명',       placeholder:'(주)한국정밀'},
+      {id:'start_date',label:'입사일',       placeholder:'2025년 3월 1일', type:'date'},
+      {id:'manager',   label:'담당자 이름',  placeholder:'김철수 담당'},
+      {id:'phone',     label:'담당자 연락처',placeholder:'010-0000-0000'},
+      {id:'extra',     label:'첫날 준비물·안내',placeholder:'신분증 지참, 08시까지 정문 집합', type:'textarea', full:true},
+    ],
+    prompt: (f) => `입사 환영 및 첫날 안내문을 작성하세요:
+이름: ${f.name||'(이름)'}
+업체명: ${f.company||'(업체명)'}
+입사일: ${f.start_date||'(입사일)'}
+담당자: ${f.manager||'(담당자)'} / ${f.phone||'(연락처)'}
+첫날 안내: ${f.extra||'담당자 안내에 따라 주세요'}
+함께 일하게 되어 반갑습니다.`
+  },
+  {
+    id:'contract_end', icon:'📄', name:'계약 만료 안내', sub:'재계약·퇴사',
+    fields:[
+      {id:'name',       label:'근로자 이름',   placeholder:'홍길동'},
+      {id:'end_date',   label:'계약 만료일',   placeholder:'2025년 8월 31일'},
+      {id:'renew',      label:'재계약 여부',   placeholder:'예: 재계약 가능 / 만료 후 퇴사'},
+      {id:'action',     label:'해야 할 일',    placeholder:'예: 3월 말까지 의사 전달 요청', type:'textarea', full:true},
+      {id:'manager',    label:'담당자 연락처', placeholder:'010-0000-0000'},
+    ],
+    prompt: (f) => `계약 만료 안내문을 작성하세요:
+근로자명: ${f.name||'(이름)'}
+계약 만료일: ${f.end_date||'(만료일)'}
+재계약 여부: ${f.renew||'담당자 상담 필요'}
+해야 할 일: ${f.action||'담당자에게 연락'}
+담당자: ${f.manager||'(연락처)'}
+만료일 전에 반드시 의사를 전달해주세요.`
+  },
+  {
+    id:'holiday', icon:'🎉', name:'휴가·공휴일 안내', sub:'쉬는 날',
+    fields:[
+      {id:'holiday_date',label:'휴무일',       placeholder:'예: 2025년 3월 1일 (삼일절)'},
+      {id:'work_date',   label:'대체 근무일',  placeholder:'없으면 비워두세요'},
+      {id:'company',     label:'업체명',        placeholder:'(주)한국정밀'},
+      {id:'extra',       label:'추가 안내',     placeholder:'휴무 중 긴급연락처 등', type:'textarea', full:true},
+    ],
+    prompt: (f) => `휴가·공휴일 안내문을 작성하세요:
+휴무일: ${f.holiday_date||'(날짜)'}
+대체 근무일: ${f.work_date||'없음'}
+업체명: ${f.company||'(업체명)'}
+추가 안내: ${f.extra||'없음'}
+즐거운 휴일 보내세요.`
+  },
+  {
+    id:'custom', icon:'✏️', name:'직접 작성', sub:'자유 형식',
+    fields:[
+      {id:'title',   label:'제목',        placeholder:'안내문 제목'},
+      {id:'content', label:'안내 내용',   placeholder:'번역할 내용을 한국어로 자유롭게 입력하세요', type:'textarea', full:true},
+    ],
+    prompt: (f) => `${f.title||'안내문'}\n\n${f.content||'(내용을 입력해주세요)'}`
+  },
+];
+
+const LANGUAGES = [
+  {code:'vi', name:'베트남어', flag:'🇻🇳', color:'#DC2626'},
+  {code:'ne', name:'네팔어',   flag:'🇳🇵', color:'#16A34A'},
+  {code:'km', name:'크메르어', flag:'🇰🇭', color:'#EA580C'},
+  {code:'id', name:'인도네시아어', flag:'🇮🇩', color:'#7C3AED'},
+  {code:'my', name:'미얀마어', flag:'🇲🇲', color:'#BE185D'},
+  {code:'en', name:'영어',     flag:'🇺🇸', color:'#0369A1'},
+  {code:'zh', name:'중국어',   flag:'🇨🇳', color:'#0891B2'},
+  {code:'tl', name:'타갈로그어', flag:'🇵🇭', color:'#CA8A04'},
+  {code:'th', name:'태국어',   flag:'🇹🇭', color:'#059669'},
+];
+
+let activeTpl  = 'work_notice';
+let activeLangs= ['vi','ne'];
+let history_   = JSON.parse(localStorage.getItem('notice_history')||'[]');
+let currentResults = {};
+
+// ── INIT ──
+window.addEventListener('load', ()=>{
+  const saved = localStorage.getItem('anthropic_key');
+  if(saved){
+    document.getElementById('apiKey').value='••••••••••••••••••••';
+    document.getElementById('keyStatus').textContent='✅ 저장됨';
+  }
+  renderTemplates();
+  renderLangs();
+  renderForm();
+  renderHistory();
+});
+
+function saveKey(){
+  const k = document.getElementById('apiKey').value.trim();
+  if(!k.startsWith('sk-')){alert('올바른 API 키를 입력해주세요');return;}
+  localStorage.setItem('anthropic_key',k);
+  document.getElementById('apiKey').value='••••••••••••••••••••';
+  document.getElementById('keyStatus').textContent='✅ 저장됨';
+  showToast('✅ API 키 저장됨');
+}
+
+// ── 템플릿 ──
+function renderTemplates(){
+  document.getElementById('tplGrid').innerHTML = TEMPLATES.map(t=>`
+    <div class="tpl-card ${t.id===activeTpl?'active':''}" onclick="selectTpl('${t.id}')">
+      <span class="tpl-icon">${t.icon}</span>
+      <div class="tpl-name">${t.name}</div>
+      <div class="tpl-sub">${t.sub}</div>
+    </div>`).join('');
+}
+function selectTpl(id){
+  activeTpl=id; renderTemplates(); renderForm();
+  document.getElementById('resultSection').style.display='none';
+}
+
+// ── 언어 ──
+function renderLangs(){
+  document.getElementById('langGrid').innerHTML = LANGUAGES.map(l=>`
+    <div class="lang-chip ${activeLangs.includes(l.code)?'active':''}" onclick="toggleLang('${l.code}')">
+      ${l.flag} ${l.name}
+    </div>`).join('');
+}
+function toggleLang(code){
+  if(activeLangs.includes(code)) activeLangs=activeLangs.filter(c=>c!==code);
+  else activeLangs.push(code);
+  if(!activeLangs.length) activeLangs=['vi'];
+  renderLangs();
+}
+
+// ── 폼 ──
+function renderForm(){
+  const tpl = TEMPLATES.find(t=>t.id===activeTpl);
+  document.getElementById('inputForm').innerHTML = tpl.fields.map(f=>`
+    <div class="fg ${f.full?'full':''}">
+      <label>${f.label}</label>
+      ${f.type==='textarea'
+        ?`<textarea id="f_${f.id}" placeholder="${f.placeholder}"></textarea>`
+        :`<input type="${f.type||'text'}" id="f_${f.id}" placeholder="${f.placeholder}">`}
+    </div>`).join('');
+}
+function getFormData(){
+  const tpl = TEMPLATES.find(t=>t.id===activeTpl);
+  const d={};
+  tpl.fields.forEach(f=>{ d[f.id]=(document.getElementById('f_'+f.id)?.value||'').trim(); });
+  return d;
+}
+
+// ── 생성 ──
+async function generate(){
+  const apiKey = localStorage.getItem('anthropic_key');
+  if(!apiKey){alert('API 키를 먼저 저장해주세요');return;}
+  if(!activeLangs.length){alert('언어를 하나 이상 선택해주세요');return;}
+
+  const tpl      = TEMPLATES.find(t=>t.id===activeTpl);
+  const formData = getFormData();
+  const koText   = tpl.prompt(formData);
+
+  document.getElementById('genBtn').disabled=true;
+  document.getElementById('loadingBox').style.display='block';
+  document.getElementById('resultSection').style.display='none';
+  document.getElementById('loadingLangs').textContent =
+    '번역 중: ' + activeLangs.map(c=>LANGUAGES.find(l=>l.code===c)?.name).join(', ');
+
+  currentResults = {ko: koText};
+
+  // 선택된 언어 순서대로 순차 번역
+  for(const code of activeLangs){
+    const lang = LANGUAGES.find(l=>l.code===code);
+    try{
+      const res = await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'x-api-key':apiKey,
+          'anthropic-version':'2023-06-01',
+          'anthropic-dangerous-direct-browser-access':'true'
+        },
+        body:JSON.stringify({
+          model:'claude-sonnet-4-20250514',
+          max_tokens:1500,
+          messages:[{
+            role:'user',
+            content:`다음 한국어 안내문을 ${lang.name}${lang.code==='en'?'(English)':''}으로 번역해주세요.
+외국인 근로자${lang.code==='en'?'/employers':''} 가 읽기 쉽도록 명확하고 친근한 표현을 사용하세요.
+번역문만 반환하고 다른 설명은 절대 포함하지 마세요.
+
+[한국어 원문]
+${koText}`
+          }]
+        })
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error?.message||'번역 실패');
+      currentResults[code] = data.content[0].text.trim();
+    } catch(err){
+      currentResults[code] = `⚠️ 번역 실패: ${err.message}`;
+    }
+  }
+
+  // 히스토리 저장
+  const histItem = {
+    id:Date.now(),
+    tpl: tpl.name,
+    icon: tpl.icon,
+    langs: activeLangs.map(c=>LANGUAGES.find(l=>l.code===c)?.flag).join(''),
+    ko: koText,
+    results: {...currentResults},
+    time: new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}),
+    date: new Date().toLocaleDateString('ko-KR')
+  };
+  history_.unshift(histItem);
+  if(history_.length>30) history_.pop();
+  localStorage.setItem('notice_history',JSON.stringify(history_));
+
+  document.getElementById('loadingBox').style.display='none';
+  document.getElementById('genBtn').disabled=false;
+  renderResults(currentResults, tpl);
+  renderHistory();
+}
+
+function renderResults(results, tpl){
+  const sec = document.getElementById('resultSection');
+  sec.style.display='block';
+
+  let html = `
+    <!-- 한국어 원문 -->
+    <div class="result-card">
+      <div class="result-hd" style="background:var(--navy)">
+        <div class="result-lang">🇰🇷 한국어 원문</div>
+        <div class="result-actions">
+          <button class="act-btn act-copy" onclick="copyText('ko')">📋 복사</button>
+        </div>
+      </div>
+      <div class="result-body ko" id="res-ko">${escHtml(results.ko||'')}</div>
+    </div>
+  `;
+
+  activeLangs.forEach(code=>{
+    const lang = LANGUAGES.find(l=>l.code===code);
+    html += `
+      <div class="result-card">
+        <div class="result-hd" style="background:${lang.color}">
+          <div class="result-lang">${lang.flag} ${lang.name}</div>
+          <div class="result-actions">
+            <button class="act-btn act-copy" onclick="copyText('${code}')">📋 복사</button>
+            <button class="act-btn act-kakao" onclick="shareKakao('${code}')">💬 카카오</button>
+          </div>
+        </div>
+        <textarea class="edit-area" id="res-${code}" oninput="currentResults['${code}']=this.value">${escHtml(results[code]||'')}</textarea>
+      </div>`;
+  });
+
+  html += `
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="copyAll()">📋 전체 복사</button>
+      <button class="btn" style="background:var(--green);color:#fff" onclick="printAll()">🖨️ 인쇄</button>
+    </div>`;
+
+  sec.innerHTML = html;
+  sec.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── 복사·공유 ──
+function copyText(code){
+  const el = document.getElementById('res-'+code);
+  const text = el?.value || el?.textContent || '';
+  navigator.clipboard.writeText(text).then(()=>showToast('📋 복사됐습니다!'));
+}
+function copyAll(){
+  const parts = ['🇰🇷 한국어\n'+(document.getElementById('res-ko')?.textContent||'')];
+  activeLangs.forEach(code=>{
+    const lang=LANGUAGES.find(l=>l.code===code);
+    parts.push(`\n${lang.flag} ${lang.name}\n`+(document.getElementById('res-'+code)?.value||''));
+  });
+  navigator.clipboard.writeText(parts.join('\n---\n')).then(()=>showToast('📋 전체 복사됐습니다!'));
+}
+function shareKakao(code){
+  copyText(code);
+  showToast('💬 복사됐습니다! 카카오톡에 붙여넣기 하세요');
+}
+function printAll(){
+  const parts=[];
+  parts.push('【한국어】\n'+(document.getElementById('res-ko')?.textContent||''));
+  activeLangs.forEach(code=>{
+    const lang=LANGUAGES.find(l=>l.code===code);
+    parts.push(`【${lang.name}】\n`+(document.getElementById('res-'+code)?.value||''));
+  });
+  const w=window.open('','_blank');
+  w.document.write(`<pre style="font-family:sans-serif;font-size:14px;line-height:1.8;padding:20px;white-space:pre-wrap">${parts.join('\n\n──────────────\n\n')}</pre>`);
+  w.document.close(); w.print();
+}
+
+// ── 히스토리 ──
+function renderHistory(){
+  const el = document.getElementById('histList');
+  if(!history_.length){el.innerHTML='<div class="hist-empty">생성 이력이 없습니다</div>';return;}
+  el.innerHTML = history_.slice(0,20).map(h=>`
+    <div class="hist-item" onclick="loadHistory(${h.id})">
+      <span style="font-size:20px">${h.icon}</span>
+      <div class="hist-info">
+        <div class="hist-title">${h.tpl} ${h.langs}</div>
+        <div class="hist-meta">${h.date} ${h.time}</div>
+      </div>
+      <span class="hist-time">다시보기</span>
+    </div>`).join('');
+}
+function loadHistory(id){
+  const h=history_.find(x=>x.id===id); if(!h) return;
+  currentResults=h.results||{};
+  const tpl=TEMPLATES.find(t=>t.name===h.tpl)||TEMPLATES[0];
+  renderResults(currentResults,tpl);
+  showToast('📜 이전 결과를 불러왔습니다');
+}
+function clearHistory(){
+  if(!confirm('이력을 모두 지울까요?'))return;
+  history_=[];
+  localStorage.removeItem('notice_history');
+  renderHistory();
+}
+
+// ── UTILS ──
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+</script>
+</body>
+</html>

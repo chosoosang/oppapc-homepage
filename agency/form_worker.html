@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>구직 신청서 / Job Application</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#16A34A;--green-lt:#F0FDF4;--green-md:#DCFCE7;--navy:#1A3A5C;--gray:#64748B;--border:#CBD5E1;--white:#fff;--bg:#F0FDF4;--text:#1E293B;--shadow:0 4px 20px rgba(0,0,0,.1)}
+body{font-family:'Noto Sans KR','Noto Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
+
+/* 언어 선택 바 */
+.lang-bar{background:var(--navy);padding:10px 16px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.lb{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;border-radius:100px;padding:5px 13px;font-size:13px;cursor:pointer;transition:.2s;font-family:inherit}
+.lb:hover{background:rgba(255,255,255,.25)}
+.lb.active{background:#fff;color:var(--navy);font-weight:700}
+
+.top-bar{background:var(--green);padding:20px;text-align:center;color:#fff}
+.top-bar h1{font-size:22px;font-weight:900;margin-bottom:4px}
+.top-bar p{font-size:13px;opacity:.85}
+.owner-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border-radius:100px;padding:4px 14px;font-size:12px;margin-top:8px;font-weight:700}
+
+.progress-wrap{padding:16px 16px 0}
+.progress-steps{display:flex;margin-bottom:8px}
+.step{flex:1;text-align:center;position:relative}
+.step::after{content:'';position:absolute;top:14px;left:50%;right:-50%;height:2px;background:var(--border);z-index:0}
+.step:last-child::after{display:none}
+.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--white);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gray);position:relative;z-index:1;transition:.3s}
+.step.active .step-dot{background:var(--green);border-color:var(--green);color:#fff}
+.step.done .step-dot{background:var(--green);border-color:var(--green);color:#fff}
+.step.done::after{background:var(--green)}
+.step-label{font-size:11px;color:var(--gray)}
+.step.active .step-label{color:var(--green);font-weight:700}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;margin:0 16px 16px}
+.progress-fill{height:100%;background:var(--green);border-radius:2px;transition:.4s}
+
+.card{background:var(--white);border-radius:16px;margin:0 14px 14px;padding:22px 18px;box-shadow:var(--shadow)}
+.card-title{font-size:16px;font-weight:900;color:var(--navy);margin-bottom:4px}
+.card-sub{font-size:12px;color:var(--gray);margin-bottom:18px}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.fg label{font-size:14px;font-weight:700;color:var(--navy)}
+.req{color:#DC2626;font-size:12px}
+.fg input,.fg select{padding:14px 15px;border:2px solid var(--border);border-radius:10px;font-size:16px;font-family:inherit;transition:.2s;background:var(--white);width:100%;-webkit-appearance:none}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--green)}
+.hint{font-size:11px;color:var(--gray);margin-top:2px}
+
+.radio-group{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ri{border:2px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.ri:hover{border-color:var(--green);background:var(--green-lt)}
+.ri.on{border-color:var(--green);background:var(--green-md);font-weight:700;color:var(--green)}
+.rd{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s}
+.ri.on .rd{border-color:var(--green);background:var(--green)}
+.ri.on .rd::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff;display:block}
+
+.lang-group{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.li{border:2px solid var(--border);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;transition:.2s;font-size:13px;font-weight:600}
+.li:hover{border-color:var(--green);background:var(--green-lt)}
+.li.on{border-color:var(--green);background:var(--green-md);color:var(--green)}
+.lf{font-size:20px;display:block;margin-bottom:4px}
+
+.btn-row{display:flex;gap:10px;margin:0 14px 10px}
+.btn{padding:15px;border-radius:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:.2s;flex:1;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-back{background:var(--white);color:var(--gray);border:2px solid var(--border)}
+.btn-next{background:var(--green);color:#fff}.btn-next:hover{background:#15803D}
+
+.notice{background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;padding:12px 14px;font-size:12px;color:#92400E;margin-bottom:14px;line-height:1.7}
+
+.complete{display:flex;flex-direction:column;align-items:center;padding:44px 18px;text-align:center}
+.ci{font-size:60px;margin-bottom:16px;animation:bounce .6s ease}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.ct{font-size:22px;font-weight:900;color:var(--green);margin-bottom:8px}
+.cs{font-size:14px;color:var(--gray);line-height:1.8;margin-bottom:20px}
+.owner-badge{background:var(--green-lt);border:1px solid var(--green-md);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--green);font-weight:700;margin-bottom:14px;width:100%;text-align:center}
+.sbox{background:var(--green-lt);border:2px solid var(--green-md);border-radius:12px;padding:18px;width:100%;text-align:left;margin-bottom:18px}
+.sr{display:flex;gap:10px;margin-bottom:8px;font-size:13px}
+.sr:last-child{margin-bottom:0}
+.sl{color:var(--gray);width:80px;flex-shrink:0}
+.sv{font-weight:700;color:var(--navy)}
+.page{display:none}.page.active{display:block}
+</style>
+</head>
+<body>
+
+<!-- 언어 선택 바 -->
+<div class="lang-bar">
+  <button class="lb active" onclick="setLang('ko')">🇰🇷 한국어</button>
+  <button class="lb" onclick="setLang('vi')">🇻🇳 Tiếng Việt</button>
+  <button class="lb" onclick="setLang('ne')">🇳🇵 नेपाली</button>
+  <button class="lb" onclick="setLang('km')">🇰🇭 ខ្មែរ</button>
+  <button class="lb" onclick="setLang('id')">🇮🇩 Indonesia</button>
+  <button class="lb" onclick="setLang('my')">🇲🇲 မြန်မာ</button>
+  <button class="lb" onclick="setLang('zh')">🇨🇳 中文</button>
+  <button class="lb" onclick="setLang('en')">🇺🇸 English</button>
+</div>
+
+<div class="top-bar">
+  <h1 id="t-title">👤 구직 신청서</h1>
+  <p id="t-sub">아래 정보를 입력해 주시면 취업을 도와드립니다</p>
+  <div id="ownerChip" style="display:none" class="owner-chip">담당: <span id="ownerName"></span></div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="step active" id="s1"><div class="step-dot">1</div><div class="step-label" id="sl1">기본정보</div></div>
+    <div class="step" id="s2"><div class="step-dot">2</div><div class="step-label" id="sl2">근무조건</div></div>
+    <div class="step" id="s3"><div class="step-dot">3</div><div class="step-label" id="sl3">연락처</div></div>
+    <div class="step" id="s4"><div class="step-dot">4</div><div class="step-label" id="sl4">완료</div></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="pf" style="width:25%"></div></div>
+</div>
+
+<!-- STEP 1 -->
+<div class="page active" id="page1">
+  <div class="card">
+    <div class="card-title" id="t-s1title">🧑 기본 정보</div>
+    <div class="card-sub" id="t-s1sub">이름과 국적을 입력해주세요</div>
+    <div class="fg"><label id="t-name">이름 <span class="req">*</span></label><input type="text" id="p1name" id="t-name-ph"></div>
+    <div class="fg">
+      <label id="t-nation">국적 <span class="req">*</span></label>
+      <div class="lang-group">
+        <div class="li" id="n-vn" onclick="selNation(this,'베트남','Vietnam','Việt Nam','ভিয়েতনাম','វៀតណាម','Vietnam','ဗီယက်နမ်','Vietnam','越南')"><span class="lf">🇻🇳</span><span id="t-n-vn">베트남</span></div>
+        <div class="li" id="n-np" onclick="selNation(this,'네팔','Nepal','Nepal','नेपाल','នេប៉ាល់','Nepal','နီပေါ','Nepal','尼泊尔')"><span class="lf">🇳🇵</span><span id="t-n-np">네팔</span></div>
+        <div class="li" id="n-kh" onclick="selNation(this,'캄보디아','Cambodia','Campuchia','कम्बोडिया','កម្ពុជា','Kamboja','ကမ္ဘောဒီးယား','Cambodia','柬埔寨')"><span class="lf">🇰🇭</span><span id="t-n-kh">캄보디아</span></div>
+        <div class="li" id="n-id" onclick="selNation(this,'인도네시아','Indonesia','Indonesia','इन्डोनेसिया','ឥណ្ឌូនេស៊ី','Indonesia','အင်ဒိုနီးရှား','Indonesia','印度尼西亚')"><span class="lf">🇮🇩</span><span id="t-n-id">인도네시아</span></div>
+        <div class="li" id="n-mm" onclick="selNation(this,'미얀마','Myanmar','Myanmar','म्यानमार','មីយ៉ាន់ម៉ា','Myanmar','မြန်မာ','Myanmar','缅甸')"><span class="lf">🇲🇲</span><span id="t-n-mm">미얀마</span></div>
+        <div class="li" id="n-cn" onclick="selNation(this,'중국','China','Trung Quốc','चीन','ចិន','Tiongkok','တရုတ်','China','中国')"><span class="lf">🇨🇳</span><span id="t-n-cn">중국</span></div>
+        <div class="li" id="n-kr" onclick="selNation(this,'한국','Korea','Hàn Quốc','कोरिया','កូរ៉េ','Korea','ကိုရီးယား','Korea','韩国')"><span class="lf">🇰🇷</span><span id="t-n-kr">한국</span></div>
+        <div class="li" id="n-us" onclick="selNation(this,'미국','USA','Mỹ','अमेरिका','អាមេរិក','Amerika','အမေရိကန်','USA','美国')"><span class="lf">🇺🇸</span><span id="t-n-us">미국</span></div>
+        <div class="li" id="n-etc" onclick="selNation(this,'기타','Other','Khác','अन्य','ផ្សេងទៀត','Lainnya','အခြား','Other','其他')"><span class="lf">🌏</span><span id="t-other">기타</span></div>
+      </div>
+    </div>
+    <div class="fg"><label id="t-age">나이 <span class="req">*</span></label><input type="number" id="p1age" placeholder="28" min="18" max="65"></div>
+    <div class="fg">
+      <label id="t-gender">성별 <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="ri" onclick="sel(this,'gender','남')"><div class="rd"></div><span id="t-male">남성</span></div>
+        <div class="ri" onclick="sel(this,'gender','여')"><div class="rd"></div><span id="t-female">여성</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-next" onclick="go(2)" id="t-next1">다음 →</button></div>
+</div>
+
+<!-- STEP 2 -->
+<div class="page" id="page2">
+  <div class="card">
+    <div class="card-title" id="t-s2title">🔧 희망 근무 조건</div>
+    <div class="card-sub" id="t-s2sub">어떤 일을 원하시나요?</div>
+    <div class="fg">
+      <label id="t-job">희망 업종 <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="ri" onclick="sel(this,'job','제조업 (공장)')"><div class="rd"></div><span id="t-mfg">🏭 제조업</span></div>
+        <div class="ri" onclick="sel(this,'job','농업 (농장)')"><div class="rd"></div><span id="t-farm">🌾 농업</span></div>
+        <div class="ri" onclick="sel(this,'job','건설업')"><div class="rd"></div><span id="t-cons">🏗️ 건설업</span></div>
+        <div class="ri" onclick="sel(this,'job','어업')"><div class="rd"></div><span id="t-fish">🐟 어업</span></div>
+        <div class="ri" onclick="sel(this,'job','서비스업')"><div class="rd"></div><span id="t-svc">🛎️ 서비스업</span></div>
+        <div class="ri" onclick="sel(this,'job','식품가공')"><div class="rd"></div><span id="t-food">🍱 식품가공</span></div>
+      </div>
+    </div>
+    <div class="fg">
+      <label id="t-visa">비자 종류 <span class="req">*</span></label>
+      <select id="p2visa">
+        <option value="" id="t-visa-sel">선택해주세요</option>
+        <optgroup label="취업 비자 (Work Visa)">
+          <option value="E-9">E-9 (비전문취업 / Non-professional)</option>
+          <option value="E-7">E-7 (특정활동 / Specific Activity)</option>
+          <option value="E-7-4">E-7-4 (숙련기능인력 / Skilled Worker)</option>
+          <option value="E-8">E-8 (계절근로 / Seasonal Work)</option>
+          <option value="E-10">E-10 (선원취업 / Seafarer)</option>
+          <option value="H-2">H-2 (방문취업 / Working Visit)</option>
+        </optgroup>
+        <optgroup label="거주 비자 (Residence Visa)">
+          <option value="F-1">F-1 (방문동거 / Family Visit)</option>
+          <option value="F-2">F-2 (거주 / Residence)</option>
+          <option value="F-3">F-3 (동반 / Dependent)</option>
+          <option value="F-4">F-4 (재외동포 / Overseas Korean)</option>
+          <option value="F-5">F-5 (영주 / Permanent Residence)</option>
+          <option value="F-6">F-6 (결혼이민 / Marriage Immigrant)</option>
+        </optgroup>
+        <optgroup label="기타 (Other)">
+          <option value="D-2">D-2 (유학 / Student)</option>
+          <option value="D-4">D-4 (일반연수 / Training)</option>
+          <option value="C-4">C-4 (단기취업 / Short-term Work)</option>
+          <option value="G-1">G-1 (기타 / Other)</option>
+          <option value="기타" id="t-visa-etc">기타 (Other)</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="fg"><label id="t-visaexp">비자 만료일</label><input type="date" id="p2vexp"><span class="hint" id="t-visaexp-hint">모르시면 비워두세요</span></div>
+    <div class="fg">
+      <label id="t-korean">한국어 수준</label>
+      <div class="radio-group" style="grid-template-columns:repeat(4,1fr)">
+        <div class="ri" style="flex-direction:column;gap:3px;padding:10px 4px;text-align:center" onclick="sel(this,'korean','없음')"><div class="rd" style="margin:0 auto"></div><span style="font-size:11px" id="t-k0">없음</span></div>
+        <div class="ri" style="flex-direction:column;gap:3px;padding:10px 4px;text-align:center" onclick="sel(this,'korean','초급')"><div class="rd" style="margin:0 auto"></div><span style="font-size:11px" id="t-k1">초급</span></div>
+        <div class="ri" style="flex-direction:column;gap:3px;padding:10px 4px;text-align:center" onclick="sel(this,'korean','중급')"><div class="rd" style="margin:0 auto"></div><span style="font-size:11px" id="t-k2">중급</span></div>
+        <div class="ri" style="flex-direction:column;gap:3px;padding:10px 4px;text-align:center" onclick="sel(this,'korean','고급')"><div class="rd" style="margin:0 auto"></div><span style="font-size:11px" id="t-k3">고급</span></div>
+      </div>
+    </div>
+    <div class="fg"><label id="t-memo">경력 / 특기사항</label><input type="text" id="p2memo" placeholder=""></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-back" onclick="go(1)" id="t-prev2">← 이전</button><button class="btn btn-next" onclick="go(3)" id="t-next2">다음 →</button></div>
+</div>
+
+<!-- STEP 3 -->
+<div class="page" id="page3">
+  <div class="card">
+    <div class="card-title" id="t-s3title">📞 연락처</div>
+    <div class="card-sub" id="t-s3sub">담당자만 볼 수 있습니다. 안심하세요.</div>
+    <div class="fg"><label id="t-phone">휴대폰 번호 <span class="req">*</span></label><input type="tel" id="p3phone" placeholder="010-0000-0000"></div>
+    <div class="fg"><label id="t-kakao">카카오톡 ID</label><input type="text" id="p3kakao" placeholder=""></div>
+    <div class="notice" id="t-privacy">🔒 입력하신 연락처는 담당 소개소에만 전달되며 외부에 공개되지 않습니다.</div>
+    <div class="fg">
+      <label id="t-agree-label">개인정보 동의 <span class="req">*</span></label>
+      <div class="ri" id="agreeBtn" onclick="toggleAgree()"><div class="rd"></div><span id="t-agree">입력한 정보를 취업 목적으로 활용하는 것에 동의합니다</span></div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-back" onclick="go(2)" id="t-prev3">← 이전</button><button class="btn btn-next" onclick="submit()" id="t-submit">✅ 제출하기</button></div>
+</div>
+
+<!-- STEP 4 -->
+<div class="page" id="page4">
+  <div class="card complete">
+    <div class="ci">🎉</div>
+    <div class="ct" id="t-done-title">신청 완료!</div>
+    <div class="cs" id="t-done-sub">담당자가 확인 후<br>빠른 시일 내에 연락드리겠습니다</div>
+    <div class="owner-badge" id="ownerBadge"></div>
+    <div class="sbox" id="sbox"></div>
+    <p style="font-size:12px;color:var(--gray)" id="t-done-note">문의는 담당자에게 카카오톡으로 연락해주세요</p>
+  </div>
+</div>
+
+<script>
+// ── URL 파라미터 ──
+const OWNER = new URLSearchParams(window.location.search).get('owner') || '미지정';
+if(OWNER !== '미지정'){
+  document.getElementById('ownerChip').style.display = 'inline-flex';
+  document.getElementById('ownerName').textContent = OWNER;
+}
+
+// ── 다국어 텍스트 ──
+const LANGS = {
+  ko:{
+    title:'👤 구직 신청서', sub:'아래 정보를 입력해 주시면 취업을 도와드립니다',
+    sl1:'기본정보',sl2:'근무조건',sl3:'연락처',sl4:'완료',
+    s1title:'🧑 기본 정보',s1sub:'이름과 국적을 입력해주세요',
+    name:'이름',nation:'국적',age:'나이',gender:'성별',male:'남성',female:'여성',other:'기타',
+    s2title:'🔧 희망 근무 조건',s2sub:'어떤 일을 원하시나요?',
+    job:'희망 업종',mfg:'🏭 제조업',farm:'🌾 농업',cons:'🏗️ 건설업',fish:'🐟 어업',svc:'🛎️ 서비스업',food:'🍱 식품가공',
+    visa:'비자 종류',visaSel:'선택해주세요',visaEtc:'기타',
+    visaexp:'비자 만료일',visaexpHint:'모르시면 비워두세요',
+    korean:'한국어 수준',k0:'없음',k1:'초급',k2:'중급',k3:'고급',
+    memo:'경력 / 특기사항',
+    s3title:'📞 연락처',s3sub:'담당자만 볼 수 있습니다. 안심하세요.',
+    phone:'휴대폰 번호',kakao:'카카오톡 ID',
+    privacy:'🔒 입력하신 연락처는 담당 소개소에만 전달되며 외부에 공개되지 않습니다.',
+    agreeLabel:'개인정보 동의',agree:'입력한 정보를 취업 목적으로 활용하는 것에 동의합니다',
+    next:'다음 →',prev:'← 이전',submit:'✅ 제출하기',
+    doneTitle:'신청 완료!',doneSub:'담당자가 확인 후\n빠른 시일 내에 연락드리겠습니다',
+    doneNote:'문의는 담당자에게 카카오톡으로 연락해주세요',
+    ownerBadge:(o)=>`📋 ${o} 담당자 DB에 등록되었습니다`,
+    alertName:'이름을 입력해주세요',alertNation:'국적을 선택해주세요',alertGender:'성별을 선택해주세요',alertAge:'나이를 입력해주세요',alertJob:'희망 업종을 선택해주세요',alertVisa:'비자 종류를 선택해주세요',alertPhone:'휴대폰 번호를 입력해주세요',alertAgree:'개인정보 활용에 동의해주세요',
+    nameLabel:'이름',nationLabel:'국적',jobLabel:'희망업종',visaLabel:'비자',phoneLabel:'연락처',ownerLabel:'담당자',
+  },
+  vi:{
+    title:'👤 Đơn xin việc', sub:'Vui lòng điền thông tin để chúng tôi hỗ trợ tìm việc làm cho bạn',
+    sl1:'Thông tin',sl2:'Điều kiện',sl3:'Liên hệ',sl4:'Hoàn tất',
+    s1title:'🧑 Thông tin cơ bản',s1sub:'Vui lòng nhập họ tên và quốc tịch',
+    name:'Họ và tên',nation:'Quốc tịch',age:'Tuổi',gender:'Giới tính',male:'Nam',female:'Nữ',other:'Khác',
+    s2title:'🔧 Điều kiện làm việc',s2sub:'Bạn muốn làm việc gì?',
+    job:'Ngành nghề mong muốn',mfg:'🏭 Sản xuất',farm:'🌾 Nông nghiệp',cons:'🏗️ Xây dựng',fish:'🐟 Ngư nghiệp',svc:'🛎️ Dịch vụ',food:'🍱 Chế biến thực phẩm',
+    visa:'Loại visa',visaSel:'Vui lòng chọn',visaEtc:'Khác',
+    visaexp:'Ngày hết hạn visa',visaexpHint:'Để trống nếu không biết',
+    korean:'Trình độ tiếng Hàn',k0:'Không có',k1:'Sơ cấp',k2:'Trung cấp',k3:'Cao cấp',
+    memo:'Kinh nghiệm / Kỹ năng',
+    s3title:'📞 Thông tin liên hệ',s3sub:'Chỉ người phụ trách mới xem được. Yên tâm.',
+    phone:'Số điện thoại',kakao:'ID KakaoTalk',
+    privacy:'🔒 Thông tin liên hệ của bạn chỉ được chuyển đến văn phòng giới thiệu việc làm và không được công khai.',
+    agreeLabel:'Đồng ý bảo mật thông tin',agree:'Tôi đồng ý cho phép sử dụng thông tin đã nhập cho mục đích tìm việc làm',
+    next:'Tiếp theo →',prev:'← Quay lại',submit:'✅ Gửi đơn',
+    doneTitle:'Đã nộp đơn!',doneSub:'Người phụ trách sẽ liên hệ với bạn\nsớm nhất có thể',
+    doneNote:'Thắc mắc vui lòng liên hệ người phụ trách qua KakaoTalk',
+    ownerBadge:(o)=>`📋 Đã đăng ký vào DB của ${o}`,
+    alertName:'Vui lòng nhập họ tên',alertNation:'Vui lòng chọn quốc tịch',alertGender:'Vui lòng chọn giới tính',alertAge:'Vui lòng nhập tuổi',alertJob:'Vui lòng chọn ngành nghề',alertVisa:'Vui lòng chọn loại visa',alertPhone:'Vui lòng nhập số điện thoại',alertAgree:'Vui lòng đồng ý với điều khoản',
+    nameLabel:'Họ tên',nationLabel:'Quốc tịch',jobLabel:'Ngành nghề',visaLabel:'Visa',phoneLabel:'Điện thoại',ownerLabel:'Phụ trách',
+  },
+  ne:{
+    title:'👤 जागिर आवेदन फारम', sub:'कृपया तलको जानकारी भर्नुहोस् - हामी तपाईंलाई रोजगारी खोज्न मद्दत गर्नेछौं',
+    sl1:'जानकारी',sl2:'सर्त',sl3:'सम्पर्क',sl4:'सम्पन्न',
+    s1title:'🧑 आधारभूत जानकारी',s1sub:'कृपया आफ्नो नाम र राष्ट्रियता लेख्नुहोस्',
+    name:'पूरा नाम',nation:'राष्ट्रियता',age:'उमेर',gender:'लिंग',male:'पुरुष',female:'महिला',other:'अन्य',
+    s2title:'🔧 काम सम्बन्धी सर्तहरू',s2sub:'तपाईं के काम गर्न चाहनुहुन्छ?',
+    job:'इच्छित पेशा',mfg:'🏭 उत्पादन',farm:'🌾 कृषि',cons:'🏗️ निर्माण',fish:'🐟 मत्स्यपालन',svc:'🛎️ सेवा',food:'🍱 खाद्य प्रशोधन',
+    visa:'भिसाको प्रकार',visaSel:'कृपया छान्नुहोस्',visaEtc:'अन्य',
+    visaexp:'भिसा समाप्ति मिति',visaexpHint:'थाहा नभए खाली छोड्नुहोस्',
+    korean:'कोरियाली भाषा स्तर',k0:'छैन',k1:'प्रारम्भिक',k2:'मध्यम',k3:'उच्च',
+    memo:'अनुभव / विशेष सीप',
+    s3title:'📞 सम्पर्क जानकारी',s3sub:'केवल जिम्मेवार व्यक्तिले मात्र हेर्न पाउनेछ। निश्चिन्त हुनुहोस्।',
+    phone:'मोबाइल नम्बर',kakao:'KakaoTalk ID',
+    privacy:'🔒 तपाईंको सम्पर्क जानकारी केवल जागिर एजेन्सीलाई पठाइनेछ र सार्वजनिक गरिने छैन।',
+    agreeLabel:'व्यक्तिगत जानकारी सम्मति',agree:'मैले भरेको जानकारी रोजगारीको उद्देश्यका लागि प्रयोग गर्न मन्जुरी दिन्छु',
+    next:'अर्को →',prev:'← पछाडि',submit:'✅ पेश गर्नुहोस्',
+    doneTitle:'आवेदन सफल!',doneSub:'जिम्मेवार व्यक्तिले सकभन्दा चाँडो\nसम्पर्क गर्नेछन्',
+    doneNote:'प्रश्नहरूका लागि KakaoTalk मार्फत सम्पर्क गर्नुहोस्',
+    ownerBadge:(o)=>`📋 ${o} को DB मा दर्ता भयो`,
+    alertName:'कृपया नाम लेख्नुहोस्',alertNation:'कृपया राष्ट्रियता छान्नुहोस्',alertGender:'कृपया लिंग छान्नुहोस्',alertAge:'कृपया उमेर लेख्नुहोस्',alertJob:'कृपया पेशा छान्नुहोस्',alertVisa:'कृपया भिसा छान्नुहोस्',alertPhone:'कृपया मोबाइल नम्बर लेख्नुहोस्',alertAgree:'कृपया सम्मति दिनुहोस्',
+    nameLabel:'नाम',nationLabel:'राष्ट्रियता',jobLabel:'पेशा',visaLabel:'भिसा',phoneLabel:'फोन',ownerLabel:'जिम्मेवार',
+  },
+  km:{
+    title:'👤 ពាក្យសុំការងារ', sub:'សូមបំពេញព័ត៌មានខាងក្រោម - យើងនឹងជួយអ្នករកការងារ',
+    sl1:'ព័ត៌មាន',sl2:'លក្ខខណ្ឌ',sl3:'ទំនាក់ទំនង',sl4:'រួចរាល់',
+    s1title:'🧑 ព័ត៌មានមូលដ្ឋាន',s1sub:'សូមបញ្ចូលឈ្មោះ និងសញ្ជាតិ',
+    name:'ឈ្មោះ',nation:'សញ្ជាតិ',age:'អាយុ',gender:'ភេទ',male:'ប្រុស',female:'ស្រី',other:'ផ្សេងទៀត',
+    s2title:'🔧 លក្ខខណ្ឌការងារ',s2sub:'អ្នកចង់ធ្វើការអ្វី?',
+    job:'ប្រភេទការងារ',mfg:'🏭 រោងចក្រ',farm:'🌾 កសិកម្ម',cons:'🏗️ សំណង់',fish:'🐟 នេសាទ',svc:'🛎️ សេវាកម្ម',food:'🍱 កែច្នៃអាហារ',
+    visa:'ប្រភេទទិដ្ឋាការ',visaSel:'សូមជ្រើសរើស',visaEtc:'ផ្សេងទៀត',
+    visaexp:'ថ្ងៃផុតកំណត់ទិដ្ឋាការ',visaexpHint:'ទុកទំនេរបើមិនដឹង',
+    korean:'កម្រិតភាសាកូរ៉េ',k0:'គ្មាន',k1:'មូលដ្ឋាន',k2:'មធ្យម',k3:'ខ្ពស់',
+    memo:'បទពិសោធ / ជំនាញ',
+    s3title:'📞 ព័ត៌មានទំនាក់ទំនង',s3sub:'មានតែអ្នកទទួលខុសត្រូវប៉ុណ្ណោះ ដែលអាចមើលបាន',
+    phone:'លេខទូរស័ព្ទ',kakao:'ID KakaoTalk',
+    privacy:'🔒 ព័ត៌មានទំនាក់ទំនងរបស់អ្នកនឹងត្រូវផ្ញើទៅទីភ្នាក់ងារការងារប៉ុណ្ណោះ ហើយនឹងមិនត្រូវបំបាញ់ចេញ',
+    agreeLabel:'ការយល់ព្រមព័ត៌មានផ្ទាល់ខ្លួន',agree:'ខ្ញុំយល់ព្រមឱ្យប្រើប្រាស់ព័ត៌មានដែលបានបំពេញសម្រាប់គោលបំណងស្វែងរកការងារ',
+    next:'បន្ទាប់ →',prev:'← ត្រឡប់',submit:'✅ ដាក់ពាក្យ',
+    doneTitle:'ដាក់ពាក្យជោគជ័យ!',doneSub:'អ្នកទទួលខុសត្រូវនឹងទំនាក់ទំនងអ្នក\nឆាប់ៗ',
+    doneNote:'សូមទំនាក់ទំនងអ្នកទទួលខុសត្រូវតាម KakaoTalk',
+    ownerBadge:(o)=>`📋 បានចុះឈ្មោះក្នុង DB របស់ ${o}`,
+    alertName:'សូមបញ្ចូលឈ្មោះ',alertNation:'សូមជ្រើសរើសសញ្ជាតិ',alertGender:'សូមជ្រើសរើសភេទ',alertAge:'សូមបញ្ចូលអាយុ',alertJob:'សូមជ្រើសរើសប្រភេទការងារ',alertVisa:'សូមជ្រើសរើសទិដ្ឋាការ',alertPhone:'សូមបញ្ចូលលេខទូរស័ព្ទ',alertAgree:'សូមយល់ព្រម',
+    nameLabel:'ឈ្មោះ',nationLabel:'សញ្ជាតិ',jobLabel:'ការងារ',visaLabel:'ទិដ្ឋាការ',phoneLabel:'ទូរស័ព្ទ',ownerLabel:'អ្នកទទួល',
+  },
+  id:{
+    title:'👤 Formulir Lamaran Kerja', sub:'Silakan isi informasi di bawah ini - kami akan membantu mencari pekerjaan',
+    sl1:'Info',sl2:'Syarat',sl3:'Kontak',sl4:'Selesai',
+    s1title:'🧑 Informasi Dasar',s1sub:'Masukkan nama dan kewarganegaraan Anda',
+    name:'Nama Lengkap',nation:'Kewarganegaraan',age:'Usia',gender:'Jenis Kelamin',male:'Laki-laki',female:'Perempuan',other:'Lainnya',
+    s2title:'🔧 Syarat Kerja',s2sub:'Pekerjaan apa yang Anda inginkan?',
+    job:'Bidang Pekerjaan',mfg:'🏭 Manufaktur',farm:'🌾 Pertanian',cons:'🏗️ Konstruksi',fish:'🐟 Perikanan',svc:'🛎️ Jasa',food:'🍱 Pengolahan Makanan',
+    visa:'Jenis Visa',visaSel:'Pilih',visaEtc:'Lainnya',
+    visaexp:'Tanggal Kadaluarsa Visa',visaexpHint:'Kosongkan jika tidak tahu',
+    korean:'Level Bahasa Korea',k0:'Tidak ada',k1:'Dasar',k2:'Menengah',k3:'Mahir',
+    memo:'Pengalaman / Keahlian',
+    s3title:'📞 Informasi Kontak',s3sub:'Hanya penanggung jawab yang dapat melihat. Tenang saja.',
+    phone:'Nomor HP',kakao:'ID KakaoTalk',
+    privacy:'🔒 Informasi kontak Anda hanya dikirim ke agen dan tidak dipublikasikan.',
+    agreeLabel:'Persetujuan Data Pribadi',agree:'Saya setuju informasi yang diisi digunakan untuk keperluan mencari kerja',
+    next:'Lanjut →',prev:'← Kembali',submit:'✅ Kirim',
+    doneTitle:'Berhasil Dikirim!',doneSub:'Penanggung jawab akan menghubungi Anda\nsecepatnya',
+    doneNote:'Hubungi penanggung jawab via KakaoTalk untuk pertanyaan',
+    ownerBadge:(o)=>`📋 Terdaftar di DB ${o}`,
+    alertName:'Masukkan nama',alertNation:'Pilih kewarganegaraan',alertGender:'Pilih jenis kelamin',alertAge:'Masukkan usia',alertJob:'Pilih bidang pekerjaan',alertVisa:'Pilih jenis visa',alertPhone:'Masukkan nomor HP',alertAgree:'Harap setujui',
+    nameLabel:'Nama',nationLabel:'Kewarga',jobLabel:'Pekerjaan',visaLabel:'Visa',phoneLabel:'HP',ownerLabel:'Penanggung',
+  },
+  my:{
+    title:'👤 အလုပ်လျှောက်လွှာ', sub:'အောက်ပါ အချက်အလက်များ ဖြည့်ပေးပါ - ကျွန်ုပ်တို့ အလုပ်ရှာပေးပါမည်',
+    sl1:'အချက်အလက်',sl2:'အခြေအနေ',sl3:'ဆက်သွယ်',sl4:'ပြီးဆုံး',
+    s1title:'🧑 အခြေခံ အချက်အလက်',s1sub:'နာမည်နှင့် နိုင်ငံသားဖြစ်မှု ရိုက်ထည့်ပါ',
+    name:'အမည်',nation:'နိုင်ငံသား',age:'အသက်',gender:'လိင်',male:'ကျား',female:'မ',other:'အခြား',
+    s2title:'🔧 အလုပ်လုပ်ရေး အခြေအနေ',s2sub:'မည်သည့်အလုပ် လုပ်လိုသနည်း?',
+    job:'လုပ်ငန်းအမျိုးအစား',mfg:'🏭 စက်ရုံ',farm:'🌾 စိုက်ပျိုးရေး',cons:'🏗️ ဆောက်လုပ်ရေး',fish:'🐟 ငါးဖမ်း',svc:'🛎️ ဝန်ဆောင်မှု',food:'🍱 စားသောက်ကုန်',
+    visa:'ဗီဇာ အမျိုးအစား',visaSel:'ရွေးချယ်ပါ',visaEtc:'အခြား',
+    visaexp:'ဗီဇာ သက်တမ်းကုန်ဆုံးရက်',visaexpHint:'မသိပါက ဖြည့်မနေပါနှင့်',
+    korean:'ကိုရီးယားဘာသာ အဆင့်',k0:'မရှိ',k1:'အခြေခံ',k2:'အလယ်အလတ်',k3:'မြင့်မား',
+    memo:'အတွေ့အကြုံ / အထူးကျွမ်းကျင်မှု',
+    s3title:'📞 ဆက်သွယ်ရေး အချက်အလက်',s3sub:'တာဝန်ခံသာ ကြည့်နိုင်သည်။ စိတ်ချပါ။',
+    phone:'မိုဘိုင်းဖုန်းနံပါတ်',kakao:'KakaoTalk ID',
+    privacy:'🔒 သင့်ဆက်သွယ်ရေး အချက်အလက်ကို ဝန်ဆောင်မှုအေဂျင်စီသို့သာ ပေးပို့မည်ဖြစ်ပြီး ထုတ်ဖော်မည်မဟုတ်ပါ',
+    agreeLabel:'ကိုယ်ရေးကိုယ်တာ သဘောတူညီချက်',agree:'ဖြည့်ထားသော အချက်အလက်ကို အလုပ်ရှာဖွေသည့် ရည်ရွယ်ချက်ဖြင့် သုံးရန် သဘောတူပါသည်',
+    next:'ဆက်လက် →',prev:'← နောက်သို့',submit:'✅ တင်သွင်းပါ',
+    doneTitle:'အောင်မြင်စွာ တင်သွင်းပြီး!',doneSub:'တာဝန်ခံပုဂ္ဂိုလ်သည် အမြန်ဆုံး\nဆက်သွယ်ပါမည်',
+    doneNote:'မေးမြန်းချက်များအတွက် KakaoTalk မှ ဆက်သွယ်ပါ',
+    ownerBadge:(o)=>`📋 ${o} ၏ DB တွင် မှတ်ပုံတင်ပြီး`,
+    alertName:'နာမည် ရိုက်ထည့်ပါ',alertNation:'နိုင်ငံသား ရွေးချယ်ပါ',alertGender:'လိင် ရွေးချယ်ပါ',alertAge:'အသက် ထည့်ပါ',alertJob:'လုပ်ငန်း ရွေးချယ်ပါ',alertVisa:'ဗီဇာ ရွေးချယ်ပါ',alertPhone:'ဖုန်းနံပါတ် ထည့်ပါ',alertAgree:'သဘောတူညီချက် ပေးပါ',
+    nameLabel:'နာမည်',nationLabel:'နိုင်ငံသား',jobLabel:'လုပ်ငန်း',visaLabel:'ဗီဇာ',phoneLabel:'ဖုန်း',ownerLabel:'တာဝန်ခံ',
+  },
+  en:{
+    title:'👤 Job Application Form', sub:'Please fill in the information below - we will help you find a job',
+    sl1:'Basic Info',sl2:'Work Conditions',sl3:'Contact',sl4:'Done',
+    s1title:'🧑 Basic Information',s1sub:'Please enter your name and nationality',
+    name:'Full Name',nation:'Nationality',age:'Age',gender:'Gender',male:'Male',female:'Female',other:'Other',
+    s2title:'🔧 Preferred Work Conditions',s2sub:'What kind of job do you want?',
+    job:'Preferred Job Type',mfg:'🏭 Manufacturing',farm:'🌾 Agriculture',cons:'🏗️ Construction',fish:'🐟 Fishery',svc:'🛎️ Service',food:'🍱 Food Processing',
+    visa:'Visa Type',visaSel:'Please select',visaEtc:'Other',
+    visaexp:'Visa Expiry Date',visaexpHint:'Leave blank if unknown',
+    korean:'Korean Language Level',k0:'None',k1:'Beginner',k2:'Intermediate',k3:'Advanced',
+    memo:'Experience / Special Skills',
+    s3title:'📞 Contact Information',s3sub:'Only the manager will see this. Please be assured.',
+    phone:'Mobile Number',kakao:'KakaoTalk ID',
+    privacy:'🔒 Your contact information will only be sent to the employment agency and will not be disclosed publicly.',
+    agreeLabel:'Privacy Agreement',agree:'I agree to use the information I have entered for employment purposes',
+    next:'Next →',prev:'← Back',submit:'✅ Submit',
+    doneTitle:'Application Submitted!',doneSub:'The manager will contact you\nas soon as possible',
+    doneNote:'Please contact the manager via KakaoTalk for inquiries',
+    ownerBadge:(o)=>`📋 Registered in ${o}'s DB`,
+    alertName:'Please enter your name',alertNation:'Please select your nationality',alertGender:'Please select your gender',alertAge:'Please enter your age',alertJob:'Please select a job type',alertVisa:'Please select visa type',alertPhone:'Please enter your mobile number',alertAgree:'Please agree to the terms',
+    nameLabel:'Name',nationLabel:'Nationality',jobLabel:'Job Type',visaLabel:'Visa',phoneLabel:'Phone',ownerLabel:'Manager',
+  },
+  zh:{
+    title:'👤 求职申请表', sub:'请填写以下信息，我们将帮助您找工作',
+    sl1:'基本信息',sl2:'工作条件',sl3:'联系方式',sl4:'完成',
+    s1title:'🧑 基本信息',s1sub:'请输入您的姓名和国籍',
+    name:'姓名',nation:'国籍',age:'年龄',gender:'性别',male:'男',female:'女',other:'其他',
+    s2title:'🔧 希望工作条件',s2sub:'您想做什么工作?',
+    job:'希望职种',mfg:'🏭 制造业',farm:'🌾 农业',cons:'🏗️ 建筑业',fish:'🐟 渔业',svc:'🛎️ 服务业',food:'🍱 食品加工',
+    visa:'签证类型',visaSel:'请选择',visaEtc:'其他',
+    visaexp:'签证到期日',visaexpHint:'不知道可以留空',
+    korean:'韩语水平',k0:'无',k1:'初级',k2:'中级',k3:'高级',
+    memo:'经历 / 特长',
+    s3title:'📞 联系方式',s3sub:'只有负责人可以查看，请放心',
+    phone:'手机号码',kakao:'KakaoTalk ID',
+    privacy:'🔒 您的联系方式只会发送给职业介绍所，不会对外公开。',
+    agreeLabel:'个人信息同意',agree:'我同意将填写的信息用于求职目的',
+    next:'下一步 →',prev:'← 返回',submit:'✅ 提交',
+    doneTitle:'申请成功!',doneSub:'负责人确认后\n将尽快与您联系',
+    doneNote:'如有疑问，请通过KakaoTalk联系负责人',
+    ownerBadge:(o)=>`📋 已登记到 ${o} 的数据库`,
+    alertName:'请输入姓名',alertNation:'请选择国籍',alertGender:'请选择性别',alertAge:'请输入年龄',alertJob:'请选择职种',alertVisa:'请选择签证类型',alertPhone:'请输入手机号码',alertAgree:'请同意条款',
+    nameLabel:'姓名',nationLabel:'国籍',jobLabel:'职种',visaLabel:'签证',phoneLabel:'电话',ownerLabel:'负责人',
+  }
+};
+
+let curLang = 'ko';
+let d = {name:'',nation:'',age:'',gender:'',job:'',visa:'',visaexp:'',korean:'없음',memo:'',phone:'',kakao:'',agreed:false};
+
+function setLang(lang){
+  curLang = lang;
+  document.querySelectorAll('.lb').forEach(b=>b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  applyLang();
+}
+
+function applyLang(){
+  const L = LANGS[curLang];
+  const set = (id,txt)=>{ const el=document.getElementById(id); if(el) el.textContent=txt; };
+  const ph  = (id,txt)=>{ const el=document.getElementById(id); if(el) el.placeholder=txt; };
+
+  set('t-title', L.title); set('t-sub', L.sub);
+  set('sl1',L.sl1); set('sl2',L.sl2); set('sl3',L.sl3); set('sl4',L.sl4);
+  set('t-s1title',L.s1title); set('t-s1sub',L.s1sub);
+  set('t-name',L.name+' *'); set('t-nation',L.nation+' *');
+  set('t-age',L.age+' *'); set('t-gender',L.gender+' *');
+  set('t-male',L.male); set('t-female',L.female); set('t-other',L.other);
+  set('t-s2title',L.s2title); set('t-s2sub',L.s2sub);
+  set('t-job',L.job+' *');
+  set('t-mfg',L.mfg); set('t-farm',L.farm); set('t-cons',L.cons);
+  set('t-fish',L.fish); set('t-svc',L.svc); set('t-food',L.food);
+  set('t-visa',L.visa+' *'); set('t-visa-sel',L.visaSel); set('t-visa-etc',L.visaEtc);
+  set('t-visaexp',L.visaexp); set('t-visaexp-hint',L.visaexpHint);
+  set('t-korean',L.korean);
+  set('t-k0',L.k0); set('t-k1',L.k1); set('t-k2',L.k2); set('t-k3',L.k3);
+  set('t-memo',L.memo);
+  set('t-s3title',L.s3title); set('t-s3sub',L.s3sub);
+  set('t-phone',L.phone+' *'); set('t-kakao',L.kakao);
+  set('t-privacy',L.privacy);
+  set('t-agree-label',L.agreeLabel+' *'); set('t-agree',L.agree);
+  set('t-next1',L.next); set('t-prev2',L.prev); set('t-next2',L.next);
+  set('t-prev3',L.prev); set('t-submit',L.submit);
+  applyNationLabels();
+}
+
+// ── 스텝 이동 ──
+function go(n){
+  if(n===2&&!v1())return;
+  if(n===3&&!v2())return;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page'+n).classList.add('active');
+  window.scrollTo(0,0);
+  document.getElementById('pf').style.width={1:25,2:50,3:75,4:100}[n]+'%';
+  for(let i=1;i<=4;i++){const s=document.getElementById('s'+i);s.classList.remove('active','done');if(i<n)s.classList.add('done');if(i===n)s.classList.add('active');}
+}
+
+const L=()=>LANGS[curLang];
+function v1(){
+  d.name=document.getElementById('p1name').value.trim();
+  d.age=document.getElementById('p1age').value;
+  if(!d.name){alert(L().alertName);return false;}
+  if(!d.nation){alert(L().alertNation);return false;}
+  if(!d.gender){alert(L().alertGender);return false;}
+  if(!d.age){alert(L().alertAge);return false;}
+  return true;
+}
+function v2(){
+  d.visa=document.getElementById('p2visa').value;
+  d.visaexp=document.getElementById('p2vexp').value;
+  d.memo=document.getElementById('p2memo').value;
+  if(!d.job){alert(L().alertJob);return false;}
+  if(!d.visa){alert(L().alertVisa);return false;}
+  return true;
+}
+
+function submit(){
+  d.phone=document.getElementById('p3phone').value.trim();
+  d.kakao=document.getElementById('p3kakao').value.trim();
+  if(!d.phone){alert(L().alertPhone);return;}
+  if(!d.agreed){alert(L().alertAgree);return;}
+
+  const fm={'베트남':'wf-vn','네팔':'wf-np','캄보디아':'wf-kh','인도네시아':'wf-id','미얀마':'wf-mm','중국':'wf-all'};
+  const w={id:Date.now(),owner:OWNER,name:d.name,nation:d.nation,age:parseInt(d.age)||0,gender:d.gender,phone:d.phone,kakao:d.kakao,job:d.job,visa:d.visa,visaexp:d.visaexp||'',korean:d.korean||'없음',status:'구직중',memo:d.memo||'',folderId:fm[d.nation]||'wf-all',source:'자가입력폼',date:new Date().toLocaleDateString('ko-KR')};
+  const arr=JSON.parse(localStorage.getItem('v5_workers')||'[]');
+  arr.push(w);
+  localStorage.setItem('v5_workers',JSON.stringify(arr));
+
+  const Lc=L();
+  document.getElementById('ownerBadge').textContent=Lc.ownerBadge(OWNER);
+
+  // 완료 화면 국적명도 현재 언어로 표시
+  const natLabel = selectedNationId
+    ? (NATION_LABELS[selectedNationId]?.[LANG_IDX[curLang]||0] || d.nation)
+    : d.nation;
+
+  document.getElementById('sbox').innerHTML=`
+    <div class="sr"><span class="sl">${Lc.nameLabel}</span><span class="sv">${d.name}</span></div>
+    <div class="sr"><span class="sl">${Lc.nationLabel}</span><span class="sv">${natLabel}</span></div>
+    <div class="sr"><span class="sl">${Lc.jobLabel}</span><span class="sv">${d._jobDisplay||d.job}</span></div>
+    <div class="sr"><span class="sl">${Lc.visaLabel}</span><span class="sv">${d.visa}</span></div>
+    <div class="sr"><span class="sl">${Lc.phoneLabel}</span><span class="sv">${d.phone}</span></div>
+    <div class="sr"><span class="sl">${Lc.ownerLabel}</span><span class="sv">${OWNER}</span></div>`;
+  document.getElementById('t-done-title').textContent=Lc.doneTitle;
+  document.getElementById('t-done-sub').textContent=Lc.doneSub;
+  document.getElementById('t-done-note').textContent=Lc.doneNote;
+  go(4);
+}
+
+// 국적 버튼 언어별 텍스트 [ko, en, vi, ne, km, id, my]
+const NATION_LABELS = {
+  'n-vn': ['베트남','Vietnam','Việt Nam','भिएतनाम','វៀតណាម','Vietnam','ဗီယက်နမ်','Vietnam','越南'],
+  'n-np': ['네팔','Nepal','Nepal','नेपाल','នេប៉ាល់','Nepal','နီပေါ','Nepal','尼泊尔'],
+  'n-kh': ['캄보디아','Cambodia','Campuchia','कम्बोडिया','កម្ពុជា','Kamboja','ကမ္ဘောဒီးယား','Cambodia','柬埔寨'],
+  'n-id': ['인도네시아','Indonesia','Indonesia','इन्डोनेसिया','ឥណ្ឌូនេស៊ី','Indonesia','အင်ဒိုနီးရှား','Indonesia','印度尼西亚'],
+  'n-mm': ['미얀마','Myanmar','Myanmar','म्यानमार','មីយ៉ាន់ម៉ា','Myanmar','မြန်မာ','Myanmar','缅甸'],
+  'n-cn': ['중국','China','Trung Quốc','चीन','ចិន','Tiongkok','တရုတ်','China','中国'],
+  'n-kr': ['한국','Korea','Hàn Quốc','कोरिया','កូរ៉េ','Korea','ကိုရီးယား','Korea','韩国'],
+  'n-us': ['미국','USA','Mỹ','अमेरिका','អាមេរិក','Amerika','အမေရိကန်','USA','美国'],
+  'n-etc':['기타','Other','Khác','अन्य','ផ្សេងទៀត','Lainnya','အခြား','Other','其他'],
+};
+const LANG_IDX = {ko:0,en:1,vi:2,ne:3,km:4,id:5,my:6,en2:7,zh:8};
+
+// 국적 DB 저장명 (항상 한국어로 저장)
+const NATION_KO = {
+  'n-vn':'베트남','n-np':'네팔','n-kh':'캄보디아',
+  'n-id':'인도네시아','n-mm':'미얀마','n-cn':'중국','n-kr':'한국','n-us':'미국','n-etc':'기타'
+};
+let selectedNationId = null;
+
+function selNation(el,koVal,...rest){
+  document.querySelectorAll('.lang-group .li').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+  d.nation = koVal; // 항상 한국어로 저장
+  selectedNationId = el.id;
+}
+
+function applyNationLabels(){
+  const idx = LANG_IDX[curLang]||0;
+  Object.entries(NATION_LABELS).forEach(([id,labels])=>{
+    const shortId = id.replace('n-','');
+    const el = document.getElementById('t-n-'+shortId);
+    if(el) el.textContent = labels[idx]||labels[0];
+  });
+  // 기타 버튼
+  const etcEl = document.getElementById('t-other');
+  if(etcEl && NATION_LABELS['n-etc']) etcEl.textContent = NATION_LABELS['n-etc'][idx]||'기타';
+}
+function sel(el,group,val){
+  el.closest('.radio-group').querySelectorAll('.ri').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+  d[group]=val;
+  // 완료 화면 표시용 현재 언어 텍스트 저장
+  if(group==='job') d._jobDisplay = el.querySelector('span')?.textContent || val;
+}
+function toggleAgree(){d.agreed=!d.agreed;document.getElementById('agreeBtn').classList.toggle('on',d.agreed);}
+
+// 언어 자동 감지 (URL 파라미터)
+const urlLang = new URLSearchParams(window.location.search).get('lang');
+if(urlLang && LANGS[urlLang]){
+  curLang=urlLang;
+  document.querySelectorAll('.lb').forEach(b=>{
+    b.classList.toggle('active', b.textContent.includes(urlLang));
+  });
+}
+applyLang();
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+server.log
+*.b64
+deploy_files.py
+deploy.sh
+__pycache__/

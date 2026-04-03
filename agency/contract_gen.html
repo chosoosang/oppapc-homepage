@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>근로계약서 자동 생성</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F0F4F8;--white:#fff;--navy:#1A3A5C;--blue:#2563EB;--blue-lt:#EFF6FF;
+  --green:#16A34A;--green-lt:#F0FDF4;--gray:#64748B;--gray-lt:#F1F5F9;
+  --border:#CBD5E1;--text:#1E293B;--red:#DC2626;
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
+
+/* ── 화면 UI ── */
+.header{background:var(--navy);padding:0 20px;display:flex;align-items:center;gap:12px;height:60px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.header h1{color:#fff;font-size:18px;font-weight:900}
+.header h1 span{color:#60A5FA}
+.back-btn{background:rgba(255,255,255,.15);border:none;border-radius:8px;color:#fff;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit}
+.back-btn:hover{background:rgba(255,255,255,.25)}
+
+.main{padding:16px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:380px 1fr;gap:16px}
+@media(max-width:800px){.main{grid-template-columns:1fr}}
+
+/* 입력 패널 */
+.input-panel{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--white);border-radius:12px;box-shadow:var(--shadow);padding:16px}
+.card-title{font-size:14px;font-weight:900;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.fg:last-child{margin-bottom:0}
+.fg label{font-size:12px;font-weight:700;color:var(--navy)}
+.fg input,.fg select,.fg textarea{padding:10px 12px;border:2px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;transition:.2s;background:var(--white);width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--blue)}
+.fg textarea{resize:vertical;min-height:60px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.full{grid-column:1/-1}
+
+.btn{padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:.2s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff;width:100%;justify-content:center;font-size:15px;padding:14px}
+.btn-primary:hover{background:#1D4ED8}
+.btn-print{background:var(--green);color:#fff;width:100%;justify-content:center;font-size:15px;padding:14px}
+.btn-print:hover{background:#15803D}
+.btn-outline{background:transparent;color:var(--blue);border:2px solid var(--blue)}
+.btn-outline:hover{background:var(--blue-lt)}
+
+/* 템플릿 선택 */
+.tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+.tpl-btn{border:2px solid var(--border);border-radius:9px;padding:10px;cursor:pointer;text-align:center;transition:.2s;background:var(--white);font-family:inherit}
+.tpl-btn:hover{border-color:var(--blue);background:var(--blue-lt)}
+.tpl-btn.active{border-color:var(--blue);background:var(--blue);color:#fff}
+.tpl-btn .ti{font-size:20px;display:block;margin-bottom:4px}
+.tpl-btn .tn{font-size:12px;font-weight:700}
+
+/* 미리보기 패널 */
+.preview-panel{position:sticky;top:76px;height:fit-content}
+.preview-header{background:var(--white);border-radius:12px 12px 0 0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gray-lt);box-shadow:var(--shadow)}
+.preview-actions{display:flex;gap:8px}
+.preview-wrap{background:var(--white);border-radius:0 0 12px 12px;padding:20px;box-shadow:var(--shadow);min-height:600px;max-height:80vh;overflow-y:auto}
+
+/* ─────────────────────────────
+   계약서 스타일 (인쇄용)
+───────────────────────────── */
+.contract{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:11pt;
+  line-height:1.8;
+  color:#000;
+  max-width:680px;
+  margin:0 auto;
+}
+.contract-title{
+  text-align:center;font-size:18pt;font-weight:900;
+  border-bottom:3px double #000;padding-bottom:12px;margin-bottom:20px;
+  letter-spacing:4px;
+}
+.contract-subtitle{text-align:center;font-size:10pt;color:#555;margin-bottom:24px}
+.parties-box{
+  border:2px solid #000;border-radius:0;padding:14px 18px;margin-bottom:20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+}
+.party-section h3{font-size:10pt;font-weight:900;color:#333;margin-bottom:8px;border-bottom:1px solid #ccc;padding-bottom:4px}
+.party-row{display:flex;gap:8px;font-size:10pt;margin-bottom:4px}
+.party-label{color:#666;min-width:60px;flex-shrink:0}
+.party-value{font-weight:700}
+
+.section{margin-bottom:18px}
+.section-title{
+  font-size:12pt;font-weight:900;
+  background:#1A3A5C;color:#fff;
+  padding:6px 12px;margin-bottom:10px;
+}
+.section-body{padding:0 4px;font-size:10pt;line-height:1.9}
+.section-body table{width:100%;border-collapse:collapse;margin-top:6px}
+.section-body table th{background:#f0f4f8;padding:7px 10px;text-align:left;font-size:10pt;border:1px solid #ddd;font-weight:700}
+.section-body table td{padding:7px 10px;border:1px solid #ddd;font-size:10pt}
+.section-body ul{padding-left:20px}
+.section-body ul li{margin-bottom:4px}
+
+.clause{margin-bottom:8px;display:flex;gap:8px}
+.clause-num{font-weight:700;min-width:24px;flex-shrink:0}
+
+.sign-area{
+  margin-top:32px;border-top:2px solid #000;padding-top:20px;
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+}
+.sign-box{text-align:center}
+.sign-box h4{font-size:11pt;font-weight:700;margin-bottom:16px}
+.sign-line{border-bottom:1px solid #000;margin:0 20px 6px;padding-bottom:32px}
+.sign-name{font-size:10pt;color:#555}
+
+.contract-date{text-align:center;font-size:11pt;margin-bottom:20px;font-weight:700}
+.stamp-area{text-align:right;font-size:10pt;color:#888;margin-top:8px}
+
+/* ── 인쇄 미디어 ── */
+@media print{
+  body{background:#fff;padding:0}
+  .header,.input-panel,.preview-header,.no-print{display:none!important}
+  .main{display:block;padding:0;max-width:100%}
+  .preview-panel{position:static;height:auto}
+  .preview-wrap{max-height:none;overflow:visible;box-shadow:none;border-radius:0;padding:10mm 15mm}
+  .contract-title{font-size:16pt}
+  .section-title{font-size:11pt}
+  @page{size:A4;margin:15mm}
+}
+
+/* TOAST */
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* 언어 탭 */
+.lang-tab{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;border-radius:100px;padding:5px 14px;font-size:12px;cursor:pointer;transition:.2s;font-family:inherit;font-weight:600}
+.lang-tab:hover{background:rgba(255,255,255,.2)}
+.lang-tab.active{background:#fff;color:var(--navy);font-weight:700}
+
+/* 병기 계약서 스타일 */
+.bilingual{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.bilingual .ko-col{border-right:1px solid #ddd;padding-right:8px}
+.bilingual .fo-col{padding-left:8px;color:#1A3A5C}
+.bi-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start;border-bottom:1px dotted #eee;padding:3px 0}
+.bi-ko{font-size:10pt}
+.bi-fo{font-size:10pt;color:#1A3A5C}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <button class="back-btn" onclick="history.back()">← 뒤로</button>
+  <h1>📄 계약서 <span>자동 생성</span></h1>
+</div>
+
+<!-- 언어 선택 바 -->
+<div style="background:#122744;padding:8px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+  <span style="color:#93C5FD;font-size:12px;font-weight:700">계약서 언어:</span>
+  <button class="lang-tab active" onclick="setContractLang('ko',this)">🇰🇷 한국어</button>
+  <button class="lang-tab" onclick="setContractLang('zh',this)">🇨🇳 中文 병기</button>
+  <button class="lang-tab" onclick="setContractLang('en',this)">🇺🇸 English 병기</button>
+  <span style="color:#64748B;font-size:11px;margin-left:8px">※ 병기: 한국어 + 해당 언어 동시 표기</span>
+</div>
+
+<div class="main">
+
+  <!-- ── 입력 패널 ── -->
+  <div class="input-panel">
+
+    <!-- 계약서 종류 -->
+    <div class="card">
+      <div class="card-title">📋 계약서 종류</div>
+      <div class="tpl-grid">
+        <button class="tpl-btn active" onclick="setTpl('work',this)"><span class="ti">👷</span><span class="tn">근로계약서</span></button>
+        <button class="tpl-btn" onclick="setTpl('seasonal',this)"><span class="ti">🌾</span><span class="tn">계절근로계약서</span></button>
+        <button class="tpl-btn" onclick="setTpl('dispatch',this)"><span class="ti">🏭</span><span class="tn">파견근로계약서</span></button>
+        <button class="tpl-btn" onclick="setTpl('renew',this)"><span class="ti">🔄</span><span class="tn">재계약서</span></button>
+      </div>
+    </div>
+
+    <!-- 사업주 정보 -->
+    <div class="card">
+      <div class="card-title">🏢 사업주 정보</div>
+      <div class="form-grid">
+        <div class="fg full"><label>사업장명 *</label><input type="text" id="e-company" placeholder="예: (주)한국정밀" oninput="preview()"></div>
+        <div class="fg full"><label>대표자명 *</label><input type="text" id="e-ceo" placeholder="예: 홍길동" oninput="preview()"></div>
+        <div class="fg full"><label>사업장 주소</label><input type="text" id="e-addr" placeholder="예: 경기도 시흥시 정왕로 100" oninput="preview()"></div>
+        <div class="fg"><label>사업자등록번호</label><input type="text" id="e-regno" placeholder="000-00-00000" oninput="preview()"></div>
+        <div class="fg"><label>연락처</label><input type="text" id="e-tel" placeholder="031-000-0000" oninput="preview()"></div>
+      </div>
+    </div>
+
+    <!-- 근로자 정보 -->
+    <div class="card">
+      <div class="card-title">👤 근로자 정보</div>
+      <div class="form-grid">
+        <div class="fg"><label>성명 *</label>
+          <input type="text" id="w-name" placeholder="근로자 이름" oninput="preview()" list="wNameList">
+          <datalist id="wNameList"></datalist>
+        </div>
+        <div class="fg"><label>국적</label>
+          <select id="w-nation" onchange="preview()">
+            <option value="">선택</option>
+            <option>베트남</option><option>네팔</option><option>캄보디아</option>
+            <option>인도네시아</option><option>미얀마</option><option>중국</option><option>기타</option>
+          </select>
+        </div>
+        <div class="fg"><label>생년월일</label><input type="date" id="w-birth" oninput="preview()"></div>
+        <div class="fg"><label>성별</label>
+          <select id="w-gender" onchange="preview()"><option value="남">남</option><option value="여">여</option></select>
+        </div>
+        <div class="fg full"><label>주소 / 거주지</label><input type="text" id="w-addr" placeholder="거주지 주소" oninput="preview()"></div>
+        <div class="fg"><label>연락처</label><input type="text" id="w-phone" placeholder="010-0000-0000" oninput="preview()"></div>
+        <div class="fg"><label>비자 종류</label>
+          <select id="w-visa" onchange="preview()">
+            <option>E-9</option><option>E-7</option><option>E-7-4</option><option>E-8</option>
+            <option>H-2</option><option>F-4</option><option>F-5</option><option>F-6</option><option>기타</option>
+          </select>
+        </div>
+        <div class="fg"><label>외국인등록번호</label><input type="text" id="w-regnum" placeholder="000000-0000000" oninput="preview()"></div>
+      </div>
+    </div>
+
+    <!-- 근로 조건 -->
+    <div class="card">
+      <div class="card-title">📋 근로 조건</div>
+      <div class="form-grid">
+        <div class="fg"><label>계약 시작일 *</label><input type="date" id="c-start" oninput="preview()"></div>
+        <div class="fg"><label>계약 종료일 *</label><input type="date" id="c-end" oninput="preview()"></div>
+        <div class="fg full"><label>근무 장소</label><input type="text" id="c-place" placeholder="예: 본사 / 시흥공장 3동" oninput="preview()"></div>
+        <div class="fg full"><label>담당 업무</label><input type="text" id="c-job" placeholder="예: 금속 절삭 가공 및 조립" oninput="preview()"></div>
+        <div class="fg"><label>근무 시간</label><input type="text" id="c-time" placeholder="예: 08:00 ~ 17:00" oninput="preview()"></div>
+        <div class="fg"><label>휴게 시간</label><input type="text" id="c-rest" placeholder="예: 12:00 ~ 13:00 (60분)" oninput="preview()"></div>
+        <div class="fg"><label>월 급여 *</label><input type="text" id="c-pay" placeholder="예: 2,600,000" oninput="preview()"></div>
+        <div class="fg"><label>급여 지급일</label><input type="text" id="c-payday" placeholder="예: 매월 10일" oninput="preview()"></div>
+        <div class="fg"><label>지급 방법</label>
+          <select id="c-paymethod" onchange="preview()">
+            <option>계좌이체</option><option>현금</option>
+          </select>
+        </div>
+        <div class="fg"><label>주휴일</label><input type="text" id="c-holiday" placeholder="예: 매주 일요일" oninput="preview()"></div>
+        <div class="fg"><label>숙식 제공</label>
+          <select id="c-accomm" onchange="preview()">
+            <option value="미제공">미제공</option>
+            <option value="숙소 제공">숙소 제공</option>
+            <option value="식사 제공">식사 제공</option>
+            <option value="숙식 모두 제공">숙식 모두 제공</option>
+          </select>
+        </div>
+        <div class="fg"><label>4대보험</label>
+          <select id="c-insurance" onchange="preview()">
+            <option value="가입">가입 (공제)</option>
+            <option value="미가입">미가입</option>
+          </select>
+        </div>
+        <div class="fg full"><label>특약 사항</label>
+          <textarea id="c-special" placeholder="추가 합의 사항이 있으면 입력하세요 (없으면 비워두세요)" oninput="preview()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 소개소 정보 -->
+    <div class="card">
+      <div class="card-title">🏢 직업소개소 정보 <span style="font-size:11px;font-weight:400;color:var(--gray)">(선택)</span></div>
+      <div class="form-grid">
+        <div class="fg"><label>소개소명</label><input type="text" id="a-name" placeholder="○○직업소개소" oninput="preview()"></div>
+        <div class="fg"><label>담당자</label><input type="text" id="a-manager" oninput="preview()"></div>
+        <div class="fg full"><label>소개소 연락처</label><input type="text" id="a-tel" oninput="preview()"></div>
+      </div>
+    </div>
+
+    <!-- 버튼 -->
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-print" onclick="printContract()">🖨️ PDF 인쇄 / 저장</button>
+      <button class="btn btn-outline" onclick="saveTemplate()">💾 입력 내용 저장</button>
+      <button class="btn btn-outline" onclick="loadTemplate()">📂 저장된 내용 불러오기</button>
+    </div>
+
+  </div>
+
+  <!-- ── 미리보기 패널 ── -->
+  <div class="preview-panel">
+    <div class="preview-header no-print">
+      <span style="font-size:14px;font-weight:700;color:var(--navy)">📄 계약서 미리보기</span>
+      <div class="preview-actions">
+        <button class="btn btn-outline" style="font-size:12px;padding:7px 12px" onclick="printContract()">🖨️ 인쇄</button>
+      </div>
+    </div>
+    <div class="preview-wrap" id="previewWrap"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── URL 파라미터 ──
+const OWNER = new URLSearchParams(window.location.search).get('owner')||'';
+let currentTpl = 'work';
+let contractLang = 'ko'; // 'ko' | 'zh' | 'en'
+
+// ── 언어 전환 ──
+function setContractLang(lang, btn){
+  contractLang = lang;
+  document.querySelectorAll('.lang-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  preview();
+}
+
+// ── 다국어 텍스트 ──
+const CL = {
+  ko:{
+    titles:{work:'근 로 계 약 서',seasonal:'계절근로 계약서',dispatch:'파견근로 계약서',renew:'근로계약 갱신서'},
+    subtitle:'본 계약서는 「근로기준법」 및 관련 법령에 따라 아래와 같이 체결합니다.',
+    employer:'사업주 (甲)', worker:'근로자 (乙)',
+    company:'사업장명', ceo:'대 표 자', addr:'주  소', regno:'사업자번호', tel:'연 락 처',
+    name:'성  명', nation:'국  적', birth:'생년월일', regnum:'등록번호', visa:'비자종류', phone:'연 락 처', waddr:'주  소',
+    s1:'제1조 (계약기간)', s2:'제2조 (근무 장소 및 담당 업무)', s3:'제3조 (근로시간 및 휴게)',
+    s4:'제4조 (임금)', s5:'제5조 (안전·보건 및 복무)', s6:'제6조 (해고 및 퇴직)',
+    s7:'제7조 (외국인 근로자 관련 사항)', s8:'제8조 (특약 사항)', s9:'제9조 (기타)',
+    place:'근 무 장 소', job:'담 당 업 무', time:'근 로 시 간', rest:'휴 게 시 간', holiday:'주 휴 일',
+    pay:'월 급 여', payday:'지 급 일', paymethod:'지급 방법', insurance:'4대보험', accomm:'숙식 제공',
+    signEmployer:'사 업 주 (甲)', signWorker:'근 로 자 (乙)', signSuffix:'(서명 또는 인)',
+    intro:'계약기간은', from:'부터', to:'까지로 한다.',
+    insYes:'국민연금·건강보험·고용보험·산재보험 가입 (근로자 부담분 공제)',
+    insNo:'적용 제외 (해당 비자 특성상)',
+    s5items:['사업주는 근로자의 안전·보건을 위해 필요한 조치를 강구한다.','근로자는 취업 규칙 및 사업장 내 규정을 준수하여야 한다.','근로자는 무단결근·지각 등 복무 의무 위반 시 취업규칙에 따라 처리된다.','산업재해 발생 시 「산업재해보상보험법」에 따라 처리한다.'],
+    s6items:['계약기간 만료 시 본 계약은 자동 종료된다.','사업주가 근로자를 해고하려면 「근로기준법」 제26조에 따라 30일 전 예고하거나 30일분 이상의 통상임금을 지급한다.','근로자가 퇴직 시 최소 30일 전에 사업주에게 통보하여야 한다.','퇴직 시 「근로자퇴직급여 보장법」에 따라 퇴직금을 지급한다 (해당 시).'],
+    s7items:(n,v)=>[`근로자(${n})는 적법한 체류자격(${v})을 유지하여야 한다.`,'비자 만료 전 갱신 절차를 근로자 본인이 이행하여야 하며, 사업주는 이를 지원한다.','불법 취업·체류 상태가 발생할 경우 본 계약은 즉시 해지될 수 있다.','본 계약서는 한국어로 작성되며, 근로자는 내용을 충분히 이해한 후 서명한다.'],
+    other:'본 계약에 명시되지 않은 사항은 「근로기준법」 및 관계 법령에 따른다. 본 계약서는 2부를 작성하여 각 1부씩 보관한다.',
+    agencyConfirm:'직업소개 확인', agencyText:'위 계약의 알선을 확인합니다.',
+    managerSign:'담당자 서명',
+  },
+  zh:{
+    titles:{work:'劳动合同书',seasonal:'季节性劳动合同',dispatch:'派遣劳动合同',renew:'劳动合同续签书'},
+    subtitle:'本合同依据《劳动基准法》及相关法律法规订立如下。',
+    employer:'雇主 (甲方)', worker:'劳动者 (乙方)',
+    company:'企业名称', ceo:'代 表 者', addr:'地  址', regno:'营业执照号', tel:'联系电话',
+    name:'姓  名', nation:'国  籍', birth:'出生日期', regnum:'外国人登录号', visa:'签证类型', phone:'联系电话', waddr:'居住地址',
+    s1:'第1条 (合同期限)', s2:'第2条 (工作地点及职务)', s3:'第3条 (工作时间及休息)',
+    s4:'第4条 (工资)', s5:'第5条 (安全·健康及纪律)', s6:'第6条 (解雇及离职)',
+    s7:'第7条 (外国劳动者相关事项)', s8:'第8条 (特别约定)', s9:'第9条 (其他)',
+    place:'工作地点', job:'担当职务', time:'工作时间', rest:'休息时间', holiday:'法定休息日',
+    pay:'月工资', payday:'发放日', paymethod:'支付方式', insurance:'四大保险', accomm:'食宿提供',
+    signEmployer:'雇主 (甲方)', signWorker:'劳动者 (乙方)', signSuffix:'(签名或盖章)',
+    intro:'合同期限自', from:'起', to:'止。',
+    insYes:'加入国民养老金·健康保险·就业保险·工伤保险 (扣除劳动者负担部分)',
+    insNo:'免于适用 (根据签证性质)',
+    s5items:['雇主应采取必要措施，保障劳动者的安全与健康。','劳动者应遵守就业规则及工作场所相关规定。','劳动者违反出勤义务（无故缺勤、迟到等）时，依就业规则处理。','发生工伤事故时，依据《工业灾害补偿保险法》处理。'],
+    s6items:['合同期满时，本合同自动终止。','雇主解雇劳动者须依据《劳动基准法》第26条提前30天通知，或支付30天以上的通常工资。','劳动者离职时，须至少提前30天通知雇主。','离职时，依据《劳动者退职金保障法》支付退职金（适用时）。'],
+    s7items:(n,v)=>[`劳动者(${n})须保持合法居留资格(${v})。`,'签证到期前，劳动者须自行办理更新手续，雇主给予协助。','若发生非法就业或非法居留情况，本合同可立即解除。','本合同以韩文书写，劳动者充分理解内容后签署。'],
+    other:'本合同未明示事项，依据《劳动基准法》及相关法律法规处理。本合同一式两份，各执一份。',
+    agencyConfirm:'职业介绍确认', agencyText:'确认以上合同的介绍。',
+    managerSign:'负责人签名',
+  },
+  en:{
+    titles:{work:'LABOR CONTRACT',seasonal:'SEASONAL LABOR CONTRACT',dispatch:'DISPATCHED LABOR CONTRACT',renew:'LABOR CONTRACT RENEWAL'},
+    subtitle:'This contract is concluded pursuant to the Labor Standards Act and related laws and regulations.',
+    employer:'Employer (Party A)', worker:'Employee (Party B)',
+    company:'Company Name', ceo:'Representative', addr:'Address', regno:'Business Reg. No.', tel:'Tel.',
+    name:'Name', nation:'Nationality', birth:'Date of Birth', regnum:'Alien Reg. No.', visa:'Visa Type', phone:'Phone', waddr:'Address',
+    s1:'Article 1 (Contract Period)', s2:'Article 2 (Workplace & Duties)', s3:'Article 3 (Working Hours & Rest)',
+    s4:'Article 4 (Wages)', s5:'Article 5 (Safety, Health & Conduct)', s6:'Article 6 (Dismissal & Resignation)',
+    s7:'Article 7 (Foreign Worker Provisions)', s8:'Article 8 (Special Agreements)', s9:'Article 9 (General Provisions)',
+    place:'Workplace', job:'Duties', time:'Working Hours', rest:'Rest Time', holiday:'Weekly Holiday',
+    pay:'Monthly Wage', payday:'Payment Date', paymethod:'Payment Method', insurance:'Social Insurance', accomm:'Accommodation',
+    signEmployer:'Employer (Party A)', signWorker:'Employee (Party B)', signSuffix:'(Signature or Seal)',
+    intro:'The contract period is from', from:'to', to:'.',
+    insYes:'National Pension, Health Insurance, Employment Insurance, Industrial Accident Insurance (employee portion deducted)',
+    insNo:'Not applicable (based on visa category)',
+    s5items:['The employer shall take necessary measures to ensure the safety and health of the employee.','The employee shall comply with the employment rules and workplace regulations.','If the employee violates attendance obligations (unauthorized absence, tardiness, etc.), it shall be handled per employment rules.','Industrial accidents shall be handled pursuant to the Industrial Accident Compensation Insurance Act.'],
+    s6items:['This contract terminates automatically upon expiry of the contract period.','If the employer dismisses the employee, the employer shall give 30 days advance notice or pay 30 or more days of ordinary wages pursuant to Article 26 of the Labor Standards Act.','The employee shall notify the employer at least 30 days prior to resignation.','Retirement pay shall be paid upon termination pursuant to the Act on the Guarantee of Employee Retirement Benefits (if applicable).'],
+    s7items:(n,v)=>[`The employee (${n}) shall maintain a valid status of sojourn (${v}).`,'The employee shall complete visa renewal procedures before expiry; the employer will provide assistance.','This contract may be immediately terminated if illegal employment or overstay occurs.','This contract is written in Korean; the employee signs after fully understanding its contents.'],
+    other:'Matters not specified in this contract shall be governed by the Labor Standards Act and related laws. This contract shall be prepared in duplicate, with each party retaining one copy.',
+    agencyConfirm:'Employment Agency Confirmation', agencyText:'Confirms the brokering of the above contract.',
+    managerSign:'Manager Signature',
+  }
+};
+
+// 구직자 자동완성
+const workers = JSON.parse(localStorage.getItem('v5_workers')||'[]');
+document.getElementById('wNameList').innerHTML = workers.map(w=>`<option value="${w.name}">`).join('');
+document.getElementById('w-name').addEventListener('change', function(){
+  const w = workers.find(x=>x.name===this.value); if(!w) return;
+  if(w.nation) sv('w-nation',w.nation);
+  if(w.phone)  document.getElementById('w-phone').value=w.phone;
+  if(w.visa)   sv('w-visa',w.visa);
+  if(w.gender) sv('w-gender',w.gender==='남'?'남':'여');
+  preview();
+});
+
+// ── 템플릿 선택 ──
+function setTpl(id, btn){
+  currentTpl=id;
+  document.querySelectorAll('.tpl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  preview();
+}
+
+// ── 값 읽기 ──
+function g(id){ return document.getElementById(id)?.value||''; }
+function sv(id,val){ const el=document.getElementById(id); if(!el)return; for(let i=0;i<el.options?.length;i++){if(el.options[i].value===val||el.options[i].text===val){el.selectedIndex=i;return;}} }
+function fmt(d){ if(!d)return''; const [y,m,da]=d.split('-'); return `${y}년 ${parseInt(m)}월 ${parseInt(da)}일`; }
+function calcPeriod(s,e){
+  if(!s||!e)return'';
+  const ms=new Date(e)-new Date(s);
+  const months=Math.round(ms/(1000*60*60*24*30));
+  return `(${months}개월)`;
+}
+
+// ── 계약서 HTML 생성 (다국어) ──
+function buildContract(){
+  const L  = CL['ko'];
+  const L2 = contractLang !== 'ko' ? CL[contractLang] : null;
+  const bi = !!L2; // 병기 모드
+
+  // 값 읽기
+  const company  = g('e-company')||'(사업장명)';
+  const ceo      = g('e-ceo')||'(대표자)';
+  const eAddr    = g('e-addr');
+  const eRegno   = g('e-regno');
+  const eTel     = g('e-tel');
+  const wName    = g('w-name')||'(근로자명)';
+  const wNation  = g('w-nation');
+  const wBirth   = fmt(g('w-birth'));
+  const wGender  = g('w-gender');
+  const wAddr    = g('w-addr');
+  const wPhone   = g('w-phone');
+  const wVisa    = g('w-visa');
+  const wRegnum  = g('w-regnum');
+  const cStart   = fmt(g('c-start'));
+  const cEnd     = fmt(g('c-end'));
+  const cPeriod  = calcPeriod(g('c-start'),g('c-end'));
+  const cPlace   = g('c-place')||'사업장 내';
+  const cJob     = g('c-job')||'(담당 업무)';
+  const cTime    = g('c-time')||'08:00 ~ 17:00';
+  const cRest    = g('c-rest')||'60분';
+  const cPay     = g('c-pay')||'(금액)';
+  const cPayday  = g('c-payday')||'매월 10일';
+  const cMethod  = g('c-paymethod');
+  const cHoliday = g('c-holiday')||'매주 일요일';
+  const cAccomm  = g('c-accomm');
+  const cIns     = g('c-insurance');
+  const cSpecial = g('c-special');
+  const aName    = g('a-name');
+  const aManager = g('a-manager');
+  const aTel     = g('a-tel');
+  const today    = new Date();
+  const todayStr = `${today.getFullYear()}년 ${today.getMonth()+1}월 ${today.getDate()}일`;
+
+  // 병기 헬퍼: ko텍스트 / 외국어텍스트를 한줄로
+  const row = (ko, fo) => bi
+    ? `<div class="bi-row"><div class="bi-ko">${ko}</div><div class="bi-fo">${fo||ko}</div></div>`
+    : ko;
+
+  // 섹션 타이틀 병기
+  const secTitle = (koKey) => bi
+    ? `<div class="section-title" style="display:grid;grid-template-columns:1fr 1fr;gap:0"><span>${L[koKey]}</span><span style="font-size:10pt">${L2[koKey]}</span></div>`
+    : `<div class="section-title">${L[koKey]}</div>`;
+
+  // 조항 리스트 병기
+  const biList = (koItems, foItems) => {
+    if(!bi) return `<ul>${koItems.map(t=>`<li>${t}</li>`).join('')}</ul>`;
+    return `<div>${koItems.map((t,i)=>`
+      <div class="bi-row" style="align-items:flex-start">
+        <div class="bi-ko">· ${t}</div>
+        <div class="bi-fo">· ${foItems[i]||t}</div>
+      </div>`).join('')}</div>`;
+  };
+
+  // 제목
+  const titleKo = L.titles[currentTpl];
+  const titleFo = bi ? L2.titles[currentTpl] : '';
+
+  return `<div class="contract">
+
+    <!-- 제목 -->
+    <div class="contract-title">${titleKo}${bi?`<br><span style="font-size:14pt;letter-spacing:2px">${titleFo}</span>`:''}</div>
+    <div class="contract-subtitle">
+      ${L.subtitle}${bi?`<br><span style="color:#2563EB">${L2.subtitle}</span>`:''}
+    </div>
+
+    <!-- 당사자 정보 -->
+    <div class="parties-box">
+      <div class="party-section">
+        <h3>■ ${L.employer}${bi?` / ${L2.employer}`:''}</h3>
+        ${row(`<div class="party-row"><span class="party-label">${L.company}</span><span class="party-value">${company}</span></div>`,
+               `<div class="party-row"><span class="party-label">${L2?.company||''}</span><span class="party-value">${company}</span></div>`)}
+        ${row(`<div class="party-row"><span class="party-label">${L.ceo}</span><span class="party-value">${ceo} (인)</span></div>`,
+               `<div class="party-row"><span class="party-label">${L2?.ceo||''}</span><span class="party-value">${ceo} (인)</span></div>`)}
+        ${eAddr?row(`<div class="party-row"><span class="party-label">${L.addr}</span><span class="party-value">${eAddr}</span></div>`,
+                     `<div class="party-row"><span class="party-label">${L2?.addr||''}</span><span class="party-value">${eAddr}</span></div>`):''}
+        ${eRegno?row(`<div class="party-row"><span class="party-label">${L.regno}</span><span class="party-value">${eRegno}</span></div>`,
+                      `<div class="party-row"><span class="party-label">${L2?.regno||''}</span><span class="party-value">${eRegno}</span></div>`):''}
+        ${eTel?row(`<div class="party-row"><span class="party-label">${L.tel}</span><span class="party-value">${eTel}</span></div>`,
+                    `<div class="party-row"><span class="party-label">${L2?.tel||''}</span><span class="party-value">${eTel}</span></div>`):''}
+      </div>
+      <div class="party-section">
+        <h3>■ ${L.worker}${bi?` / ${L2.worker}`:''}</h3>
+        ${row(`<div class="party-row"><span class="party-label">${L.name}</span><span class="party-value">${wName}</span></div>`,
+               `<div class="party-row"><span class="party-label">${L2?.name||''}</span><span class="party-value">${wName}</span></div>`)}
+        ${wNation?row(`<div class="party-row"><span class="party-label">${L.nation}</span><span class="party-value">${wNation}</span></div>`,
+                       `<div class="party-row"><span class="party-label">${L2?.nation||''}</span><span class="party-value">${wNation}</span></div>`):''}
+        ${wBirth?row(`<div class="party-row"><span class="party-label">${L.birth}</span><span class="party-value">${wBirth} (${wGender})</span></div>`,
+                      `<div class="party-row"><span class="party-label">${L2?.birth||''}</span><span class="party-value">${wBirth}</span></div>`):''}
+        ${wRegnum?row(`<div class="party-row"><span class="party-label">${L.regnum}</span><span class="party-value">${wRegnum}</span></div>`,
+                       `<div class="party-row"><span class="party-label">${L2?.regnum||''}</span><span class="party-value">${wRegnum}</span></div>`):''}
+        ${wVisa?row(`<div class="party-row"><span class="party-label">${L.visa}</span><span class="party-value">${wVisa}</span></div>`,
+                     `<div class="party-row"><span class="party-label">${L2?.visa||''}</span><span class="party-value">${wVisa}</span></div>`):''}
+        ${wPhone?row(`<div class="party-row"><span class="party-label">${L.phone}</span><span class="party-value">${wPhone}</span></div>`,
+                      `<div class="party-row"><span class="party-label">${L2?.phone||''}</span><span class="party-value">${wPhone}</span></div>`):''}
+      </div>
+    </div>
+
+    <!-- 제1조 계약기간 -->
+    <div class="section">
+      ${secTitle('s1')}
+      <div class="section-body">
+        ${row(
+          `${L.intro} <strong>${cStart||'____년__월__일'}</strong> ${L.from} <strong>${cEnd||'____년__월__일'}</strong> ${L.to} ${cPeriod}`,
+          `${L2?.intro||''} <strong>${cStart||'____년__월__일'}</strong> ${L2?.from||''} <strong>${cEnd||'____년__월__일'}</strong> ${L2?.to||''} ${cPeriod}`
+        )}
+        ${currentTpl==='seasonal'?row('<br>본 계약은 계절적 업무에 따른 기간제 계약으로, 계약기간 만료로 자동 종료된다.','<br>본 계약은 계절적 업무에 따른 기간제 계약으로, 계약기간 만료로 자동 종료된다.'):''}
+        ${currentTpl==='renew'?row('<br>본 계약은 전 계약의 갱신으로, 이전 계약의 모든 조건을 유지하되 위 기간으로 갱신한다.','<br>This contract is a renewal of the previous contract, maintaining all previous terms for the period stated above.'):''}
+      </div>
+    </div>
+
+    <!-- 제2조 근무장소·업무 -->
+    <div class="section">
+      ${secTitle('s2')}
+      <div class="section-body">
+        <table>
+          <tr>
+            <th style="width:${bi?'20%':'30%'}">${L.place}${bi?`<br><small style="font-weight:400">${L2.place}</small>`:''}</th>
+            <td>${cPlace}</td>
+          </tr>
+          <tr>
+            <th>${L.job}${bi?`<br><small style="font-weight:400">${L2.job}</small>`:''}</th>
+            <td>${cJob}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 제3조 근로시간 -->
+    <div class="section">
+      ${secTitle('s3')}
+      <div class="section-body">
+        <table>
+          <tr>
+            <th style="width:${bi?'22%':'30%'}">${L.time}${bi?`<br><small style="font-weight:400">${L2.time}</small>`:''}</th>
+            <td>${cTime}</td>
+          </tr>
+          <tr>
+            <th>${L.rest}${bi?`<br><small style="font-weight:400">${L2.rest}</small>`:''}</th>
+            <td>${cRest}</td>
+          </tr>
+          <tr>
+            <th>${L.holiday}${bi?`<br><small style="font-weight:400">${L2.holiday}</small>`:''}</th>
+            <td>${cHoliday}</td>
+          </tr>
+        </table>
+        <br>${row('※ 연장·야간·휴일 근로는 근로자와 사전 합의 후 시행하며, 가산임금을 지급한다.',
+                   contractLang==='zh'?'※ 延长·夜间·假日工作须与劳动者提前协商，并支付加班工资。':'※ Overtime, night, and holiday work shall be carried out with prior agreement and additional wages paid.')}
+      </div>
+    </div>
+
+    <!-- 제4조 임금 -->
+    <div class="section">
+      ${secTitle('s4')}
+      <div class="section-body">
+        <table>
+          <tr>
+            <th style="width:${bi?'22%':'30%'}">${L.pay}${bi?`<br><small style="font-weight:400">${L2.pay}</small>`:''}</th>
+            <td><strong>금 ${cPay}원 (₩${cPay})</strong></td>
+          </tr>
+          <tr>
+            <th>${L.payday}${bi?`<br><small style="font-weight:400">${L2.payday}</small>`:''}</th>
+            <td>${cPayday}</td>
+          </tr>
+          <tr>
+            <th>${L.paymethod}${bi?`<br><small style="font-weight:400">${L2.paymethod}</small>`:''}</th>
+            <td>${cMethod}</td>
+          </tr>
+          <tr>
+            <th>${L.insurance}${bi?`<br><small style="font-weight:400">${L2.insurance}</small>`:''}</th>
+            <td>${row(cIns==='가입'?L.insYes:L.insNo, cIns==='가입'?L2?.insYes:L2?.insNo)}</td>
+          </tr>
+          ${cAccomm!=='미제공'?`<tr>
+            <th>${L.accomm}${bi?`<br><small style="font-weight:400">${L2?.accomm||''}</small>`:''}</th>
+            <td>${cAccomm}</td>
+          </tr>`:''}
+        </table>
+      </div>
+    </div>
+
+    <!-- 제5조 안전·복무 -->
+    <div class="section">
+      ${secTitle('s5')}
+      <div class="section-body">
+        ${biList(L.s5items, L2?.s5items||[])}
+      </div>
+    </div>
+
+    <!-- 제6조 해고·퇴직 -->
+    <div class="section">
+      ${secTitle('s6')}
+      <div class="section-body">
+        ${biList(L.s6items, L2?.s6items||[])}
+      </div>
+    </div>
+
+    <!-- 제7조 외국인 -->
+    ${wVisa?`<div class="section">
+      ${secTitle('s7')}
+      <div class="section-body">
+        ${biList(L.s7items(wNation||'외국인',wVisa), L2?.s7items(wNation||'외국인',wVisa)||[])}
+      </div>
+    </div>`:''}
+
+    <!-- 특약 -->
+    ${cSpecial?`<div class="section">
+      ${secTitle('s8')}
+      <div class="section-body">${cSpecial.replace(/\n/g,'<br>')}</div>
+    </div>`:''}
+
+    <!-- 기타 -->
+    <div class="section">
+      ${bi
+        ? `<div class="section-title" style="display:grid;grid-template-columns:1fr 1fr;gap:0"><span>${L[cSpecial?'s9':'s8']}</span><span style="font-size:10pt">${L2[cSpecial?'s9':'s8']}</span></div>`
+        : `<div class="section-title">${L[cSpecial?'s9':'s8']}</div>`}
+      <div class="section-body">
+        ${row(L.other, L2?.other)}
+      </div>
+    </div>
+
+    <!-- 작성일 -->
+    <div class="contract-date">${todayStr}</div>
+
+    <!-- 서명란 -->
+    <div class="sign-area">
+      <div class="sign-box">
+        <h4>${L.signEmployer}${bi?`<br><small style="font-size:10pt;font-weight:400">${L2.signEmployer}</small>`:''}</h4>
+        <div class="sign-line"></div>
+        <div class="sign-name">
+          ${L.company}: ${company}<br>
+          ${L.ceo}: ${ceo} &nbsp; ${L.signSuffix}
+          ${bi?`<br><span style="color:#2563EB;font-size:9pt">${L2.ceo}: ${ceo} &nbsp; ${L2.signSuffix}</span>`:''}
+        </div>
+      </div>
+      <div class="sign-box">
+        <h4>${L.signWorker}${bi?`<br><small style="font-size:10pt;font-weight:400">${L2.signWorker}</small>`:''}</h4>
+        <div class="sign-line"></div>
+        <div class="sign-name">
+          ${L.name}: ${wName} &nbsp; ${L.signSuffix}
+          ${bi?`<br><span style="color:#2563EB;font-size:9pt">${L2.name}: ${wName} &nbsp; ${L2.signSuffix}</span>`:''}
+          ${wNation?`<br>${L.nation}: ${wNation}`:''}
+        </div>
+      </div>
+    </div>
+
+    <!-- 소개소 확인란 -->
+    ${aName?`<div style="margin-top:20px;border:1px solid #ccc;padding:12px 16px;font-size:10pt">
+      <strong>■ ${L.agencyConfirm}${bi?` / ${L2.agencyConfirm}`:''}</strong><br>
+      ${L.company}: ${aName} &nbsp;|&nbsp; 담당: ${aManager||''} &nbsp;|&nbsp; ${L.tel}: ${aTel||''}<br>
+      <span style="font-size:9pt;color:#666">${L.agencyText}${bi?` / ${L2.agencyText}`:''} &nbsp;&nbsp; ${L.managerSign}: ___________________</span>
+    </div>`:''}
+
+  </div>`;
+}
+
+// ── 미리보기 ──
+function preview(){
+  document.getElementById('previewWrap').innerHTML = buildContract();
+}
+
+// ── 인쇄 ──
+function printContract(){
+  window.print();
+}
+
+// ── 저장·불러오기 ──
+function saveTemplate(){
+  const ids=['e-company','e-ceo','e-addr','e-regno','e-tel','w-name','w-nation','w-birth','w-gender','w-addr','w-phone','w-visa','w-regnum','c-start','c-end','c-place','c-job','c-time','c-rest','c-pay','c-payday','c-paymethod','c-holiday','c-accomm','c-insurance','c-special','a-name','a-manager','a-tel'];
+  const data={tpl:currentTpl};
+  ids.forEach(id=>{data[id]=document.getElementById(id)?.value||'';});
+  localStorage.setItem('contract_template',JSON.stringify(data));
+  showToast('💾 저장됐습니다');
+}
+function loadTemplate(){
+  const data=JSON.parse(localStorage.getItem('contract_template')||'null');
+  if(!data){showToast('저장된 내용이 없습니다');return;}
+  Object.entries(data).forEach(([k,v])=>{
+    if(k==='tpl'){currentTpl=v;document.querySelectorAll('.tpl-btn').forEach((b,i)=>{const tpls=['work','seasonal','dispatch','renew'];b.classList.toggle('active',tpls[i]===v);});}
+    else{const el=document.getElementById(k);if(el)el.value=v;}
+  });
+  preview();
+  showToast('📂 불러오기 완료');
+}
+
+// ── UTILS ──
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// 초기 미리보기
+preview();
+// 기본값 세팅
+document.getElementById('c-start').value=new Date().toISOString().split('T')[0];
+const end=new Date(); end.setFullYear(end.getFullYear()+1);
+document.getElementById('c-end').value=end.toISOString().split('T')[0];
+preview();
+</script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>엑셀 일괄 업로드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F0F4F8;--white:#fff;--navy:#1A3A5C;--blue:#2563EB;--blue-lt:#EFF6FF;--green:#16A34A;--green-lt:#F0FDF4;--orange:#EA580C;--orange-lt:#FFF7ED;--red:#DC2626;--gray:#64748B;--border:#CBD5E1;--text:#1E293B;--shadow:0 4px 20px rgba(0,0,0,.1)}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
+.header{background:var(--navy);padding:16px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.header h1{color:#fff;font-size:18px;font-weight:900}
+.header span{color:#60A5FA;font-size:13px}
+.back-btn{background:rgba(255,255,255,.15);border:none;border-radius:8px;color:#fff;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit}
+.back-btn:hover{background:rgba(255,255,255,.25)}
+.main{padding:16px;max-width:700px;margin:0 auto}
+
+/* 타입 선택 */
+.type-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.type-tab{border:2px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:.2s;text-align:center;background:var(--white);box-shadow:var(--shadow)}
+.type-tab:hover{border-color:var(--blue)}
+.type-tab.active.job{border-color:var(--blue);background:var(--blue-lt)}
+.type-tab.active.worker{border-color:var(--green);background:var(--green-lt)}
+.type-tab-icon{font-size:28px;margin-bottom:6px;display:block}
+.type-tab-label{font-size:14px;font-weight:700;color:var(--navy)}
+.type-tab-sub{font-size:11px;color:var(--gray);margin-top:3px}
+
+/* 템플릿 다운로드 */
+.template-box{background:var(--white);border-radius:12px;box-shadow:var(--shadow);padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.template-info{font-size:13px;color:var(--gray);line-height:1.6}
+.template-info strong{color:var(--navy);display:block;margin-bottom:2px}
+.dl-btn{background:#217346;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.dl-btn:hover{background:#1a5c38}
+
+/* 업로드 존 */
+.upload-zone{background:var(--white);border-radius:14px;border:3px dashed var(--border);padding:36px 24px;text-align:center;cursor:pointer;transition:.3s;margin-bottom:14px;box-shadow:var(--shadow)}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:var(--blue-lt)}
+.upload-zone.has-file{border-style:solid;border-color:var(--green);background:var(--green-lt)}
+.upload-icon{font-size:40px;margin-bottom:10px;display:block}
+.upload-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.upload-sub{font-size:12px;color:var(--gray)}
+.file-input{display:none}
+.select-btn{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;border:none;border-radius:9px;padding:11px 20px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:14px;transition:.2s}
+.select-btn:hover{background:#1D4ED8}
+
+/* 미리보기 테이블 */
+.preview-section{background:var(--white);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px;display:none}
+.preview-hd{padding:12px 16px;background:var(--navy);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.preview-count{background:rgba(255,255,255,.2);border-radius:100px;padding:2px 10px;font-size:12px}
+.table-wrap{overflow-x:auto;max-height:320px;overflow-y:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead{background:var(--gray-lt,#F1F5F9);position:sticky;top:0}
+th{padding:10px 12px;text-align:left;font-weight:700;color:var(--navy);white-space:nowrap;border-bottom:2px solid var(--border)}
+td{padding:9px 12px;border-bottom:1px solid var(--bg);color:var(--text);white-space:nowrap}
+tr:hover td{background:var(--blue-lt)}
+.row-ok{background:var(--green-lt)!important}
+.row-err{background:#FEF2F2!important}
+.err-badge{background:var(--red);color:#fff;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700}
+.ok-badge{background:var(--green);color:#fff;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700}
+
+/* 검증 결과 */
+.validate-box{background:var(--white);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:14px;display:none}
+.vr{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:6px}
+.vr:last-child{margin-bottom:0}
+.vicon{font-size:16px}
+
+/* 저장 버튼 */
+.save-btn{width:100%;padding:16px;border-radius:12px;border:none;font-size:16px;font-weight:900;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;margin-bottom:14px;display:none}
+.save-btn.job{background:var(--blue);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.3)}
+.save-btn.job:hover{background:#1D4ED8}
+.save-btn.worker{background:var(--green);color:#fff;box-shadow:0 4px 14px rgba(22,163,74,.3)}
+.save-btn.worker:hover{background:#15803D}
+
+/* 완료 */
+.done-box{background:var(--green-lt);border:2px solid var(--green);border-radius:12px;padding:20px;text-align:center;display:none;margin-bottom:14px}
+.done-box h3{font-size:18px;font-weight:900;color:var(--green);margin-bottom:6px}
+.done-box p{font-size:13px;color:var(--gray)}
+.reset-btn{background:var(--bg);border:2px solid var(--border);border-radius:9px;padding:10px 20px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:12px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <button class="back-btn" onclick="history.back()">← 뒤로</button>
+  <h1>📊 엑셀 업로드</h1>
+  <span>일괄 가져오기</span>
+</div>
+
+<div class="main">
+
+  <!-- 타입 선택 -->
+  <div class="type-tabs">
+    <div class="type-tab job active" id="tabJob" onclick="setType('job')">
+      <span class="type-tab-icon">🏭</span>
+      <div class="type-tab-label">구인업체</div>
+      <div class="type-tab-sub">업체 목록 일괄 등록</div>
+    </div>
+    <div class="type-tab worker" id="tabWorker" onclick="setType('worker')">
+      <span class="type-tab-icon">👤</span>
+      <div class="type-tab-label">구직자</div>
+      <div class="type-tab-sub">근로자 목록 일괄 등록</div>
+    </div>
+  </div>
+
+  <!-- 템플릿 다운로드 -->
+  <div class="template-box">
+    <div class="template-info">
+      <strong>📋 엑셀 양식 다운로드</strong>
+      기존 엑셀이 있으면 그대로 쓰고, 없으면 양식을 받아서 작성하세요
+    </div>
+    <button class="dl-btn" onclick="downloadTemplate()">📥 양식 다운로드</button>
+  </div>
+
+  <!-- 업로드 존 -->
+  <div class="upload-zone" id="uploadZone"
+    onclick="document.getElementById('fileInput').click()"
+    ondragover="onDrag(event,true)" ondragleave="onDrag(event,false)" ondrop="onDrop(event)">
+    <div id="uploadDefault">
+      <span class="upload-icon">📂</span>
+      <div class="upload-title">엑셀 파일을 여기에 올려주세요</div>
+      <div class="upload-sub">.xlsx · .xls · .csv 파일 지원<br>끌어다 놓거나 버튼을 누르세요</div>
+      <button class="select-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()">📂 파일 선택</button>
+    </div>
+    <div id="uploadDone" style="display:none">
+      <span class="upload-icon">✅</span>
+      <div class="upload-title" id="fileName">파일 로드됨</div>
+      <div class="upload-sub" id="fileInfo"></div>
+    </div>
+  </div>
+  <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls,.csv" onchange="onFile(event)">
+
+  <!-- 미리보기 -->
+  <div class="preview-section" id="previewSection">
+    <div class="preview-hd">
+      <span>📋 데이터 미리보기</span>
+      <span class="preview-count" id="previewCount">0건</span>
+    </div>
+    <div class="table-wrap">
+      <table id="previewTable"></table>
+    </div>
+  </div>
+
+  <!-- 검증 결과 -->
+  <div class="validate-box" id="validateBox"></div>
+
+  <!-- 저장 버튼 -->
+  <button class="save-btn" id="saveBtn" onclick="saveAll()">💾 전체 DB에 저장</button>
+
+  <!-- 완료 -->
+  <div class="done-box" id="doneBox">
+    <h3 id="doneTitle">✅ 저장 완료!</h3>
+    <p id="doneDesc"></p>
+    <button class="reset-btn" onclick="resetAll()">🔄 다른 파일 업로드</button>
+  </div>
+
+</div>
+
+<script>
+const OWNER = new URLSearchParams(window.location.search).get('owner') || '직접입력';
+let currentType = 'job';
+let parsedRows  = [];
+
+// ── 타입 전환 ──
+function setType(t){
+  currentType = t;
+  document.getElementById('tabJob').classList.toggle('active', t==='job');
+  document.getElementById('tabWorker').classList.toggle('active', t==='worker');
+  const btn = document.getElementById('saveBtn');
+  btn.className = `save-btn ${t}`;
+  resetFile();
+}
+
+// ── 템플릿 다운로드 ──
+function downloadTemplate(){
+  const wb = XLSX.utils.book_new();
+  let headers, sample;
+
+  if(currentType==='job'){
+    headers = ['업체명','담당자','연락처','업종','필요인원','선호국적','급여','근무지역','주소','기타조건'];
+    sample  = ['(주)한국정밀','홍길동','031-111-2222','제조업 (공장)','3','베트남','월 260만원','경기 시흥','경기도 시흥시 정왕로 100','숙식 제공'];
+  } else {
+    headers = ['이름','국적','연락처','나이','성별','가능업종','비자','비자만료일','한국어수준','메모'];
+    sample  = ['응우옌 반 안','베트남','010-1111-2222','27','남','제조업 (공장)','E-9','2026-08-15','초급','용접 경력 3년'];
+  }
+
+  const ws = XLSX.utils.aoa_to_sheet([headers, sample]);
+  // 컬럼 너비
+  ws['!cols'] = headers.map(()=>({wch:18}));
+  XLSX.utils.book_append_sheet(wb, ws, currentType==='job'?'구인업체':'구직자');
+  XLSX.writeFile(wb, `${currentType==='job'?'구인업체':'구직자'}_양식.xlsx`);
+}
+
+// ── 파일 이벤트 ──
+function onDrag(e,over){e.preventDefault();document.getElementById('uploadZone').classList.toggle('drag',over);}
+function onDrop(e){e.preventDefault();document.getElementById('uploadZone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)loadFile(f);}
+function onFile(e){const f=e.target.files[0];if(f)loadFile(f);}
+
+function loadFile(file){
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const wb  = XLSX.read(e.target.result, {type:'array'});
+      const ws  = wb.Sheets[wb.SheetNames[0]];
+      const raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+      processData(raw, file.name);
+    } catch(err){
+      alert('파일을 읽을 수 없습니다: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ── 데이터 처리 ──
+function processData(raw, filename){
+  if(raw.length < 2){alert('데이터가 없습니다. 첫 번째 행은 헤더입니다.');return;}
+
+  const headers = raw[0].map(h=>String(h).trim());
+  const rows    = raw.slice(1).filter(r=>r.some(c=>c!==''));
+
+  parsedRows = rows.map((r,i) => {
+    const obj = {};
+    headers.forEach((h,j)=>{ obj[h] = String(r[j]||'').trim(); });
+    obj._idx = i+2; // 엑셀 행 번호
+    obj._valid = validate(obj);
+    return obj;
+  });
+
+  // UI 업데이트
+  document.getElementById('uploadDefault').style.display='none';
+  document.getElementById('uploadDone').style.display='block';
+  document.getElementById('uploadZone').classList.add('has-file');
+  document.getElementById('fileName').textContent = filename;
+  document.getElementById('fileInfo').textContent = `${parsedRows.length}행 · 컬럼 ${headers.length}개`;
+
+  renderPreview(headers, parsedRows);
+  renderValidation(parsedRows);
+
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.style.display='flex';
+  const okCount = parsedRows.filter(r=>r._valid.ok).length;
+  saveBtn.textContent = `💾 유효한 ${okCount}건 DB에 저장`;
+}
+
+function validate(row){
+  const errors = [];
+  if(currentType==='job'){
+    if(!row['업체명']&&!row['company']) errors.push('업체명 없음');
+  } else {
+    if(!row['이름']&&!row['name']) errors.push('이름 없음');
+    const nat = row['국적']||row['nation']||'';
+    const NATIONS=['베트남','네팔','캄보디아','인도네시아','미얀마'];
+    if(nat && !NATIONS.includes(nat)) errors.push(`국적 확인필요(${nat})`);
+  }
+  return {ok: errors.length===0, errors};
+}
+
+// ── 미리보기 렌더 ──
+function renderPreview(headers, rows){
+  const dispHeaders = headers.slice(0, 8); // 최대 8컬럼 표시
+  const thead = `<thead><tr>${['상태',...dispHeaders].map(h=>`<th>${h}</th>`).join('')}</tr></thead>`;
+  const tbody = `<tbody>${rows.map(r=>{
+    const cls = r._valid.ok ? 'row-ok':'row-err';
+    const badge = r._valid.ok
+      ? '<span class="ok-badge">✓</span>'
+      : `<span class="err-badge">${r._valid.errors[0]}</span>`;
+    const cells = dispHeaders.map(h=>`<td>${r[h]||''}</td>`).join('');
+    return `<tr class="${cls}"><td>${badge}</td>${cells}</tr>`;
+  }).join('')}</tbody>`;
+
+  document.getElementById('previewTable').innerHTML = thead+tbody;
+  document.getElementById('previewCount').textContent = `${rows.length}건`;
+  document.getElementById('previewSection').style.display='block';
+}
+
+// ── 검증 결과 ──
+function renderValidation(rows){
+  const ok  = rows.filter(r=>r._valid.ok).length;
+  const err = rows.filter(r=>!r._valid.ok).length;
+  const box = document.getElementById('validateBox');
+  box.style.display='block';
+  box.innerHTML=`
+    <div class="vr"><span class="vicon">✅</span><span><strong style="color:var(--green)">${ok}건</strong> 저장 가능</span></div>
+    ${err>0?`<div class="vr"><span class="vicon">⚠️</span><span><strong style="color:var(--red)">${err}건</strong> 오류 (빨간 행) — 저장 시 건너뜁니다</span></div>`:''}
+    <div class="vr"><span class="vicon">ℹ️</span><span style="color:var(--gray);font-size:12px">저장 후 v5 시스템에서 수동 수정 가능합니다</span></div>
+  `;
+}
+
+// ── 저장 ──
+function saveAll(){
+  const validRows = parsedRows.filter(r=>r._valid.ok);
+  if(!validRows.length){alert('저장 가능한 데이터가 없습니다');return;}
+
+  if(currentType==='job'){
+    const arr = JSON.parse(localStorage.getItem('v5_jobs')||'[]');
+    const fm  = {'제조업 (공장)':'jf-mfg','농업 (농장)':'jf-farm','건설업':'jf-cons','어업':'jf-fish','서비스업':'jf-svc','식품가공':'jf-food'};
+    validRows.forEach(r=>{
+      const sec = r['업종']||r['sector']||'';
+      arr.push({
+        id:Date.now()+Math.random(),owner:OWNER,
+        company:  r['업체명']||r['company']||'',
+        address:  r['주소']||r['address']||'',
+        contact:  `${r['담당자']||''} / ${r['연락처']||r['phone']||''}`,
+        sector:   sec,
+        count:    parseInt(r['필요인원']||r['count'])||1,
+        nation:   r['선호국적']||r['nation']||'',
+        pay:      r['급여']||r['pay']||'',
+        region:   r['근무지역']||r['region']||'',
+        memo:     r['기타조건']||r['memo']||'',
+        folderId: fm[sec]||'jf-all',
+        source:   '엑셀업로드',
+        date:     new Date().toLocaleDateString('ko-KR')
+      });
+    });
+    localStorage.setItem('v5_jobs', JSON.stringify(arr));
+  } else {
+    const arr = JSON.parse(localStorage.getItem('v5_workers')||'[]');
+    const fm2 = {'베트남':'wf-vn','네팔':'wf-np','캄보디아':'wf-kh','인도네시아':'wf-id','미얀마':'wf-mm'};
+    validRows.forEach(r=>{
+      const nat = r['국적']||r['nation']||'';
+      arr.push({
+        id:Date.now()+Math.random(),owner:OWNER,
+        name:    r['이름']||r['name']||'',
+        nation:  nat,
+        age:     parseInt(r['나이']||r['age'])||0,
+        gender:  r['성별']||r['gender']||'남',
+        phone:   r['연락처']||r['phone']||'',
+        job:     r['가능업종']||r['job']||'',
+        visa:    r['비자']||r['visa']||'E-9',
+        visaexp: r['비자만료일']||r['visaexp']||'',
+        korean:  r['한국어수준']||r['korean']||'없음',
+        status:  '구직중',
+        memo:    r['메모']||r['memo']||'',
+        folderId:fm2[nat]||'wf-all',
+        source:  '엑셀업로드',
+        date:    new Date().toLocaleDateString('ko-KR')
+      });
+    });
+    localStorage.setItem('v5_workers', JSON.stringify(arr));
+  }
+
+  // 완료 화면
+  document.getElementById('saveBtn').style.display='none';
+  document.getElementById('doneBox').style.display='block';
+  document.getElementById('doneTitle').textContent=`✅ ${validRows.length}건 저장 완료!`;
+  document.getElementById('doneDesc').textContent=`${OWNER} 담당자 DB에 등록됐습니다. v5 시스템에서 확인하세요.`;
+}
+
+// ── 리셋 ──
+function resetFile(){
+  parsedRows=[];
+  document.getElementById('fileInput').value='';
+  document.getElementById('uploadDefault').style.display='block';
+  document.getElementById('uploadDone').style.display='none';
+  document.getElementById('uploadZone').classList.remove('has-file');
+  document.getElementById('previewSection').style.display='none';
+  document.getElementById('validateBox').style.display='none';
+  document.getElementById('saveBtn').style.display='none';
+  document.getElementById('doneBox').style.display='none';
+}
+function resetAll(){ resetFile(); }
+</script>
+</body>
+</html>
