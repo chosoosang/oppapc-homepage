@@ -52,6 +52,9 @@ body{font-family:'Noto Sans KR','Noto Sans',sans-serif;background:var(--bg);colo
 .rd{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s}
 .ri.on .rd{border-color:var(--green);background:var(--green)}
 .ri.on .rd::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff;display:block}
+/* 업종 체크박스 - 다중선택 표시 */
+#jobCheckGroup .ri.on .rd{border-radius:4px}
+#jobCheckGroup .ri.on .rd::after{content:'✓';width:auto;height:auto;border-radius:0;font-size:11px;font-weight:900;line-height:1}
 
 .lang-group{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .li{border:2px solid var(--border);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;transition:.2s;font-size:13px;font-weight:600}
@@ -572,6 +575,22 @@ function applyNationLabels(){
   const etcEl = document.getElementById('t-other');
   if(etcEl && NATION_LABELS['n-etc']) etcEl.textContent = NATION_LABELS['n-etc'][idx]||'기타';
 }
+// ── 업종 다중 선택 ──
+let selectedJobs = [];
+function toggleJob(el, val) {
+  if (selectedJobs.includes(val)) {
+    selectedJobs = selectedJobs.filter(v => v !== val);
+    el.classList.remove('on');
+  } else {
+    selectedJobs.push(val);
+    el.classList.add('on');
+  }
+  const etcInput = document.getElementById('jobEtcInput');
+  if (etcInput) etcInput.style.display = selectedJobs.includes('기타') ? 'block' : 'none';
+  d.job = selectedJobs.join(', ');
+  d._jobDisplay = selectedJobs.join(', ');
+}
+
 function sel(el,group,val){
   el.closest('.radio-group').querySelectorAll('.ri').forEach(e=>e.classList.remove('on'));
   el.classList.add('on');
