@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏢 오빠피씨 직업소개소</title>
+<title>소개소 매칭 시스템 v5</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -16,8 +16,7 @@
 }
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:16px;min-height:100vh}
 
-/* ── LOGIN (사용 안 함) ── */
-#loginScreen{display:none!important}
+/* ── LOGIN ── */
 #loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1A3A5C,#2563EB);padding:20px}
 .login-box{background:var(--white);border-radius:20px;padding:44px 36px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
 .login-logo{font-size:22px;font-weight:900;color:var(--navy);margin-bottom:6px}
@@ -41,7 +40,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .login-hint{font-size:11px;color:var(--gray);margin-top:14px}
 
 /* ── HEADER ── */
-#app{display:block}
+#app{display:none}
 .header{background:var(--navy);padding:0 18px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.25)}
 .header-title{color:#fff;font-size:17px;font-weight:900}
 .header-title span{color:#60A5FA}
@@ -285,20 +284,50 @@ tr:hover td{background:var(--blue-lt)}
 </head>
 <body>
 
+<!-- ── LOGIN ── -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">소개소 <span>매칭</span>시스템</div>
+    <div class="login-sub">직원 전용 · 무단 접근 금지</div>
+    <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;text-align:left">① 직원 선택</div>
+    <div class="staff-grid" id="staffGrid"></div>
+    <div class="pin-area" id="pinArea" style="display:none">
+      <div class="pin-label" id="pinLabel">② PIN 입력</div>
+      <div class="pin-dots" id="pinDots">
+        <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
+        <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
+      </div>
+      <div class="pin-pad">
+        <button class="pin-key" onclick="pinInput('1')">1</button><button class="pin-key" onclick="pinInput('2')">2</button><button class="pin-key" onclick="pinInput('3')">3</button>
+        <button class="pin-key" onclick="pinInput('4')">4</button><button class="pin-key" onclick="pinInput('5')">5</button><button class="pin-key" onclick="pinInput('6')">6</button>
+        <button class="pin-key" onclick="pinInput('7')">7</button><button class="pin-key" onclick="pinInput('8')">8</button><button class="pin-key" onclick="pinInput('9')">9</button>
+        <button class="pin-key" style="font-size:12px;color:var(--gray)" onclick="pinInput('')">취소</button>
+        <button class="pin-key" onclick="pinInput('0')">0</button>
+        <button class="pin-key del" onclick="pinDel()">⌫</button>
+      </div>
+      <div class="pin-error" id="pinError"></div>
+    </div>
+    <div class="login-hint">초기 PIN: 김영희=1111 / 박철수=2222 / 이순자=3333 …</div>
+  </div>
+</div>
+
 <!-- ── APP ── -->
 <div id="app">
   <header class="header">
-    <div class="header-title">🏢 오빠피씨 <span>직업소개소</span></div>
+    <div class="header-title">소개소 <span>매칭</span></div>
     <div class="hdr">
-      <div class="user-chip">🏢 오빠피씨 직업소개소</div>
+      <div class="user-chip"><div class="uav" id="userAvatar"></div><span id="userNameDisplay"></span></div>
+      <button class="icon-btn" onclick="toggleNotif()" id="notifBtn">🔔<span class="ibadge" id="notifBadge"></span></button>
       <button class="icon-btn" onclick="openExcelModal()" title="엑셀 내보내기">📊</button>
+      <button class="logout-btn" onclick="logout()">로그아웃</button>
     </div>
   </header>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="showPage('lounge',this)">🏠 현황판</button>
-    <button class="tab-btn" onclick="showPage('mydb',this)">📁 구인·구직 DB <span class="tc" id="mydbCount">0</span></button>
+    <button class="tab-btn active" onclick="showPage('lounge',this)">🏠 공유 대시보드</button>
+    <button class="tab-btn" onclick="showPage('mydb',this)">🔐 내 DB <span class="tc" id="mydbCount">0</span></button>
     <button class="tab-btn" onclick="showPage('visa',this)">🛂 비자 알림 <span class="tc" id="visaCount">0</span></button>
+    <button class="tab-btn" onclick="showPage('msg',this)">💬 메시지 <span class="tc" id="msgCount">0</span></button>
     <button class="tab-btn" onclick="showPage('history',this)">📊 매칭 현황 <span class="tc" id="histCount">0</span></button>
     <button class="tab-btn" onclick="showPage('ledger',this)">💰 수수료 장부</button>
     <button class="tab-btn" onclick="showPage('timeline',this)">📍 근로자 타임라인</button>
@@ -353,7 +382,9 @@ tr:hover td{background:var(--blue-lt)}
               <option>베트남</option><option>네팔</option><option>캄보디아</option>
               <option>인도네시아</option><option>미얀마</option><option>중국</option><option>기타</option>
             </select>
-
+            <select class="f-sel" id="lOwner" onchange="renderLounge()">
+              <option value="">전체 담당자</option>
+            </select>
             <select class="f-sel" id="lRegion" onchange="renderLounge()">
               <option value="">전체 지역</option>
             </select>
@@ -445,6 +476,19 @@ tr:hover td{background:var(--blue-lt)}
       </div>
     </div>
 
+    <!-- ══ 메시지 ══ -->
+    <div class="page" id="page-msg">
+      <div class="msg-layout">
+        <div class="msg-sidebar">
+          <div class="msg-sidebar-hd">💬 직원 메시지</div>
+          <div class="contact-list" id="contactList"></div>
+        </div>
+        <div class="msg-main" id="msgMain">
+          <div class="no-chat"><span style="font-size:40px">💬</span><p>직원을 선택하면<br>대화를 시작할 수 있습니다</p></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ══ 비자 알림 ══ -->
     <div class="page" id="page-visa">
 
@@ -483,7 +527,7 @@ tr:hover td{background:var(--blue-lt)}
               <th style="color:#fff;padding:12px 14px;text-align:left;font-size:12px">비자</th>
               <th style="color:#fff;padding:12px 14px;text-align:left;font-size:12px">만료일</th>
               <th style="color:#fff;padding:12px 14px;text-align:left;font-size:12px">남은일수</th>
-              
+              <th style="color:#fff;padding:12px 14px;text-align:left;font-size:12px">담당자</th>
               <th style="color:#fff;padding:12px 14px;text-align:left;font-size:12px">연락처</th>
             </tr>
           </thead>
@@ -510,7 +554,7 @@ tr:hover td{background:var(--blue-lt)}
       </div>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>날짜</th><th>업종·지역</th><th>구직자</th><th>국적</th><th>날짜</th><th>상태</th></tr></thead>
+          <thead><tr><th>날짜</th><th>업종·지역</th><th>구직자</th><th>국적</th><th>구인담당</th><th>구직담당</th><th>요청자</th><th>상태</th></tr></thead>
           <tbody id="histBody"></tbody>
         </table>
         <div class="empty" id="histEmpty"><span class="em">📊</span><p>매칭 이력이 없습니다</p></div>
@@ -641,7 +685,9 @@ tr:hover td{background:var(--blue-lt)}
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <div style="font-size:17px;font-weight:900;color:var(--navy)">📍 근로자 상태 타임라인</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-
+          <select id="tlFilterOwner" onchange="renderTimeline()" style="padding:8px 11px;border:2px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:var(--white)">
+            <option value="">전체 담당자</option>
+          </select>
           <select id="tlFilterNation" onchange="renderTimeline()" style="padding:8px 11px;border:2px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:var(--white)">
             <option value="">전체 국적</option>
             <option>베트남</option><option>네팔</option><option>캄보디아</option>
@@ -786,6 +832,7 @@ tr:hover td{background:var(--blue-lt)}
   <div class="modal">
     <div class="modal-hd"><h2 id="jobModalTitle">구인 등록</h2><button class="mclose" onclick="closeAll()">✕</button></div>
     <div class="modal-body">
+      <div class="secret-notice">🔒 업체명·주소·연락처는 본인만 확인 가능합니다</div>
       <div class="form-grid">
         <div class="fg full"><label>업체명 🔒</label><input type="text" id="j-co" placeholder="예: (주)한국산업"></div>
         <div class="fg full"><label>주소 🔒</label><input type="text" id="j-addr" placeholder="예: 경기도 시흥시 정왕로 123"></div>
@@ -811,6 +858,7 @@ tr:hover td{background:var(--blue-lt)}
   <div class="modal">
     <div class="modal-hd"><h2 id="workerModalTitle">구직자 등록</h2><button class="mclose" onclick="closeAll()">✕</button></div>
     <div class="modal-body">
+      <div class="secret-notice">🔒 연락처·비자 상세는 본인만 확인 가능합니다</div>
       <div class="form-grid">
         <div class="fg"><label>이름 *</label><input type="text" id="w-name" placeholder="성명"></div>
         <div class="fg"><label>국적 *</label><select id="w-nat"><option value="">선택</option><option>베트남</option><option>네팔</option><option>캄보디아</option><option>인도네시아</option><option>미얀마</option><option>중국</option><option>한국</option><option>미국</option><option>기타</option></select></div>
@@ -832,9 +880,9 @@ tr:hover td{background:var(--blue-lt)}
 <!-- ── 매칭 모달 ── -->
 <div class="modal-bg" id="matchModal">
   <div class="modal">
-    <div class="modal-hd"><h2>🔗 추천 매칭</h2><button class="mclose" onclick="closeAll()">✕</button></div>
+    <div class="modal-hd"><h2>🔗 매칭 요청</h2><button class="mclose" onclick="closeAll()">✕</button></div>
     <div class="modal-body" id="matchBody"></div>
-    <div class="modal-ft"><button class="btn btn-outline" onclick="closeAll()">취소</button><button class="btn btn-success btn-lg" onclick="confirmMatch()">✅ 매칭 완료</button></div>
+    <div class="modal-ft"><button class="btn btn-outline" onclick="closeAll()">취소</button><button class="btn btn-success btn-lg" onclick="confirmMatch()">✅ 매칭 요청 보내기</button></div>
   </div>
 </div>
 
@@ -889,15 +937,17 @@ const DEFAULT_WORKER_FOLDERS=[
 ];
 
 // ══ STATE ══
-let jobs     = JSON.parse(localStorage.getItem('v5_jobs')     ||'[]');
-let workers  = JSON.parse(localStorage.getItem('v5_workers')  ||'[]');
+// ── API 연동 ──
+const API_BASE = 'https://agency.oppapc.com/api';
+let jobs     = [];
+let workers  = [];
 let matches  = JSON.parse(localStorage.getItem('v5_matches')  ||'[]');
 let notifs   = JSON.parse(localStorage.getItem('v5_notifs')   ||'[]');
 let messages = JSON.parse(localStorage.getItem('v5_messages') ||'[]');
 let jobFolders    = JSON.parse(localStorage.getItem('v5_jobFolders')    ||JSON.stringify(DEFAULT_JOB_FOLDERS));
 let workerFolders = JSON.parse(localStorage.getItem('v5_workerFolders') ||JSON.stringify(DEFAULT_WORKER_FOLDERS));
 
-let currentUser='소장';
+let currentUser=null;
 let editJobId=null, editWorkerId=null;
 let pendingJobId=null, pendingWorkerId=null;
 let activeChatUser=null;
@@ -907,8 +957,7 @@ let addingFolderType=null, selectedFolderColor='#2563EB';
 let movingType=null, movingId=null;
 
 function save(){
-  localStorage.setItem('v5_jobs',     JSON.stringify(jobs));
-  localStorage.setItem('v5_workers',  JSON.stringify(workers));
+  // jobs/workers는 API에서 관리 (localStorage 사용 안 함)
   localStorage.setItem('v5_matches',  JSON.stringify(matches));
   localStorage.setItem('v5_notifs',   JSON.stringify(notifs));
   localStorage.setItem('v5_messages', JSON.stringify(messages));
@@ -916,27 +965,85 @@ function save(){
   localStorage.setItem('v5_workerFolders', JSON.stringify(workerFolders));
 }
 
-// 샘플 데이터
-if(!jobs.length){
-  jobs=[
-    {id:1,owner:'김영희',company:'(주)한국정밀',address:'경기 시흥시 정왕로 100',contact:'031-111-2222',sector:'제조업 (공장)',count:3,nation:'베트남',pay:'월 260만원',region:'경기 시흥',memo:'숙식 제공',date:'2025-01-10',folderId:'jf-mfg'},
-    {id:2,owner:'박철수',company:'영농조합 하나',address:'충남 논산시 농업로 50',contact:'041-333-4444',sector:'농업 (농장)',count:5,nation:'네팔',pay:'월 230만원',region:'충남 논산',memo:'4~10월 집중',date:'2025-01-12',folderId:'jf-farm'},
-    {id:3,owner:'이순자',company:'(주)건우건설',address:'인천 남동구 공단로 200',contact:'032-555-6666',sector:'건설업',count:2,nation:'',pay:'일 15만원',region:'인천 남동',memo:'안전화 지참',date:'2025-01-15',folderId:'jf-cons'},
-    {id:4,owner:'최민수',company:'(주)신선식품',address:'경기 안산시 단원구 산단로 50',contact:'031-777-8888',sector:'식품가공',count:4,nation:'베트남',pay:'월 245만원',region:'경기 안산',memo:'야간조 있음',date:'2025-01-18',folderId:'jf-food'},
-  ];
-  workers=[
-    {id:1,owner:'최민수',name:'응우옌 반 안',nation:'베트남',age:27,gender:'남',phone:'010-1111-2222',job:'제조업 (공장)',visa:'E-9',visaexp:'2026-08-15',korean:'초급',status:'구직중',memo:'용접 경력 3년',folderId:'wf-vn'},
-    {id:2,owner:'정미경',name:'트란 티 마이',nation:'베트남',age:24,gender:'여',phone:'010-3333-4444',job:'식품가공',visa:'E-9',visaexp:'2026-03-20',korean:'중급',status:'구직중',memo:'식품가공 경험',folderId:'wf-vn'},
-    {id:3,owner:'강동원',name:'람 바하두르',nation:'네팔',age:31,gender:'남',phone:'010-5555-6666',job:'건설업',visa:'E-9',visaexp:'2025-11-30',korean:'없음',status:'구직중',memo:'건설 현장 5년',folderId:'wf-np'},
-    {id:4,owner:'윤정희',name:'수레시 타파',nation:'네팔',age:29,gender:'남',phone:'010-7777-8888',job:'농업 (농장)',visa:'H-2',visaexp:'2026-06-10',korean:'초급',status:'구직중',memo:'농업 경험 풍부',folderId:'wf-np'},
-    {id:5,owner:'조현숙',name:'프레아 소팔',nation:'캄보디아',age:26,gender:'남',phone:'010-9999-0000',job:'제조업 (공장)',visa:'E-9',visaexp:'2026-01-20',korean:'없음',status:'구직중',memo:'조립 라인 경험',folderId:'wf-kh'},
-  ];
-  messages=[
-    {id:1,from:'박철수',to:'김영희',text:'김영희씨, 제조업 구인에 맞는 베트남 근로자 있나요?',time:'09:30',date:'2025-01-15',read:false},
-    {id:2,from:'김영희',to:'박철수',text:'네, 응우옌 반 안씨가 적합할 것 같아요!',time:'09:35',date:'2025-01-15',read:true},
-  ];
-  save();
+// API에서 구인/구직 데이터 로드
+async function loadFromAPI() {
+  try {
+    const [wRes, jRes] = await Promise.all([
+      fetch(API_BASE + '/workers'),
+      fetch(API_BASE + '/jobs')
+    ]);
+    const wData = await wRes.json();
+    const jData = await jRes.json();
+    if (wData.success) {
+      workers = wData.data.map(w => ({
+        id: w.id, name: w.name, nation: w.nation, age: w.age,
+        gender: w.gender, phone: w.phone, kakao: w.kakao||'',
+        job: w.job, visa: w.visa, visaexp: w.visaexp||'',
+        korean: w.korean||'없음', status: w.status||'구직중',
+        memo: w.memo||'', folderId: w.folder_id||'wf-all',
+        source: w.source||'고객폼',
+        date: w.created_at ? w.created_at.split(' ')[0] : '',
+        owner: currentUser||'관리자'
+      }));
+    }
+    if (jData.success) {
+      jobs = jData.data.map(j => ({
+        id: j.id, company: j.company, sector: j.sector,
+        region: j.region||'', address: j.address||'',
+        count: j.count||1, nation: j.nation||'', pay: j.pay||'',
+        gender: j.gender||'', accommodation: j.accommodation||'',
+        memo: j.memo||'',
+        contact: j.contact_name ? j.contact_name+' / '+j.phone : j.phone||'',
+        folderId: j.folder_id||'jf-all', source: j.source||'고객폼',
+        date: j.created_at ? j.created_at.split(' ')[0] : '',
+        owner: currentUser||'관리자'
+      }));
+    }
+    renderMyDB(); renderLounge(); updateCounts();
+  } catch(e) {
+    console.error('API 로드 실패:', e);
+  }
 }
+
+// API로 구직자 저장
+async function saveWorkerToAPI(w) {
+  try {
+    const payload = {name:w.name,nation:w.nation||'',age:w.age||0,gender:w.gender||'',
+      phone:w.phone||'',kakao:w.kakao||'',job:w.job||'',visa:w.visa||'',
+      visaexp:w.visaexp||'',korean:w.korean||'없음',memo:w.memo||''};
+    const res = await fetch(API_BASE+'/workers',{method:'POST',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data = await res.json();
+    if(data.success) await loadFromAPI();
+    return data.id;
+  } catch(e) { console.error('구직자 저장 실패:', e); }
+}
+
+// API로 구인업체 저장
+async function saveJobToAPI(j) {
+  try {
+    const contactParts = (j.contact||'').split(' / ');
+    const payload = {company:j.company,sector:j.sector||'',region:j.region||'',
+      address:j.address||'',count:j.count||1,nation:j.nation||'',pay:j.pay||'',
+      gender:j.gender||'',accommodation:j.accommodation||'',memo:j.memo||'',
+      contact_name:contactParts[0]||'',phone:contactParts[1]||''};
+    const res = await fetch(API_BASE+'/jobs',{method:'POST',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data = await res.json();
+    if(data.success) await loadFromAPI();
+    return data.id;
+  } catch(e) { console.error('구인 저장 실패:', e); }
+}
+
+// API로 삭제
+async function deleteFromAPI(type, id) {
+  try {
+    await fetch(API_BASE+'/'+type+'/'+id, {method:'DELETE'});
+    await loadFromAPI();
+  } catch(e) { console.error('삭제 실패:', e); }
+}
+
+// API에서 데이터 로드 (로그인 후 loadFromAPI() 호출)
 
 // ══ LOGIN ══
 let selectedStaff=null, pinBuffer='';
@@ -968,6 +1075,7 @@ function login(staff){
   // 지역 옵션 채우기
   updateRegionOptions();
   renderLounge(); renderNotif(); updateCounts(); initVisaBadge();
+  loadFromAPI();
 }
 function logout(){if(!confirm('로그아웃 하시겠습니까?'))return;currentUser=null;selectedStaff=null;pinBuffer='';document.getElementById('app').style.display='none';document.getElementById('loginScreen').style.display='flex';document.querySelectorAll('.staff-btn').forEach(b=>b.classList.remove('selected'));document.getElementById('pinArea').style.display='none';updateDots();}
 
@@ -984,7 +1092,7 @@ function showPage(name,btn){
   document.getElementById('page-'+name).classList.add('active');
   btn.classList.add('active'); closeNotif();
   if(name==='lounge')  renderLounge();
-  if(name==='mydb')    renderMyDB();
+  if(name==='mydb')    loadFromAPI();
   if(name==='visa')    { renderVisa(); renderVisaOwnerFilter(); renderVisaGuide(); }
   if(name==='msg')     renderMsgPage();
   if(name==='history') renderHistory();
@@ -1006,7 +1114,7 @@ function initVisaBadge(){
 }
 
 function updateCounts(){
-  const myTotal=jobs.length+workers.length;
+  const myTotal=jobs.filter(j=>j.owner===currentUser).length+workers.filter(w=>w.owner===currentUser).length;
   document.getElementById('mydbCount').textContent=myTotal;
   document.getElementById('histCount').textContent=matches.length;
   const unreadMsg=messages.filter(m=>m.to===currentUser&&!m.read).length;
@@ -1184,18 +1292,19 @@ function renderLounge(){
   // 구인 카드
   const jEl=document.getElementById('jobList');
   jEl.innerHTML=fJ.length?fJ.map(j=>{
+    const isMe=j.owner===currentUser;
     const folder=jobFolders.find(f=>f.id===j.folderId);
     return `<div class="mini-card">
       <div class="mini-card-top">
         <div class="mini-card-title">${j.sector} ${j.nation?`<span class="badge bb">${FLAGS[j.nation]||''} ${j.nation}</span>`:''}</div>
         <div class="mini-card-actions">
           <button class="folder-move-btn" onclick="openFolderMove('job',${j.id},event)" title="폴더 이동">📁</button>
-          <button class="match-btn-mini" onclick="openMatchJob(${j.id})">매칭</button>
+          ${!isMe?`<button class="match-btn-mini" onclick="openMatchJob(${j.id})">매칭요청</button>`:`<span class="badge bgr">내등록</span>`}
         </div>
       </div>
       <div class="mini-card-info">📍 ${j.region} · 👥 ${j.count}명 · 💰 ${j.pay||'-'}
       ${j.memo?`<br>📝 ${j.memo}`:''}
-      <br>🏢 ${j.company} / 📞 ${j.contact}</div>
+      ${isMe?`<br>🏢 ${j.company} / 📞 ${j.contact}`:'<br>🔒 업체·연락처 비공개'}</div>
       <div class="mini-card-meta">
         <span class="mini-owner">담당: ${j.owner} · ${j.date}</span>
         ${folder&&folder.id!=='jf-all'?`<span class="badge bgr" style="border-left:2px solid ${folder.color}">${folder.icon} ${folder.name}</span>`:''}
@@ -1206,18 +1315,19 @@ function renderLounge(){
   // 구직 카드
   const wEl=document.getElementById('workerList');
   wEl.innerHTML=fW.length?fW.map(w=>{
+    const isMe=w.owner===currentUser;
     const folder=workerFolders.find(f=>f.id===w.folderId);
     return `<div class="mini-card">
       <div class="mini-card-top">
         <div class="mini-card-title">${FLAGS[w.nation]||''} ${w.name} <span class="badge bg">구직중</span></div>
         <div class="mini-card-actions">
           <button class="folder-move-btn" onclick="openFolderMove('worker',${w.id},event)" title="폴더 이동">📁</button>
-          <button class="match-btn-mini" onclick="openMatchWorker(${w.id})">매칭</button>
+          ${!isMe?`<button class="match-btn-mini" onclick="openMatchWorker(${w.id})">매칭요청</button>`:`<span class="badge bgr">내등록</span>`}
         </div>
       </div>
       <div class="mini-card-info">🔧 ${w.job} · 👤 ${w.age}세/${w.gender} · 🇰🇷 한국어 ${w.korean}
       ${w.memo?`<br>📝 ${w.memo}`:''}
-      <br>📞 ${w.phone} / 🪪 ${w.visa} ~${w.visaexp}</div>
+      ${isMe?`<br>📞 ${w.phone} / 🪪 ${w.visa} ~${w.visaexp}`:'<br>🔒 연락처·비자 비공개'}</div>
       <div class="mini-card-meta">
         <span class="mini-owner">담당: ${w.owner}</span>
         ${folder&&folder.id!=='wf-all'?`<span class="badge bgr" style="border-left:2px solid ${folder.color}">${folder.icon} ${folder.name}</span>`:''}
@@ -1255,7 +1365,7 @@ if(!tlWorkers.length){
 
 function renderTimeline(){
   // 필터
-  const ownerF = ''; // 개인용
+  const ownerF = document.getElementById('tlFilterOwner')?.value||'';
   const natF   = document.getElementById('tlFilterNation')?.value||'';
   const filtered = tlWorkers.filter(w=>
     (!ownerF||w.owner===ownerF)&&(!natF||w.nation===natF)
@@ -1308,6 +1418,7 @@ function tlCard(w, s){
     ? `<span style="background:#FFF7ED;color:#EA580C;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700">만료D-${endDays}</span>`
     : '';
 
+  const isMe = w.owner===currentUser;
 
   return `<div style="background:${s.bg};border:1.5px solid ${s.border};border-radius:9px;padding:10px 11px;cursor:grab;transition:.15s"
     draggable="true"
@@ -1324,7 +1435,8 @@ function tlCard(w, s){
       ${w.memo?`📝 ${w.memo.slice(0,28)}${w.memo.length>28?'...':''}`:''}
     </div>
     <div style="margin-top:6px;display:flex;align-items:center;justify-content:space-between">
-
+      <span style="font-size:10px;color:var(--border)">👤 ${w.owner}</span>
+      ${isMe?`<span style="background:${s.color};color:#fff;border-radius:4px;padding:1px 6px;font-size:10px">내담당</span>`:''}
     </div>
   </div>`;
 }
@@ -1446,7 +1558,7 @@ function initTlFilters(){
 
 function openExcel(){
   const base = window.location.href.replace(/[^/]*$/, '');
-  window.open(`${base}excel_upload.html`, '_blank');
+  window.open(`${base}excel_upload.html?owner=${encodeURIComponent(currentUser)}`, '_blank');
 }
 
 // ══ 수수료 장부 ══
@@ -1733,7 +1845,7 @@ function fmtW(n){ return Number(n||0).toLocaleString('ko-KR')+'원'; }
 
 function openContract(){
   const base = window.location.href.replace(/[^/]*$/, '');
-  window.open(`${base}contract_gen.html`, '_blank');
+  window.open(`${base}contract_gen.html?owner=${encodeURIComponent(currentUser)}`, '_blank');
 }
 
 function openNotice(){
@@ -1743,7 +1855,7 @@ function openNotice(){
 
 function openOCR(){
   const base = window.location.href.replace(/[^/]*$/, '');
-  const url  = `${base}ocr_card.html`;
+  const url  = `${base}ocr_card.html?owner=${encodeURIComponent(currentUser)}`;
   window.open(url, '_blank');
 }
 
@@ -1796,8 +1908,8 @@ function shareKakao(url, type){
 // ══ MY DB ══
 function renderMyDB(){
   renderLinkPanel();
-  const myJ=jobs;
-  const myW=workers;
+  const myJ=jobs.filter(j=>j.owner===currentUser);
+  const myW=workers.filter(w=>w.owner===currentUser);
   const jEl=document.getElementById('myJobCards'),jEm=document.getElementById('myJobEmpty');
   if(!myJ.length){jEl.innerHTML='';jEm.style.display='block';}
   else{jEm.style.display='none';jEl.innerHTML=myJ.map(j=>`
@@ -1837,11 +1949,19 @@ function saveJob(){
   // 자동 폴더 배정
   const autoFolder=jobFolders.find(f=>f.sector===sec);
   const data={company:co,address:document.getElementById('j-addr').value.trim(),contact:document.getElementById('j-tel').value.trim(),sector:sec,count:parseInt(document.getElementById('j-cnt').value)||1,nation:document.getElementById('j-nat').value,pay:document.getElementById('j-pay').value.trim(),region:document.getElementById('j-reg').value.trim(),memo:document.getElementById('j-memo').value.trim(),owner:currentUser,date:new Date().toLocaleDateString('ko-KR'),folderId:autoFolder?autoFolder.id:'jf-all'};
-  if(editJobId){const i=jobs.findIndex(j=>j.id===editJobId);jobs[i]={...jobs[i],...data,folderId:jobs[i].folderId};showToast('✅ 수정 완료');}
-  else{data.id=Date.now();jobs.push(data);showToast(`✅ 구인 등록 — 📁 ${autoFolder?autoFolder.name:'전체보기'} 폴더에 자동 배정됨`);}
-  save();closeAll();renderMyDB();renderLounge();updateRegionOptions();
+  if(editJobId){
+    const i=jobs.findIndex(j=>j.id===editJobId);
+    if(i>=0)jobs[i]={...jobs[i],...data};
+    save();closeAll();renderMyDB();renderLounge();updateRegionOptions();
+    showToast('✅ 수정 완료');
+  } else {
+    saveJobToAPI(data).then(()=>{
+      showToast(`✅ 구인 등록 완료`);
+      closeAll();updateRegionOptions();
+    });
+  }
 }
-function delJob(id){if(!confirm('삭제할까요?'))return;jobs=jobs.filter(j=>j.id!==id);save();renderMyDB();renderLounge();showToast('🗑️ 삭제됨');}
+function delJob(id){if(!confirm('삭제할까요?'))return;deleteFromAPI('jobs',id).then(()=>showToast('🗑️ 삭제됨'));}
 
 // ══ WORKER CRUD ══
 function openWorkerModal(){editWorkerId=null;document.getElementById('workerModalTitle').textContent='구직자 등록';['w-name','w-tel','w-age','w-memo','w-vexp'].forEach(id=>document.getElementById(id).value='');['w-nat','w-job','w-visa','w-gen','w-kor','w-stat'].forEach(id=>document.getElementById(id).selectedIndex=0);document.getElementById('workerModal').classList.add('open');}
@@ -1851,102 +1971,47 @@ function saveWorker(){
   if(!name||!nat||!job){showToast('⚠️ 이름·국적·업종은 필수');return;}
   const autoFolder=workerFolders.find(f=>f.nation===nat);
   const data={name,nation:nat,job,age:parseInt(document.getElementById('w-age').value)||0,gender:document.getElementById('w-gen').value,phone:document.getElementById('w-tel').value.trim(),visa:document.getElementById('w-visa').value,visaexp:document.getElementById('w-vexp').value,status:document.getElementById('w-stat').value,korean:document.getElementById('w-kor').value,memo:document.getElementById('w-memo').value.trim(),owner:currentUser,folderId:autoFolder?autoFolder.id:'wf-all'};
-  if(editWorkerId){const i=workers.findIndex(w=>w.id===editWorkerId);workers[i]={...workers[i],...data,folderId:workers[i].folderId};showToast('✅ 수정 완료');}
-  else{data.id=Date.now();workers.push(data);showToast(`✅ 구직자 등록 — 📁 ${autoFolder?autoFolder.name:'전체보기'} 폴더에 자동 배정됨`);}
-  save();closeAll();renderMyDB();renderLounge();
+  if(editWorkerId){
+    const i=workers.findIndex(w=>w.id===editWorkerId);
+    if(i>=0)workers[i]={...workers[i],...data};
+    save();closeAll();renderMyDB();renderLounge();
+    showToast('✅ 수정 완료');
+  } else {
+    saveWorkerToAPI(data).then(()=>{
+      showToast(`✅ 구직자 등록 완료`);
+      closeAll();
+    });
+  }
 }
-function delWorker(id){if(!confirm('삭제할까요?'))return;workers=workers.filter(w=>w.id!==id);save();renderMyDB();renderLounge();showToast('🗑️ 삭제됨');}
+function delWorker(id){if(!confirm('삭제할까요?'))return;deleteFromAPI('workers',id).then(()=>showToast('🗑️ 삭제됨'));}
 
 // ══ MATCHING ══
 function openMatchJob(jobId){
-  const j=jobs.find(x=>x.id===jobId); if(!j) return;
-  pendingJobId=jobId; pendingWorkerId=null;
-
-  const cands=workers.map(w=>{
-    let sc=0; const reasons=[];
-    if(w.job===j.sector){sc+=50;reasons.push('✅ 업종 일치');}
-    if(j.nation&&w.nation===j.nation){sc+=25;reasons.push('✅ 국적 일치');}
-    else if(!j.nation){sc+=10;reasons.push('국적 무관');}
-    if(w.korean==='고급'){sc+=15;reasons.push('한국어 고급');}
-    else if(w.korean==='중급'){sc+=10;reasons.push('한국어 중급');}
-    else if(w.korean==='초급'){sc+=5;reasons.push('한국어 초급');}
-    if(w.visaexp){const days=Math.floor((new Date(w.visaexp)-new Date())/(864e5));
-      if(days>90){sc+=10;reasons.push('비자 유효');}
-      else if(days>0){sc+=3;reasons.push(`⚠️ 비자 D-${days}`);}
-      else{sc-=30;reasons.push('❌ 비자 만료');}}
-    if(w.status==='구직중'){sc+=10;reasons.push('구직중');}
-    else if(w.status==='재구직'){sc+=8;reasons.push('재구직');}
-    return{...w,sc,reasons};
-  }).filter(w=>w.sc>0).sort((a,b)=>b.sc-a.sc);
-
-  const C=sc=>sc>=80?['#16A34A','#F0FDF4']:sc>=50?['#EA580C','#FFF7ED']:['#64748B','#F1F5F9'];
-  document.getElementById('matchBody').innerHTML=`
-    <div style="background:var(--blue-lt);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--blue)">
-      <strong>🏭 ${j.sector}</strong> (${j.region||'지역미상'}) · ${j.count}명 모집${j.nation?' · 선호 '+j.nation:''}${j.pay?' · '+j.pay:''}
-    </div>
-    <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px">추천 구직자 ${cands.length}명</div>
-    ${cands.length===0?'<div class="empty"><span class="em">😔</span><p>조건에 맞는 구직자가 없습니다</p></div>':
-      cands.map(w=>`<div class="mc-item" onclick="selCand(this,'w',${w.id})">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-          <div class="mc-name">${FLAGS[w.nation]||''} ${w.name}</div>
-          <span style="background:${C(w.sc)[0]};color:#fff;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700">${w.sc}점</span>
-        </div>
-        <div class="mc-info">${w.nation} · ${w.age}세 · ${w.job} · 한국어 ${w.korean} · ${w.visa}</div>
-        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap">
-          ${w.reasons.map(r=>`<span style="background:${C(w.sc)[1]};color:${C(w.sc)[0]};border-radius:4px;padding:1px 6px;font-size:10px">${r}</span>`).join('')}
-        </div></div>`).join('')}`;
+  const j=jobs.find(x=>x.id===jobId);
+  const myW=workers.filter(w=>w.owner===currentUser&&w.status==='구직중');
+  const cands=myW.map(w=>{let sc=0;if(w.job===j.sector)sc+=50;if(j.nation&&w.nation===j.nation)sc+=30;if(w.korean!=='없음')sc+=10;return{...w,sc};}).filter(w=>w.sc>0).sort((a,b)=>b.sc-a.sc);
+  pendingJobId=jobId;pendingWorkerId=null;
+  document.getElementById('matchBody').innerHTML=`<div style="background:var(--blue-lt);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--blue)"><strong>${j.sector}</strong> (${j.region}) 구인 — 내 구직자 선택<br>선택 후 <strong>${j.owner}</strong>님에게 알림 전송</div>${cands.length===0?'<div class="empty"><span class="em">😔</span><p>조건에 맞는 내 구직자 없음</p></div>':cands.map(w=>`<div class="mc-item" onclick="selCand(this,'w',${w.id})"><span class="mc-score">${w.sc}점</span><div class="mc-name">${FLAGS[w.nation]||''} ${w.name}</div><div class="mc-info">${w.nation} · ${w.age}세 · ${w.job} · 한국어 ${w.korean}</div></div>`).join('')}`;
   document.getElementById('matchModal').classList.add('open');
 }
-
 function openMatchWorker(workerId){
-  const w=workers.find(x=>x.id===workerId); if(!w) return;
-  pendingWorkerId=workerId; pendingJobId=null;
-
-  const cands=jobs.map(j=>{
-    let sc=0; const reasons=[];
-    if(j.sector===w.job){sc+=50;reasons.push('✅ 업종 일치');}
-    if(!j.nation||j.nation===w.nation){sc+=25;reasons.push(j.nation?'✅ 국적 일치':'국적 무관');}
-    if(w.korean==='고급'){sc+=10;reasons.push('한국어 고급');}
-    else if(w.korean==='중급'){sc+=7;reasons.push('한국어 중급');}
-    else if(w.korean==='초급'){sc+=3;reasons.push('한국어 초급');}
-    if(w.visaexp){const days=Math.floor((new Date(w.visaexp)-new Date())/(864e5));
-      if(days>90){sc+=10;reasons.push('비자 유효');}
-      else if(days>0){sc+=2;reasons.push(`⚠️ 비자 D-${days}`);}
-      else{sc-=30;reasons.push('❌ 비자 만료');}}
-    return{...j,sc,reasons};
-  }).filter(j=>j.sc>0).sort((a,b)=>b.sc-a.sc);
-
-  const C=sc=>sc>=80?['#16A34A','#F0FDF4']:sc>=50?['#EA580C','#FFF7ED']:['#64748B','#F1F5F9'];
-  document.getElementById('matchBody').innerHTML=`
-    <div style="background:var(--green-lt);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--green)">
-      <strong>${FLAGS[w.nation]||''} ${w.name}</strong> · ${w.nation} · ${w.age}세 · ${w.job} · ${w.visa}
-    </div>
-    <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px">추천 구인처 ${cands.length}곳</div>
-    ${cands.length===0?'<div class="empty"><span class="em">😔</span><p>조건에 맞는 구인처가 없습니다</p></div>':
-      cands.map(j=>`<div class="mc-item" onclick="selCand(this,'j',${j.id})">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-          <div class="mc-name">🏭 ${j.sector} · ${j.region||'지역미상'}</div>
-          <span style="background:${C(j.sc)[0]};color:#fff;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700">${j.sc}점</span>
-        </div>
-        <div class="mc-info">${j.count}명 모집 · ${j.pay||'급여미정'}${j.nation?' · 선호 '+j.nation:''}</div>
-        <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap">
-          ${j.reasons.map(r=>`<span style="background:${C(j.sc)[1]};color:${C(j.sc)[0]};border-radius:4px;padding:1px 6px;font-size:10px">${r}</span>`).join('')}
-        </div></div>`).join('')}`;
+  const w=workers.find(x=>x.id===workerId);
+  const myJ=jobs.filter(j=>j.owner===currentUser);
+  const cands=myJ.map(j=>{let sc=0;if(j.sector===w.job)sc+=50;if(!j.nation||j.nation===w.nation)sc+=30;return{...j,sc};}).filter(j=>j.sc>0).sort((a,b)=>b.sc-a.sc);
+  pendingWorkerId=workerId;pendingJobId=null;
+  document.getElementById('matchBody').innerHTML=`<div style="background:var(--green-lt);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--green)"><strong>${w.name}</strong> — 내 구인처 선택<br>선택 후 <strong>${w.owner}</strong>님에게 알림 전송</div>${cands.length===0?'<div class="empty"><span class="em">😔</span><p>조건에 맞는 내 구인 없음</p></div>':cands.map(j=>`<div class="mc-item" onclick="selCand(this,'j',${j.id})"><span class="mc-score">${j.sc}점</span><div class="mc-name">${j.sector} · ${j.region}</div><div class="mc-info">${j.count}명 · ${j.pay||'-'}</div></div>`).join('')}`;
   document.getElementById('matchModal').classList.add('open');
 }
-
 function selCand(el,type,id){document.querySelectorAll('.mc-item').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');if(type==='w')pendingWorkerId=id;else pendingJobId=id;}
-
 function confirmMatch(){
   if(!pendingJobId||!pendingWorkerId){showToast('⚠️ 후보를 선택하세요');return;}
   const j=jobs.find(x=>x.id===pendingJobId),w=workers.find(x=>x.id===pendingWorkerId);
   if(!j||!w)return;
-  matches.unshift({id:Date.now(),date:new Date().toLocaleDateString('ko-KR'),sector:j.sector,region:j.region,workerName:w.name,nation:w.nation,status:'완료'});
-  // 타임라인에 자동 반영
-  const tl=tlWorkers.find(t=>t.name===w.name);
-  if(tl){tl.status='인선중';tl.company=j.company||j.sector;saveTl();}
-  addNotif(currentUser,'🎉 매칭 완료',`[${j.sector}] ↔ [${w.name}] 매칭이 완료됐습니다`);
-  save();closeAll();showToast(`🎉 매칭 완료! ${j.sector} ↔ ${w.name}`);updateCounts();renderLounge();
+  matches.unshift({id:Date.now(),date:new Date().toLocaleDateString('ko-KR'),sector:j.sector,region:j.region,workerName:w.name,nation:w.nation,jobOwner:j.owner,workerOwner:w.owner,requestedBy:currentUser,status:'요청완료'});
+  const other=currentUser===j.owner?w.owner:j.owner;
+  addNotif(other,'🔗 매칭 요청 도착',`${currentUser}님이 [${j.sector}] ↔ [${w.name}] 매칭을 요청했습니다`);
+  addNotif(currentUser,'✅ 매칭 요청 완료',`[${j.sector}] ↔ [${w.name}] 요청을 보냈습니다`);
+  save();closeAll();showToast(`🎉 ${other}님에게 매칭 요청을 보냈습니다!`);updateCounts();renderLounge();
 }
 
 // ══ MESSAGES ══
@@ -2299,7 +2364,7 @@ function renderVisa(){
 
   // 필터 적용
   list = list.filter(w => {
-    // 개인용: owner 필터 없음
+    if(ownerFilter && w.owner !== ownerFilter) return false;
     if(natFilter   && w.nation !== natFilter)  return false;
     if(filter === 'expired') return w.days !== null && w.days < 0;
     if(filter === 'd7')      return w.days !== null && w.days >= 0 && w.days <= 7;
@@ -2365,7 +2430,8 @@ function renderVisa(){
 
   body.innerHTML = list.map(w => {
     const st   = getVisaStatus(w.days);
-    const phone = w.phone||'-';
+    const isMe = w.owner === currentUser;
+    const phone = isMe ? (w.phone||'-') : '🔒 비공개';
     const daysText = w.days === null ? '미입력' : w.days < 0 ? `${Math.abs(w.days)}일 초과` : `${w.days}일 남음`;
 
     return `<tr style="background:${st.bg}" onclick="highlightRow(this)" style="cursor:pointer">
@@ -2421,8 +2487,8 @@ function renderHistory(){
 function toCSV(rows,headers){const BOM='\uFEFF';return BOM+headers.join(',')+'\n'+rows.map(r=>r.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');}
 function downloadCSV(csv,filename){const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);showToast('📥 다운로드 완료');}
 function today(){return new Date().toLocaleDateString('ko-KR').replace(/\. /g,'-').replace('.','');}
-function exportMyJobs(){const myJ=jobs;if(!myJ.length){showToast('내 구인 없음');return;}downloadCSV(toCSV(myJ.map(j=>[j.company,j.address,j.contact,j.sector,j.count,j.nation,j.pay,j.region,j.memo,j.owner,j.date]),['업체명','주소','연락처','업종','필요인원','선호국적','급여','근무지역','기타조건','담당자','등록일']),`내구인_${currentUser}_${today()}.csv`);}
-function exportMyWorkers(){const myW=workers;if(!myW.length){showToast('내 구직자 없음');return;}downloadCSV(toCSV(myW.map(w=>[w.name,w.nation,w.phone,w.age,w.gender,w.job,w.visa,w.visaexp,w.korean,w.status,w.memo,w.owner]),['이름','국적','연락처','나이','성별','가능업종','비자','비자만료일','한국어수준','상태','메모','담당자']),`내구직자_${currentUser}_${today()}.csv`);}
+function exportMyJobs(){const myJ=jobs.filter(j=>j.owner===currentUser);if(!myJ.length){showToast('내 구인 없음');return;}downloadCSV(toCSV(myJ.map(j=>[j.company,j.address,j.contact,j.sector,j.count,j.nation,j.pay,j.region,j.memo,j.owner,j.date]),['업체명','주소','연락처','업종','필요인원','선호국적','급여','근무지역','기타조건','담당자','등록일']),`내구인_${currentUser}_${today()}.csv`);}
+function exportMyWorkers(){const myW=workers.filter(w=>w.owner===currentUser);if(!myW.length){showToast('내 구직자 없음');return;}downloadCSV(toCSV(myW.map(w=>[w.name,w.nation,w.phone,w.age,w.gender,w.job,w.visa,w.visaexp,w.korean,w.status,w.memo,w.owner]),['이름','국적','연락처','나이','성별','가능업종','비자','비자만료일','한국어수준','상태','메모','담당자']),`내구직자_${currentUser}_${today()}.csv`);}
 function exportPublicJobs(){if(!jobs.length){showToast('구인 없음');return;}downloadCSV(toCSV(jobs.map(j=>[j.sector,j.count,j.nation,j.pay,j.region,j.memo,j.owner,j.date]),['업종','필요인원','선호국적','급여','근무지역','기타조건','담당자','등록일']),`공용구인DB_${today()}.csv`);}
 function exportPublicWorkers(){if(!workers.length){showToast('구직자 없음');return;}downloadCSV(toCSV(workers.map(w=>[w.name,w.nation,w.age,w.gender,w.job,w.korean,w.status,w.memo,w.owner]),['이름','국적','나이','성별','가능업종','한국어수준','상태','메모','담당자']),`공용구직DB_${today()}.csv`);}
 function exportMatches(){if(!matches.length){showToast('매칭 이력 없음');return;}downloadCSV(toCSV(matches.map(m=>[m.date,m.sector,m.region,m.workerName,m.nation,m.jobOwner,m.workerOwner,m.requestedBy,m.status]),['날짜','업종','지역','구직자명','국적','구인담당','구직담당','요청자','상태']),`매칭현황_${today()}.csv`);}
@@ -2443,19 +2509,6 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 document.addEventListener('click',e=>{const p=document.getElementById('notifPanel');const btn=document.getElementById('notifBtn');if(p&&!p.contains(e.target)&&btn&&!btn.contains(e.target))closeNotif();});
 
 initLogin();
-
-// ── 개인용: 로그인 없이 바로 시작 ──
-(function(){
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.querySelector('.page').classList.add('active');
-  renderLounge();
-  renderNotif();
-  updateCounts();
-  initVisaBadge();
-  renderLinkPanel();
-  renderMyDB();
-})();
 </script>
 </body>
 </html>
