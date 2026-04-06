@@ -149,14 +149,16 @@ body{font-family:'Noto Sans KR','Noto Sans',sans-serif;background:var(--bg);colo
     <div class="card-sub" id="t-s2sub">어떤 일을 원하시나요?</div>
     <div class="fg">
       <label id="t-job">희망 업종 <span class="req">*</span></label>
-      <div class="radio-group">
-        <div class="ri" onclick="sel(this,'job','제조업 (공장)')"><div class="rd"></div><span id="t-mfg">🏭 제조업</span></div>
-        <div class="ri" onclick="sel(this,'job','농업 (농장)')"><div class="rd"></div><span id="t-farm">🌾 농업</span></div>
-        <div class="ri" onclick="sel(this,'job','건설업')"><div class="rd"></div><span id="t-cons">🏗️ 건설업</span></div>
-        <div class="ri" onclick="sel(this,'job','어업')"><div class="rd"></div><span id="t-fish">🐟 어업</span></div>
-        <div class="ri" onclick="sel(this,'job','서비스업')"><div class="rd"></div><span id="t-svc">🛎️ 서비스업</span></div>
-        <div class="ri" onclick="sel(this,'job','식품가공')"><div class="rd"></div><span id="t-food">🍱 식품가공</span></div>
+      <div class="radio-group" id="jobCheckGroup">
+        <div class="ri" onclick="toggleJob(this,'제조업 (공장)')"><div class="rd"></div><span id="t-mfg">🏭 제조업</span></div>
+        <div class="ri" onclick="toggleJob(this,'농업 (농장)')"><div class="rd"></div><span id="t-farm">🌾 농업</span></div>
+        <div class="ri" onclick="toggleJob(this,'건설업')"><div class="rd"></div><span id="t-cons">🏗️ 건설업</span></div>
+        <div class="ri" onclick="toggleJob(this,'어업')"><div class="rd"></div><span id="t-fish">🐟 어업</span></div>
+        <div class="ri" onclick="toggleJob(this,'서비스업')"><div class="rd"></div><span id="t-svc">🛎️ 서비스업</span></div>
+        <div class="ri" onclick="toggleJob(this,'식품가공')"><div class="rd"></div><span id="t-food">🍱 식품가공</span></div>
+        <div class="ri" onclick="toggleJob(this,'기타')"><div class="rd"></div><span id="t-jobEtc">✏️ 기타</span></div>
       </div>
+      <input type="text" id="jobEtcInput" placeholder="기타 업종을 직접 입력해주세요" style="display:none;margin-top:8px;padding:10px 14px;border:2px solid var(--primary);border-radius:10px;font-size:14px;width:100%;box-sizing:border-box">
     </div>
     <div class="fg">
       <label id="t-visa">비자 종류 <span class="req">*</span></label>
@@ -198,6 +200,7 @@ body{font-family:'Noto Sans KR','Noto Sans',sans-serif;background:var(--bg);colo
       </div>
     </div>
     <div class="fg"><label id="t-memo">경력 / 특기사항</label><input type="text" id="p2memo" placeholder=""></div>
+    <div class="fg"><label id="t-condition">원하는 근무 조건</label><textarea id="p2condition" placeholder="" rows="3" style="padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;width:100%;box-sizing:border-box"></textarea></div>
   </div>
   <div class="btn-row"><button class="btn btn-back" onclick="go(1)" id="t-prev2">← 이전</button><button class="btn btn-next" onclick="go(3)" id="t-next2">다음 →</button></div>
 </div>
@@ -246,7 +249,7 @@ const LANGS = {
     s1title:'🧑 기본 정보',s1sub:'이름과 국적을 입력해주세요',
     name:'이름',nation:'국적',age:'나이',gender:'성별',male:'남성',female:'여성',other:'기타',
     s2title:'🔧 희망 근무 조건',s2sub:'어떤 일을 원하시나요?',
-    job:'희망 업종',mfg:'🏭 제조업',farm:'🌾 농업',cons:'🏗️ 건설업',fish:'🐟 어업',svc:'🛎️ 서비스업',food:'🍱 식품가공',
+    job:'희망 업종',mfg:'🏭 제조업',farm:'🌾 농업',cons:'🏗️ 건설업',fish:'🐟 어업',svc:'🛎️ 서비스업',food:'🍱 식품가공',jobEtc:'✏️ 기타',condition:'원하는 근무 조건',
     visa:'비자 종류',visaSel:'선택해주세요',visaEtc:'기타',
     visaexp:'비자 만료일',visaexpHint:'모르시면 비워두세요',
     korean:'한국어 수준',k0:'없음',k1:'초급',k2:'중급',k3:'고급',
@@ -268,7 +271,7 @@ const LANGS = {
     s1title:'🧑 Thông tin cơ bản',s1sub:'Vui lòng nhập họ tên và quốc tịch',
     name:'Họ và tên',nation:'Quốc tịch',age:'Tuổi',gender:'Giới tính',male:'Nam',female:'Nữ',other:'Khác',
     s2title:'🔧 Điều kiện làm việc',s2sub:'Bạn muốn làm việc gì?',
-    job:'Ngành nghề mong muốn',mfg:'🏭 Sản xuất',farm:'🌾 Nông nghiệp',cons:'🏗️ Xây dựng',fish:'🐟 Ngư nghiệp',svc:'🛎️ Dịch vụ',food:'🍱 Chế biến thực phẩm',
+    job:'Ngành nghề mong muốn',mfg:'🏭 Sản xuất',farm:'🌾 Nông nghiệp',cons:'🏗️ Xây dựng',fish:'🐟 Ngư nghiệp',svc:'🛎️ Dịch vụ',food:'🍱 Chế biến thực phẩm',jobEtc:'✏️ Khác',condition:'Điều kiện làm việc mong muốn',
     visa:'Loại visa',visaSel:'Vui lòng chọn',visaEtc:'Khác',
     visaexp:'Ngày hết hạn visa',visaexpHint:'Để trống nếu không biết',
     korean:'Trình độ tiếng Hàn',k0:'Không có',k1:'Sơ cấp',k2:'Trung cấp',k3:'Cao cấp',
@@ -290,7 +293,7 @@ const LANGS = {
     s1title:'🧑 आधारभूत जानकारी',s1sub:'कृपया आफ्नो नाम र राष्ट्रियता लेख्नुहोस्',
     name:'पूरा नाम',nation:'राष्ट्रियता',age:'उमेर',gender:'लिंग',male:'पुरुष',female:'महिला',other:'अन्य',
     s2title:'🔧 काम सम्बन्धी सर्तहरू',s2sub:'तपाईं के काम गर्न चाहनुहुन्छ?',
-    job:'इच्छित पेशा',mfg:'🏭 उत्पादन',farm:'🌾 कृषि',cons:'🏗️ निर्माण',fish:'🐟 मत्स्यपालन',svc:'🛎️ सेवा',food:'🍱 खाद्य प्रशोधन',
+    job:'इच्छित पेशा',mfg:'🏭 उत्पादन',farm:'🌾 कृषि',cons:'🏗️ निर्माण',fish:'🐟 मत्स्यपालन',svc:'🛎️ सेवा',food:'🍱 खाद्य प्रशोधन',jobEtc:'✏️ अन्य',condition:'इच्छित कार्य शर्त',
     visa:'भिसाको प्रकार',visaSel:'कृपया छान्नुहोस्',visaEtc:'अन्य',
     visaexp:'भिसा समाप्ति मिति',visaexpHint:'थाहा नभए खाली छोड्नुहोस्',
     korean:'कोरियाली भाषा स्तर',k0:'छैन',k1:'प्रारम्भिक',k2:'मध्यम',k3:'उच्च',
@@ -312,7 +315,7 @@ const LANGS = {
     s1title:'🧑 ព័ត៌មានមូលដ្ឋាន',s1sub:'សូមបញ្ចូលឈ្មោះ និងសញ្ជាតិ',
     name:'ឈ្មោះ',nation:'សញ្ជាតិ',age:'អាយុ',gender:'ភេទ',male:'ប្រុស',female:'ស្រី',other:'ផ្សេងទៀត',
     s2title:'🔧 លក្ខខណ្ឌការងារ',s2sub:'អ្នកចង់ធ្វើការអ្វី?',
-    job:'ប្រភេទការងារ',mfg:'🏭 រោងចក្រ',farm:'🌾 កសិកម្ម',cons:'🏗️ សំណង់',fish:'🐟 នេសាទ',svc:'🛎️ សេវាកម្ម',food:'🍱 កែច្នៃអាហារ',
+    job:'ប្រភេទការងារ',mfg:'🏭 រោងចក្រ',farm:'🌾 កសិកម្ម',cons:'🏗️ សំណង់',fish:'🐟 នេសាទ',svc:'🛎️ សេវាកម្ម',food:'🍱 កែច្នៃអាហារ',jobEtc:'✏️ ផ្សេងទៀត',condition:'លក្ខខណ្ឌការងារដែលចង់បាន',
     visa:'ប្រភេទទិដ្ឋាការ',visaSel:'សូមជ្រើសរើស',visaEtc:'ផ្សេងទៀត',
     visaexp:'ថ្ងៃផុតកំណត់ទិដ្ឋាការ',visaexpHint:'ទុកទំនេរបើមិនដឹង',
     korean:'កម្រិតភាសាកូរ៉េ',k0:'គ្មាន',k1:'មូលដ្ឋាន',k2:'មធ្យម',k3:'ខ្ពស់',
@@ -334,7 +337,7 @@ const LANGS = {
     s1title:'🧑 Informasi Dasar',s1sub:'Masukkan nama dan kewarganegaraan Anda',
     name:'Nama Lengkap',nation:'Kewarganegaraan',age:'Usia',gender:'Jenis Kelamin',male:'Laki-laki',female:'Perempuan',other:'Lainnya',
     s2title:'🔧 Syarat Kerja',s2sub:'Pekerjaan apa yang Anda inginkan?',
-    job:'Bidang Pekerjaan',mfg:'🏭 Manufaktur',farm:'🌾 Pertanian',cons:'🏗️ Konstruksi',fish:'🐟 Perikanan',svc:'🛎️ Jasa',food:'🍱 Pengolahan Makanan',
+    job:'Bidang Pekerjaan',mfg:'🏭 Manufaktur',farm:'🌾 Pertanian',cons:'🏗️ Konstruksi',fish:'🐟 Perikanan',svc:'🛎️ Jasa',food:'🍱 Pengolahan Makanan',jobEtc:'✏️ Lainnya',condition:'Kondisi kerja yang diinginkan',
     visa:'Jenis Visa',visaSel:'Pilih',visaEtc:'Lainnya',
     visaexp:'Tanggal Kadaluarsa Visa',visaexpHint:'Kosongkan jika tidak tahu',
     korean:'Level Bahasa Korea',k0:'Tidak ada',k1:'Dasar',k2:'Menengah',k3:'Mahir',
@@ -356,7 +359,7 @@ const LANGS = {
     s1title:'🧑 အခြေခံ အချက်အလက်',s1sub:'နာမည်နှင့် နိုင်ငံသားဖြစ်မှု ရိုက်ထည့်ပါ',
     name:'အမည်',nation:'နိုင်ငံသား',age:'အသက်',gender:'လိင်',male:'ကျား',female:'မ',other:'အခြား',
     s2title:'🔧 အလုပ်လုပ်ရေး အခြေအနေ',s2sub:'မည်သည့်အလုပ် လုပ်လိုသနည်း?',
-    job:'လုပ်ငန်းအမျိုးအစား',mfg:'🏭 စက်ရုံ',farm:'🌾 စိုက်ပျိုးရေး',cons:'🏗️ ဆောက်လုပ်ရေး',fish:'🐟 ငါးဖမ်း',svc:'🛎️ ဝန်ဆောင်မှု',food:'🍱 စားသောက်ကုန်',
+    job:'လုပ်ငန်းအမျိုးအစား',mfg:'🏭 စက်ရုံ',farm:'🌾 စိုက်ပျိုးရေး',cons:'🏗️ ဆောက်လုပ်ရေး',fish:'🐟 ငါးဖမ်း',svc:'🛎️ ဝန်ဆောင်မှု',food:'🍱 စားသောက်ကုန်',jobEtc:'✏️ အခြား',condition:'လိုချင်သောအလုပ်အခြေအနေ',
     visa:'ဗီဇာ အမျိုးအစား',visaSel:'ရွေးချယ်ပါ',visaEtc:'အခြား',
     visaexp:'ဗီဇာ သက်တမ်းကုန်ဆုံးရက်',visaexpHint:'မသိပါက ဖြည့်မနေပါနှင့်',
     korean:'ကိုရီးယားဘာသာ အဆင့်',k0:'မရှိ',k1:'အခြေခံ',k2:'အလယ်အလတ်',k3:'မြင့်မား',
@@ -378,7 +381,7 @@ const LANGS = {
     s1title:'🧑 Basic Information',s1sub:'Please enter your name and nationality',
     name:'Full Name',nation:'Nationality',age:'Age',gender:'Gender',male:'Male',female:'Female',other:'Other',
     s2title:'🔧 Preferred Work Conditions',s2sub:'What kind of job do you want?',
-    job:'Preferred Job Type',mfg:'🏭 Manufacturing',farm:'🌾 Agriculture',cons:'🏗️ Construction',fish:'🐟 Fishery',svc:'🛎️ Service',food:'🍱 Food Processing',
+    job:'Preferred Job Type',mfg:'🏭 Manufacturing',farm:'🌾 Agriculture',cons:'🏗️ Construction',fish:'🐟 Fishery',svc:'🛎️ Service',food:'🍱 Food Processing',jobEtc:'✏️ Other',condition:'Preferred Work Conditions',
     visa:'Visa Type',visaSel:'Please select',visaEtc:'Other',
     visaexp:'Visa Expiry Date',visaexpHint:'Leave blank if unknown',
     korean:'Korean Language Level',k0:'None',k1:'Beginner',k2:'Intermediate',k3:'Advanced',
@@ -400,7 +403,7 @@ const LANGS = {
     s1title:'🧑 基本信息',s1sub:'请输入您的姓名和国籍',
     name:'姓名',nation:'国籍',age:'年龄',gender:'性别',male:'男',female:'女',other:'其他',
     s2title:'🔧 希望工作条件',s2sub:'您想做什么工作?',
-    job:'希望职种',mfg:'🏭 制造业',farm:'🌾 农业',cons:'🏗️ 建筑业',fish:'🐟 渔业',svc:'🛎️ 服务业',food:'🍱 食品加工',
+    job:'希望职种',mfg:'🏭 制造业',farm:'🌾 农业',cons:'🏗️ 建筑业',fish:'🐟 渔业',svc:'🛎️ 服务业',food:'🍱 食品加工',jobEtc:'✏️ 其他',condition:'期望工作条件',
     visa:'签证类型',visaSel:'请选择',visaEtc:'其他',
     visaexp:'签证到期日',visaexpHint:'不知道可以留空',
     korean:'韩语水平',k0:'无',k1:'初级',k2:'中级',k3:'高级',
@@ -482,7 +485,16 @@ function v2(){
   d.visa=document.getElementById('p2visa').value;
   d.visaexp=document.getElementById('p2vexp').value;
   d.memo=document.getElementById('p2memo').value;
-  if(!d.job){alert(L().alertJob);return false;}
+  // 업종 다중선택 처리
+  if(selectedJobs.includes('기타')) {
+    const etcVal = document.getElementById('jobEtcInput')?.value.trim();
+    if(etcVal) {
+      selectedJobs = selectedJobs.filter(v=>v!=='기타');
+      selectedJobs.push(etcVal);
+      d.job = selectedJobs.join(', ');
+    }
+  }
+  if(!d.job || selectedJobs.length===0){alert(L().alertJob);return false;}
   if(!d.visa){alert(L().alertVisa);return false;}
   return true;
 }
@@ -493,11 +505,12 @@ function submit(){
   if(!d.phone){alert(L().alertPhone);return;}
   if(!d.agreed){alert(L().alertAgree);return;}
 
-  const fm={'베트남':'wf-vn','네팔':'wf-np','캄보디아':'wf-kh','인도네시아':'wf-id','미얀마':'wf-mm','중국':'wf-all'};
-  const w={id:Date.now(),owner:OWNER,name:d.name,nation:d.nation,age:parseInt(d.age)||0,gender:d.gender,phone:d.phone,kakao:d.kakao,job:d.job,visa:d.visa,visaexp:d.visaexp||'',korean:d.korean||'없음',status:'구직중',memo:d.memo||'',folderId:fm[d.nation]||'wf-all',source:'자가입력폼',date:new Date().toLocaleDateString('ko-KR')};
-  const arr=JSON.parse(localStorage.getItem('v5_workers')||'[]');
-  arr.push(w);
-  localStorage.setItem('v5_workers',JSON.stringify(arr));
+  // API 서버에 저장
+  const condition = document.getElementById('p2condition')?.value.trim()||'';
+  const memoFull = [d.memo||'', condition ? '원하는조건: '+condition : ''].filter(Boolean).join(' / ');
+  const payload={name:d.name,nation:d.nation,age:parseInt(d.age)||0,gender:d.gender,phone:d.phone,kakao:d.kakao||'',job:d.job,visa:d.visa,visaexp:d.visaexp||'',korean:d.korean||'없음',memo:memoFull};
+  fetch('https://agency.oppapc.com/api/workers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(r=>r.json()).then(res=>{if(!res.success)console.error('저장 실패',res);}).catch(e=>console.error('API 오류',e));
 
   const Lc=L();
   document.getElementById('ownerBadge').textContent=Lc.ownerBadge(OWNER);
