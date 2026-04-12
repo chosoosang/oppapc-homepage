@@ -1,8 +1,8 @@
 {
   "total": 158,
-  "occupied": 94,
-  "available": 64,
-  "updated_at": "2026-04-12 17:00",
+  "occupied": 86,
+  "available": 72,
+  "updated_at": "2026-04-12 18:00",
   "seats": [
     {
       "no": 1,
@@ -166,17 +166,17 @@
     },
     {
       "no": 33,
-      "used": false,
-      "remain": 0
-    },
-    {
-      "no": 34,
       "used": true,
       "remain": 0
     },
     {
-      "no": 35,
+      "no": 34,
       "used": false,
+      "remain": 0
+    },
+    {
+      "no": 35,
+      "used": true,
       "remain": 0
     },
     {
@@ -206,7 +206,7 @@
     },
     {
       "no": 41,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -276,7 +276,7 @@
     },
     {
       "no": 55,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -326,7 +326,7 @@
     },
     {
       "no": 65,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -346,17 +346,17 @@
     },
     {
       "no": 69,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 70,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 71,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -371,7 +371,7 @@
     },
     {
       "no": 74,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -391,12 +391,12 @@
     },
     {
       "no": 78,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 79,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -456,12 +456,12 @@
     },
     {
       "no": 91,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 92,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -511,7 +511,7 @@
     },
     {
       "no": 102,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -541,22 +541,22 @@
     },
     {
       "no": 108,
-      "used": true,
-      "remain": 0
-    },
-    {
-      "no": 109,
       "used": false,
       "remain": 0
     },
     {
-      "no": 110,
+      "no": 109,
       "used": true,
       "remain": 0
     },
     {
+      "no": 110,
+      "used": false,
+      "remain": 0
+    },
+    {
       "no": 111,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -566,12 +566,12 @@
     },
     {
       "no": 113,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 114,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -716,7 +716,7 @@
     },
     {
       "no": 143,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -726,7 +726,7 @@
     },
     {
       "no": 145,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -756,17 +756,17 @@
     },
     {
       "no": 151,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 152,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 153,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
