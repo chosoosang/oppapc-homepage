@@ -2,7 +2,7 @@
   "total": 158,
   "occupied": 29,
   "available": 129,
-  "updated_at": "2026-04-14 04:00",
+  "updated_at": "2026-04-14 05:00",
   "seats": [
     {
       "no": 1,
@@ -166,7 +166,7 @@
     },
     {
       "no": 33,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -181,7 +181,7 @@
     },
     {
       "no": 36,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -256,7 +256,7 @@
     },
     {
       "no": 51,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -311,12 +311,12 @@
     },
     {
       "no": 62,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 63,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -431,7 +431,7 @@
     },
     {
       "no": 86,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
