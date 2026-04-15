@@ -1,8 +1,8 @@
 {
   "total": 158,
-  "occupied": 33,
-  "available": 125,
-  "updated_at": "2026-04-15 16:00",
+  "occupied": 41,
+  "available": 117,
+  "updated_at": "2026-04-15 17:00",
   "seats": [
     {
       "no": 1,
@@ -136,12 +136,12 @@
     },
     {
       "no": 27,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 28,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -221,7 +221,7 @@
     },
     {
       "no": 44,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -296,7 +296,7 @@
     },
     {
       "no": 59,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -361,7 +361,7 @@
     },
     {
       "no": 72,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -421,7 +421,7 @@
     },
     {
       "no": 84,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -486,12 +486,12 @@
     },
     {
       "no": 97,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 98,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -506,7 +506,7 @@
     },
     {
       "no": 101,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -516,7 +516,7 @@
     },
     {
       "no": 103,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -551,12 +551,12 @@
     },
     {
       "no": 110,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 111,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -691,12 +691,12 @@
     },
     {
       "no": 138,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 139,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -726,7 +726,7 @@
     },
     {
       "no": 145,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -781,7 +781,7 @@
     },
     {
       "no": 156,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
