@@ -1620,7 +1620,7 @@ renderAll();
 
 <!-- ───── 업그레이드 홍보 팝업 ───── -->
 <style>
-#upgrade-popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;animation:fadeInOv .4s ease}
+#upgrade-popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99999;display:flex;align-items:center;justify-content:center;animation:fadeInOv .4s ease;pointer-events:auto}
 @keyframes fadeInOv{from{opacity:0}to{opacity:1}}
 #upgrade-popup{background:#111;border:1.5px solid #c9a84c;border-radius:16px;padding:36px 32px 28px;max-width:380px;width:90%;text-align:center;position:relative;box-shadow:0 0 40px rgba(201,168,76,.25);animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
 @keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
@@ -1630,15 +1630,15 @@ renderAll();
 #upgrade-popup .spec-box{background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:14px 16px;margin-bottom:22px;text-align:left}
 #upgrade-popup .spec-box div{display:flex;align-items:center;gap:8px;font-size:.85rem;color:#eee;padding:4px 0}
 #upgrade-popup .spec-box .lbl{color:#c9a84c;font-weight:700;min-width:40px}
-#upgrade-popup .close-btn{background:#c9a84c;color:#000;border:none;border-radius:8px;padding:11px 28px;font-size:.9rem;font-weight:800;cursor:pointer;width:100%;letter-spacing:.05em;transition:background .2s}
+#upgrade-popup .close-btn{background:#c9a84c;color:#000;border:none;border-radius:8px;padding:11px 28px;font-size:.9rem;font-weight:800;cursor:pointer;width:100%;letter-spacing:.05em;transition:background .2s;pointer-events:auto;position:relative;z-index:100000}
 #upgrade-popup .close-btn:hover{background:#e0bf6a}
-#upgrade-popup .dismiss{display:block;margin-top:12px;font-size:.75rem;color:#666;cursor:pointer;text-decoration:underline}
-#upgrade-popup .close-x{position:absolute;top:12px;right:16px;font-size:1.2rem;color:#666;cursor:pointer;background:none;border:none;line-height:1}
+#upgrade-popup .dismiss{display:block;margin-top:12px;font-size:.75rem;color:#666;cursor:pointer;text-decoration:underline;pointer-events:auto;position:relative;z-index:100000}
+#upgrade-popup .close-x{position:absolute;top:12px;right:16px;font-size:1.2rem;color:#666;cursor:pointer;background:none;border:none;line-height:1;pointer-events:auto;z-index:100000}
 #upgrade-popup .close-x:hover{color:#c9a84c}
 </style>
 <div id="upgrade-popup-overlay">
   <div id="upgrade-popup">
-    <button class="close-x" onclick="closePopup()">✕</button>
+    <button class="close-x" id="popup-close-x">✕</button>
     <div class="badge">⚡ 2025년 4월 업그레이드 완료</div>
     <h2>전 좌석 사양<br>업그레이드 하였사옵니다</h2>
     <p>더 빠르고, 더 쾌적하게<br>조선 제일의 피씨방이 되었사옵니다.</p>
@@ -1648,18 +1648,32 @@ renderAll();
       <div><span class="lbl">RAM</span>32GB 유지</div>
       <div><span class="lbl">기타</span>VOG 독립구동 · 래피드 트리거</div>
     </div>
-    <button class="close-btn" onclick="closePopup()">🏯 입장하기</button>
-    <span class="dismiss" onclick="dismissPopup()">오늘 하루 보지 않기</span>
+    <button class="close-btn" id="popup-enter">🏯 입장하기</button>
+    <span class="dismiss" id="popup-dismiss">오늘 하루 보지 않기</span>
   </div>
 </div>
 <script>
 (function(){
-  var v=localStorage.getItem('upgrade_popup_v1');
-  if(v && Date.now()<parseInt(v)) document.getElementById('upgrade-popup-overlay').style.display='none';
+  var overlay = document.getElementById('upgrade-popup-overlay');
+  if(!overlay) return;
+  var v = localStorage.getItem('upgrade_popup_v1');
+  if(v && Date.now() < parseInt(v)){
+    overlay.style.display = 'none';
+    return;
+  }
+  function closePopup(){
+    overlay.style.display = 'none';
+  }
+  function dismissPopup(){
+    localStorage.setItem('upgrade_popup_v1', String(Date.now() + 86400000));
+    closePopup();
+  }
+  document.getElementById('popup-close-x').addEventListener('click', closePopup);
+  document.getElementById('popup-enter').addEventListener('click', closePopup);
+  document.getElementById('popup-dismiss').addEventListener('click', dismissPopup);
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) closePopup(); });
 })();
-function closePopup(){document.getElementById('upgrade-popup-overlay').style.display='none';}
-function dismissPopup(){localStorage.setItem('upgrade_popup_v1',Date.now()+86400000);closePopup();}
-<\/script>
+</script>
 
 </body>
 </html>
