@@ -1152,10 +1152,10 @@ const DATA = {
 
   // ── 시트콤 (편수 추가 = 여기에 한 줄 추가)
   sitcom: [
-    {ep:'#01', title:'문을 열었사옵니다', phase:'1부', url:'https://www.instagram.com'},
-    {ep:'#02', title:'지게에 PC를 들고 나타난 자', phase:'1부', url:'https://www.instagram.com'},
-    {ep:'#03', title:'말 없는 지원자', phase:'1부', url:'https://www.instagram.com'},
-    // 새 편 추가: {ep:'#04', title:'첫 출근 대참사', phase:'1부', url:'https://...'},
+    {ep:'#01', title:'문을 열었사옵니다', phase:'1부', ytid:'4O1fUZFtPbs'},
+    {ep:'#02', title:'지게에 PC를 들고 나타난 자', phase:'1부', ytid:''},
+    {ep:'#03', title:'말 없는 지원자', phase:'1부', ytid:''},
+    // 새 편 추가: {ep:'#04', title:'첫 출근 대참사', phase:'1부', ytid:'유튜브_영상_ID'},
   ],
 
   // ── 이벤트 (추가하면 카드 생성)
@@ -1318,13 +1318,14 @@ function renderSitcom(filter) {
   const items = filter==='all' ? DATA.sitcom : DATA.sitcom.filter(s=>s.phase===filter);
   document.getElementById('reelGrid').innerHTML =
     items.map(s=>`
-      <a href="${s.url}" target="_blank" class="rcard">
+      <div class="rcard" onclick="openVideoModal('${s.ytid}','${s.ep}','${s.title}')" style="cursor:pointer;">
         <div class="roverlay"></div>
         <div class="rplay">▶</div>
         <div class="rep">${s.ep}</div>
         <div class="rtitle">${s.title}</div>
         <div class="rphase">${s.phase}</div>
-      </a>`).join('');
+        ${!s.ytid ? '<div style="position:absolute;bottom:8px;right:10px;font-size:.65rem;color:#888;">준비 중</div>' : ''}
+      </div>`).join('');
 }
 
 function filterSitcom(filter, btn) {
@@ -1617,6 +1618,66 @@ renderAll();
 })();
 </script>
 
+
+
+<!-- ───── 시트콤 영상 모달 ───── -->
+<style>
+#video-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99998;display:none;align-items:center;justify-content:center;animation:fadeInOv .3s ease}
+#video-modal-overlay.show{display:flex}
+#video-modal{background:#111;border:1.5px solid #333;border-radius:16px;padding:20px;max-width:480px;width:95%;position:relative;box-shadow:0 0 60px rgba(0,0,0,.8)}
+#video-modal-title{font-family:'Hahmlet',serif;color:#c9a84c;font-size:1rem;margin-bottom:12px;text-align:center}
+#video-modal-frame{position:relative;width:100%;padding-bottom:177.78%;height:0;border-radius:10px;overflow:hidden;background:#000}
+#video-modal-frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+#video-modal-noyt{color:#888;text-align:center;padding:60px 0;font-size:.9rem}
+#video-modal .vm-close{position:absolute;top:12px;right:14px;font-size:1.3rem;color:#666;cursor:pointer;background:none;border:none;z-index:10;line-height:1}
+#video-modal .vm-close:hover{color:#c9a84c}
+#video-modal .vm-yt-link{display:block;text-align:center;margin-top:14px;color:#c9a84c;font-size:.8rem;text-decoration:none}
+#video-modal .vm-yt-link:hover{text-decoration:underline}
+</style>
+
+<div id="video-modal-overlay">
+  <div id="video-modal">
+    <button class="vm-close" id="vm-close-btn">✕</button>
+    <div id="video-modal-title"></div>
+    <div id="video-modal-frame"></div>
+    <a id="vm-yt-link" class="vm-yt-link" href="#" target="_blank">▶ YouTube에서 보기</a>
+  </div>
+</div>
+
+<script>
+function openVideoModal(ytid, ep, title) {
+  var overlay = document.getElementById('video-modal-overlay');
+  var frame = document.getElementById('video-modal-frame');
+  var titleEl = document.getElementById('video-modal-title');
+  var ytLink = document.getElementById('vm-yt-link');
+
+  titleEl.textContent = ep + ' — ' + title;
+
+  if (ytid) {
+    frame.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytid + '?autoplay=1&rel=0" allowfullscreen allow="autoplay"></iframe>';
+    ytLink.href = 'https://www.youtube.com/shorts/' + ytid;
+    ytLink.style.display = 'block';
+  } else {
+    frame.innerHTML = '<div id="video-modal-noyt">🏯 이 편은 곧 공개되옵니다<br><small style="color:#555">잠시만 기다려 주시옵소서</small></div>';
+    ytLink.style.display = 'none';
+  }
+
+  overlay.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+(function(){
+  var overlay = document.getElementById('video-modal-overlay');
+  function closeVideoModal() {
+    overlay.classList.remove('show');
+    document.getElementById('video-modal-frame').innerHTML = '';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('vm-close-btn').addEventListener('click', closeVideoModal);
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) closeVideoModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeVideoModal(); });
+})();
+</script>
 
 <!-- ───── 업그레이드 홍보 팝업 ───── -->
 <style>
