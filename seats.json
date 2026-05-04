@@ -1,8 +1,8 @@
 {
   "total": 158,
-  "occupied": 31,
-  "available": 127,
-  "updated_at": "2026-05-04 13:00",
+  "occupied": 42,
+  "available": 116,
+  "updated_at": "2026-05-04 14:00",
   "seats": [
     {
       "no": 1,
@@ -106,7 +106,7 @@
     },
     {
       "no": 21,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -146,7 +146,7 @@
     },
     {
       "no": 29,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -156,7 +156,7 @@
     },
     {
       "no": 31,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -281,7 +281,7 @@
     },
     {
       "no": 56,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -346,27 +346,27 @@
     },
     {
       "no": 69,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 70,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 71,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 72,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 73,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -426,7 +426,7 @@
     },
     {
       "no": 85,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -461,7 +461,7 @@
     },
     {
       "no": 92,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -471,7 +471,7 @@
     },
     {
       "no": 94,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -506,7 +506,7 @@
     },
     {
       "no": 101,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -686,7 +686,7 @@
     },
     {
       "no": 137,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -711,7 +711,7 @@
     },
     {
       "no": 142,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -746,12 +746,12 @@
     },
     {
       "no": 149,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 150,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
