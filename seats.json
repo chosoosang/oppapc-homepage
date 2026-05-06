@@ -1,8 +1,8 @@
 {
   "total": 27,
-  "occupied": 1,
-  "available": 26,
-  "updated_at": "2026-05-07 05:00",
+  "occupied": 5,
+  "available": 22,
+  "updated_at": "2026-05-07 06:00",
   "seats": [
     {
       "no": 1,
@@ -106,22 +106,22 @@
     },
     {
       "no": 21,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 22,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 23,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 24,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
