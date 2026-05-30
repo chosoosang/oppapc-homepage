@@ -1,8 +1,8 @@
 {
   "total": 158,
-  "occupied": 41,
-  "available": 117,
-  "updated_at": "2026-05-30 12:00",
+  "occupied": 49,
+  "available": 109,
+  "updated_at": "2026-05-30 13:00",
   "seats": [
     {
       "no": 1,
@@ -141,7 +141,7 @@
     },
     {
       "no": 28,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -211,17 +211,17 @@
     },
     {
       "no": 42,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 43,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
       "no": 44,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -231,17 +231,17 @@
     },
     {
       "no": 46,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 47,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 48,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -401,12 +401,12 @@
     },
     {
       "no": 80,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 81,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -496,7 +496,7 @@
     },
     {
       "no": 99,
-      "used": true,
+      "used": false,
       "remain": 0
     },
     {
@@ -561,7 +561,7 @@
     },
     {
       "no": 112,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -701,7 +701,7 @@
     },
     {
       "no": 140,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -716,7 +716,7 @@
     },
     {
       "no": 143,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
@@ -781,17 +781,17 @@
     },
     {
       "no": 156,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 157,
-      "used": false,
+      "used": true,
       "remain": 0
     },
     {
       "no": 158,
-      "used": false,
+      "used": true,
       "remain": 0
     }
   ]
