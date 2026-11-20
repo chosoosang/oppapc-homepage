@@ -598,6 +598,40 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 .chat-input:focus{border-color:rgba(200,168,75,.45);}
 .chat-send{background:var(--primary);border:none;border-radius:50%;width:38px;height:38px;color:var(--bg);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;}
 .chat-send:disabled{background:rgba(200,168,75,.3);cursor:not-allowed;}
+
+/* ══════════════════════════════════════
+   매장 이전 공지 (2026.11)
+══════════════════════════════════════ */
+.mv-banner{display:block;width:100%;box-sizing:border-box;margin:0 0 0;padding:14px 20px;background:#FF4F9A;color:#111;border:0;font-family:'Noto Sans KR',sans-serif;font-size:.95rem;font-weight:700;text-align:center;cursor:pointer;line-height:1.5;}
+.mv-banner strong{font-weight:900;}
+.mv-banner u{text-underline-offset:3px;}
+.mv-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:20px;}
+.mv-overlay.on{display:flex;animation:fadeInOv .3s ease;}
+@keyframes fadeInOv{from{opacity:0}to{opacity:1}}
+.mv-card{width:100%;max-width:440px;max-height:calc(100vh - 40px);overflow:auto;background:#FAFAF7;color:#111;border-radius:20px;padding:28px 24px 20px;font-family:'Noto Sans KR',sans-serif;box-sizing:border-box;}
+.mv-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:900;font-size:1rem;}
+.mv-top .pk{color:#E0337F;}
+.mv-pill{background:#111;color:#fff;font-size:.72rem;font-weight:700;padding:6px 12px;border-radius:999px;white-space:nowrap;}
+.mv-card .mv-title{font-family:'Noto Sans KR',sans-serif;color:#111;-webkit-text-fill-color:#111;background:none;text-shadow:none;opacity:1;margin:18px 0 6px;font-size:2.4rem;font-weight:900;line-height:1.1;letter-spacing:-.03em;}
+.mv-card .mv-title .pk{color:#E0337F;-webkit-text-fill-color:#E0337F;font-family:inherit;}
+.mv-sub{margin:0 0 16px;font-size:.95rem;color:#333;}
+.mv-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px;}
+.mv-stats div{background:#111;color:#fff;border-radius:12px;padding:10px 12px;}
+.mv-stats span{display:block;font-size:.7rem;color:#cfcfcf;}
+.mv-stats b{font-size:1.4rem;font-weight:900;}
+.mv-close-box{background:#FF4F9A;border-radius:14px;padding:16px 18px;margin-bottom:10px;}
+.mv-close-box span{display:block;font-size:.78rem;font-weight:700;}
+.mv-close-box b{display:block;font-size:1.7rem;font-weight:900;line-height:1.2;margin:2px 0;}
+.mv-close-box p{margin:0;font-size:.9rem;font-weight:700;}
+.mv-open{background:#111;color:#fff;border-radius:14px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.mv-open b{font-size:1.1rem;font-weight:900;white-space:nowrap;}
+.mv-open span{font-size:.72rem;flex-shrink:1;color:#e6e6e6;text-align:right;}
+.mv-addr{margin:12px 0 0;font-size:.82rem;color:#333;line-height:1.5;}
+.mv-addr a{color:#111;font-weight:700;}
+.mv-btns{display:flex;gap:8px;margin-top:16px;}
+.mv-btns button{flex:1;min-height:44px;border-radius:10px;border:0;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;}
+.mv-btn-skip{background:#e9e9e4;color:#333;}
+.mv-btn-ok{background:#111;color:#fff;}
 </style>
   <script type="text/javascript" src="https://ua.talk.naver.com/dist/sdk.js"></script>
 </head>
@@ -639,6 +673,7 @@ footer{background:var(--ink);border-top:1px solid rgba(200,168,75,.12);padding:4
 
   <!-- 홈 탭 -->
   <div class="tab-panel on" id="panel-home">
+    <button class="mv-banner" type="button" onclick="mvOpen()">📢 오빠PC가 이사갑니다 · 기존 매장은 <strong>11.25(수) 오전 8시</strong>까지 운영 · 신규 매장 <strong>11월 말 오픈</strong> <u>자세히 보기</u></button>
     <div class="hero">
       <div class="hero-grid"></div>
       <div class="hero-badge" id="heroBadge">조선 제일의 피씨방</div>
@@ -1679,62 +1714,40 @@ function openVideoModal(ytid, ep, title) {
 })();
 </script>
 
-<!-- ───── 업그레이드 홍보 팝업 ───── -->
-<style>
-#upgrade-popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99999;display:flex;align-items:center;justify-content:center;animation:fadeInOv .4s ease;pointer-events:auto}
-@keyframes fadeInOv{from{opacity:0}to{opacity:1}}
-#upgrade-popup{background:#111;border:1.5px solid #c9a84c;border-radius:16px;padding:36px 32px 28px;max-width:380px;width:90%;text-align:center;position:relative;box-shadow:0 0 40px rgba(201,168,76,.25);animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
-@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-#upgrade-popup .badge{display:inline-block;background:#c9a84c;color:#000;font-size:.7rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:.08em;margin-bottom:14px}
-#upgrade-popup h2{font-family:'Hahmlet',serif;font-size:1.5rem;color:#c9a84c;margin-bottom:8px;line-height:1.4}
-#upgrade-popup p{color:#ccc;font-size:.88rem;line-height:1.8;margin-bottom:20px}
-#upgrade-popup .spec-box{background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:14px 16px;margin-bottom:22px;text-align:left}
-#upgrade-popup .spec-box div{display:flex;align-items:center;gap:8px;font-size:.85rem;color:#eee;padding:4px 0}
-#upgrade-popup .spec-box .lbl{color:#c9a84c;font-weight:700;min-width:40px}
-#upgrade-popup .close-btn{background:#c9a84c;color:#000;border:none;border-radius:8px;padding:11px 28px;font-size:.9rem;font-weight:800;cursor:pointer;width:100%;letter-spacing:.05em;transition:background .2s;pointer-events:auto;position:relative;z-index:100000}
-#upgrade-popup .close-btn:hover{background:#e0bf6a}
-#upgrade-popup .dismiss{display:block;margin-top:12px;font-size:.75rem;color:#666;cursor:pointer;text-decoration:underline;pointer-events:auto;position:relative;z-index:100000}
-#upgrade-popup .close-x{position:absolute;top:12px;right:16px;font-size:1.2rem;color:#666;cursor:pointer;background:none;border:none;line-height:1;pointer-events:auto;z-index:100000}
-#upgrade-popup .close-x:hover{color:#c9a84c}
-</style>
-<div id="upgrade-popup-overlay">
-  <div id="upgrade-popup">
-    <button class="close-x" id="popup-close-x">✕</button>
-    <div class="badge">⚡ 2025년 4월 업그레이드 완료</div>
-    <h2>전 좌석 사양<br>업그레이드 하였사옵니다</h2>
-    <p>더 빠르고, 더 쾌적하게<br>조선 제일의 피씨방이 되었사옵니다.</p>
-    <div class="spec-box">
-      <div><span class="lbl">GPU</span>RTX 3060 Ti → <strong style="color:#c9a84c">RTX 5060 ✓</strong></div>
-      <div><span class="lbl">CPU</span>i5-12400F → <strong style="color:#c9a84c">i5-14400F ✓</strong></div>
-      <div><span class="lbl">RAM</span>32GB 유지</div>
-      <div><span class="lbl">기타</span>VOG 독립구동 · 래피드 트리거</div>
+<!-- 매장 이전 공지 팝업 (2026.11) -->
+<div class="mv-overlay" id="mvOverlay" role="dialog" aria-modal="true" aria-labelledby="mvTitle" onclick="if(event.target===this)mvClose()">
+  <div class="mv-card">
+    <div class="mv-top"><div>오빠<span class="pk">PC</span>에서 만나요</div><div class="mv-pill">11월 말 NEW OPEN</div></div>
+    <h2 class="mv-title" id="mvTitle">오빠<span class="pk">PC</span>가<br>이사갑니다</h2>
+    <p class="mv-sub">더 넓고, 더 편하게. 바로 옆 새 매장에서 만나요.</p>
+    <div class="mv-stats">
+      <div><span>전국 최대급</span><b>500평</b></div>
+      <div><span>프라이빗 룸</span><b>80개</b></div>
+      <div><span>기존 매장에서</span><b>10m</b></div>
     </div>
-    <button class="close-btn" id="popup-enter">🏯 입장하기</button>
-    <span class="dismiss" id="popup-dismiss">오늘 하루 보지 않기</span>
+    <div class="mv-close-box">
+      <span>꼭 확인해 주세요 · 기존 매장 영업 종료</span>
+      <b>11.25 (수) 오전 8시</b>
+      <p>까지만 기존 매장을 운영합니다</p>
+    </div>
+    <div class="mv-open"><b>신규 매장 11월 말 오픈</b><span>정확한 오픈일은<br>다시 알려드릴게요</span></div>
+    <p class="mv-addr">새 주소: 인천 부평구 부평문화로80번길 16 스타빠루뚜 지하1층<br>회원 정보는 그대로 이어서 이용하실 수 있어요. · <a href="https://map.naver.com/p/search/인천%20부평구%20부평문화로80번길%2016" target="_blank" rel="noopener">지도 보기</a></p>
+    <div class="mv-btns">
+      <button type="button" class="mv-btn-skip" onclick="mvClose(true)">오늘 하루 보지 않기</button>
+      <button type="button" class="mv-btn-ok" onclick="mvClose()">확인</button>
+    </div>
   </div>
 </div>
 <script>
+function mvOpen(){document.getElementById('mvOverlay').classList.add('on');}
+function mvClose(skipToday){
+  document.getElementById('mvOverlay').classList.remove('on');
+  if(skipToday){try{localStorage.setItem('mvHideUntil',String(Date.now()+86400000));}catch(e){}}
+}
 (function(){
-  var overlay = document.getElementById('upgrade-popup-overlay');
-  if(!overlay) return;
-  var v = localStorage.getItem('upgrade_popup_v1');
-  if(v && Date.now() < parseInt(v)){
-    overlay.style.display = 'none';
-    return;
-  }
-  function closePopup(){
-    overlay.style.display = 'none';
-  }
-  function dismissPopup(){
-    localStorage.setItem('upgrade_popup_v1', String(Date.now() + 86400000));
-    closePopup();
-  }
-  document.getElementById('popup-close-x').addEventListener('click', closePopup);
-  document.getElementById('popup-enter').addEventListener('click', closePopup);
-  document.getElementById('popup-dismiss').addEventListener('click', dismissPopup);
-  overlay.addEventListener('click', function(e){ if(e.target === overlay) closePopup(); });
+  var hide=0;try{hide=Number(localStorage.getItem('mvHideUntil')||0);}catch(e){}
+  if(Date.now()>hide){mvOpen();}
 })();
 </script>
-
 </body>
 </html>
